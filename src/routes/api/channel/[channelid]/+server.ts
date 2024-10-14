@@ -23,6 +23,7 @@ export const GET: RequestHandler = ({ params, cookies }) => {
           const successful = sendMessage(controller, JSON.stringify({
             type: 'message',
             data: {
+              user: 'admin',
               content: `This is a basic message. You are currently in channel ${channelid}`,
             }
           }));
