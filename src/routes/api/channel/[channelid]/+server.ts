@@ -24,7 +24,7 @@ export const GET: RequestHandler = ({ params, cookies }) => {
             type: 'message',
             data: {
               user: 'admin',
-              content: `This is a basic message. You are currently in channel ${channelid}`,
+              content: `This is a basic message. You are currently in channel ${channelid}. It is currently ${Date.now()}`,
             }
           }));
 
