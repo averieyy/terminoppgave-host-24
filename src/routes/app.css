@@ -1,0 +1,36 @@
+:root {
+  --bg1: #2e3440;
+  --bg2: #3b4252;
+  --bg3: #434c5e;
+  --bg4: #4c566a;
+
+  --fg1: #eceff4;
+  --fg2: #e5e9f0;
+  --fg3: #d8dee9;
+
+  --blue: #5e81ac;
+  --lightblue: #81a1c1;
+
+  --purple: #b48ead;
+}
+
+html, body {
+  margin: 0;
+
+  background-color: var(--bg2);
+
+  color: var(--fg1);
+
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.link {
+  color: var(--blue);
+
+  &:hover {
+    color: var(--lightblue);
+  }
+}
