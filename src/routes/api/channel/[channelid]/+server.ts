@@ -18,22 +18,15 @@ export const GET: RequestHandler = ({ params, cookies }) => {
 
   const user = User.getFromCookie(token);
   if (!user) return new Response('Not authenticated', { status: 403 });
-
-  let streamactive = false;
-  let interval : number;
   
   let channelmember : Member;
 
   const stream = new ReadableStream({
     start(controller) {
       channelmember = new Member(user, new StreamController(controller), 'user');
-      streamactive = true;
-
-      console.log(channelmember.name);
-
-      channel.connect(channelmember);
-
-      console.log(channel.members);
+      const messages = channel.connect(channelmember);
+      
+      channelmember.controller.sendMessage('history', messages.map(m => m.toSendable()));
     },
     cancel() {
       channel.disconnect(channelmember);

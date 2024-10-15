@@ -9,6 +9,10 @@
 
   onMount(() => {
     const stream = new EventSource(streamsource);
+    stream.addEventListener('history', ev => {
+      const msg = JSON.parse(ev.data) as Message[];      
+      messages = msg;
+    });
     stream.addEventListener('channelmessage', ev => {
       const msg = JSON.parse(ev.data) as Message;      
       messages.push(msg);

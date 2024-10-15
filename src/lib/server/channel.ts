@@ -23,6 +23,8 @@ export class Channel {
 
   connect (member: Member) {
     this.members.push(member);
+
+    return this.messages;
   }
 
   disconnect(member: Member) {
