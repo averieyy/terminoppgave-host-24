@@ -25,9 +25,5 @@ export const POST : RequestHandler = async ({ cookies, params, request }) => {
 
   channel.broadcast(messageobject.toSendable(), 'channelmessage');
 
-  for (let message of channel.messages) {
-    console.log(message.content);
-  }
-
-  return new Response('Works well (totally)', { status: 200 });
+  return new Response('Message sent in channel', { status: 200 });
 }
