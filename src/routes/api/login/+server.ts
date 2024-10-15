@@ -5,7 +5,7 @@ export const GET: RequestHandler = ({ cookies }) => {
   const user = new User('user');
   const cookie = user.genCookie();
 
-  cookies.set('token', cookie, { path: '/' });
+  cookies.set('token', cookie, { path: '/', secure: false });
 
   return new Response('asdf');
 }
