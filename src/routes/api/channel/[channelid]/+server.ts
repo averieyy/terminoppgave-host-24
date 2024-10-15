@@ -1,4 +1,7 @@
-import { sendMessage } from "$lib/server/stream";
+import { Channel } from "$lib/server/channel";
+import { Message } from "$lib/server/message";
+import { StreamController } from "$lib/server/stream";
+import { Member, User } from "$lib/server/user";
 import type { RequestHandler } from "@sveltejs/kit";
 
 export const GET: RequestHandler = ({ params, cookies }) => {
@@ -7,35 +10,33 @@ export const GET: RequestHandler = ({ params, cookies }) => {
   if (!params.channelid) return new Response('Could not find channel', { status: 404 });
   const channelid = parseInt(params.channelid as string);
 
-  // TODO: Authenticate User
+  const channel = Channel.byId(channelid);
+  if (!channel) return new Response('Could not find channel', { status: 404 });
 
-  // TODO: Connect to an actual channel
+  const token = cookies.get('token');
+  if (!token) return new Response('Not authenticated', { status: 403 });
+
+  const user = User.getFromCookie(token);
+  if (!user) return new Response('Not authenticated', { status: 403 });
 
   let streamactive = false;
   let interval : number;
+  
+  let channelmember : Member;
 
   const stream = new ReadableStream({
     start(controller) {
+      channelmember = new Member(user, new StreamController(controller), 'user');
       streamactive = true;
 
-      interval = setInterval(() => {
-        if (controller) {
-          const successful = sendMessage(controller, JSON.stringify({
-            type: 'message',
-            data: {
-              user: 'admin',
-              content: `This is a basic message. You are currently in channel ${channelid}. It is currently ${Date.now()}`,
-            }
-          }));
+      console.log(channelmember.name);
 
-          if (!successful) streamactive = false;
-        }
-        if (!streamactive) clearInterval(interval);
-      }, 1000);
+      channel.connect(channelmember);
+
+      console.log(channel.members);
     },
     cancel() {
-      streamactive = false;
-      clearInterval(interval);
+      channel.disconnect(channelmember);
     }
   });
 

@@ -570,6 +570,11 @@ svelte-hmr@^0.16.0:
   resolved "https://registry.yarnpkg.com/svelte-hmr/-/svelte-hmr-0.16.0.tgz#9f345b7d1c1662f1613747ed7e82507e376c1716"
   integrity sha512-Gyc7cOS3VJzLlfj7wKS0ZnzDVdv3Pn2IuVeJPk9m2skfhcu5bq3wtIZyQGggr7/Iim5rH5cncyQft/kRLupcnA==
 
+svelte-nerdfonts@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/svelte-nerdfonts/-/svelte-nerdfonts-1.0.3.tgz#65d54c6c0baf5f7cc6f21ce36df1e8ed27fa1914"
+  integrity sha512-/54CyC50n1eDPgsz79nMheYGYALKndMeXPvbstB7f/VxPconR6pIiAWnA0dwy+GBEUkJ6cW0GSp6svsv836sWg==
+
 svelte@^4.2.7:
   version "4.2.19"
   resolved "https://registry.yarnpkg.com/svelte/-/svelte-4.2.19.tgz#4e6e84a8818e2cd04ae0255fcf395bc211e61d4c"

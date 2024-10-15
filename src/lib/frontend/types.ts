@@ -11,7 +11,7 @@ export class TextContent implements messagecontent {
   }
 }
 
-export class Message implements messageData {
+export class Message {
   content: string;
   user: string;
 
@@ -21,9 +21,11 @@ export class Message implements messageData {
   }
 }
 
-export interface messageData { };
+export interface user {
+  name: string,
+  id: number,
+}
 
-export interface serverMessage<T> {
-  type: 'message' | 'typing',
-  data: T,
+export interface member extends user {
+  displayname: string,
 }

@@ -1,12 +1,22 @@
+import type { StreamController } from "./stream";
+
 export class User {
   
+  static users: User[] = [];
+
   name: string;
   id: number;
   cookies: string[] = [];
 
-  constructor (name: string, id: number) {
+  constructor (name: string) {
     this.name = name;
-    this.id = id;
+    this.id = this.genId();
+
+    User.users.push(this);
+  }
+
+  static getFromCookie (cookie: string) : User | undefined {
+    return User.users.find(u => u.cookies.includes(cookie));
   }
 
   genId () : number {
@@ -29,10 +39,12 @@ export class User {
 
 export class Member extends User {
   displayName: string;
+  controller: StreamController;
 
-  constructor (name: string, id: number, displayName: string) {
-    super(name, id);
+  constructor (user: User, controller: StreamController, displayName: string | undefined) {
+    super(User.name);
 
-    this.displayName = displayName;
+    this.controller = controller;
+    this.displayName = displayName || user.name;
   }
 }

@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
-    import type { Message, messageData, serverMessage } from "../types";
+  import type { Message } from "../types";
+  import Icon from "../icon.svelte";
 
   export let streamsource: string;
 
@@ -8,21 +9,25 @@
 
   onMount(() => {
     const stream = new EventSource(streamsource);
-    stream.onmessage = ev => {
-      const msg = JSON.parse(ev.data) as serverMessage<messageData>;
-      
-      switch (msg.type) {
-        case 'message':
-          messages.push(msg.data as Message);
-          break;
-        case 'typing':
-          msg.data = msg.data;
-          break;
-      }
-      
+    stream.addEventListener('channelmessage', ev => {
+      const msg = JSON.parse(ev.data) as Message;      
+      messages.push(msg);
+
       messages = messages;
-    }
+    });
   });
+
+  let messageContent: string;
+
+  function sendMessage() {
+    fetch(`${streamsource}/send`, {
+      method: 'POST',
+      body: JSON.stringify({
+        content: messageContent,
+      })
+    });
+    messageContent = '';
+  }
 </script>
 
 <div class="channelview">
@@ -34,9 +39,11 @@
       </div>
     {/each}
   </div>
-  <div class="sendmessage">
-    <h1>asdf</h1>
-  </div>
+  <form class="sendmessage" on:submit={sendMessage}>
+    <input type="text" bind:value={messageContent} placeholder={`Message`} />
+    <button class="inputbtn uploadbtn"><Icon icon='upload'/></button>
+    <button class="inputbtn sendbtn"><Icon icon='send'/></button>
+  </form>
 </div>
 
 <style>
@@ -53,6 +60,7 @@
     display: flex;
     flex-direction: column;
     flex: 1;
+    overflow: scroll;
   }
 
   .message {
@@ -75,7 +83,37 @@
 
   .sendmessage {
     display: flex;
-    width: 100%;
     background-color: var(--bg3);
+    flex-direction: row;
+
+    padding: 1rem;
+    gap: .5rem;
+    
+    & input {
+      padding: .5rem;
+      background-color: var(--bg4);
+      color: var(--fg1);
+      border: none;
+      border-radius: .5rem;
+      flex: 1;
+    }
+
+    & .inputbtn {
+      aspect-ratio: 1 / 1;
+      border: none;
+      background-color: var(--bg4);
+      color: var(--fg1);
+      border-radius: .5rem;
+
+      padding: 0;
+      
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+    }
+  }
+  .icon {
+    font-size: 1.375rem;
   }
 </style>
