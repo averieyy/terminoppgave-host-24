@@ -1,6 +1,6 @@
 # Discord clone
 
-WIP
+> This is the Minimal viable product (MVP) of this project
 
 ## Running the program
 
