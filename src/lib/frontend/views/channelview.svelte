@@ -40,7 +40,7 @@
   <div class="messages">
     {#each messages as message}
       <div class="message">
-        <span class="time">{message.datetime.getHours()}:{message.datetime.getMinutes().toString().padStart(2, '0')}</span>
+        <span class="time">{message.datetime.getHours().toString().padStart(2,'0')}:{message.datetime.getMinutes().toString().padStart(2, '0')}</span>
         <span class="sender">{message.user}</span>
         <span class="content">{message.content}</span>
       </div>
@@ -61,6 +61,7 @@
     display: flex;
     flex-direction: column;
 
+    background-color: var(--bg1);
   }
 
   .messages {
@@ -75,13 +76,12 @@
     flex-direction: row;
     gap: .5rem;
     padding: .5rem;
-    background-color: var(--bg2);
-    align-items: center;
+    background-color: var(--bg1);
 
     font-size: 16px;
 
     &:hover {
-      background-color: var(--bg3);
+      background-color: var(--bg2);
     }
   }
 
@@ -90,14 +90,14 @@
   }
 
   .time {
-    color: var(--fg3);
+    color: var(--bg4);
     font-style: italic;
-    font-size: 75%;
+    font-family: 'Jetbrains Mono', monospace;
   }
 
   .sendmessage {
     display: flex;
-    background-color: var(--bg3);
+    background-color: var(--bg2);
     flex-direction: row;
 
     padding: 1rem;
@@ -105,7 +105,7 @@
     
     & input {
       padding: .5rem;
-      background-color: var(--bg4);
+      background-color: var(--bg3);
       color: var(--fg1);
       border: none;
       border-radius: .5rem;
@@ -115,7 +115,7 @@
     & .inputbtn {
       aspect-ratio: 1 / 1;
       border: none;
-      background-color: var(--bg4);
+      background-color: var(--bg3);
       color: var(--fg1);
       border-radius: .5rem;
 
