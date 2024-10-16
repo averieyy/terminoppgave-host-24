@@ -14,10 +14,13 @@ export class TextContent implements messagecontent {
 export class Message {
   content: string;
   user: string;
+  datetime: Date;
 
-  constructor (content: string, user: string) {
+  constructor (content: string, user: string, date: Date) {
     this.content = content;
     this.user = user;
+    console.log(date);
+    this.datetime = date;
   }
 }
 
