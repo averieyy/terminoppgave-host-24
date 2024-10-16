@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import type { Message } from "../types";
   import Icon from "../icon.svelte";
+    import { DateReviver } from "../datereviver";
 
   export let streamsource: string;
 
@@ -10,11 +11,11 @@
   onMount(() => {
     const stream = new EventSource(streamsource);
     stream.addEventListener('history', ev => {
-      const msg = JSON.parse(ev.data) as Message[];      
+      const msg = JSON.parse(ev.data, DateReviver) as Message[];
       messages = msg;
     });
     stream.addEventListener('channelmessage', ev => {
-      const msg = JSON.parse(ev.data) as Message;      
+      const msg = JSON.parse(ev.data, DateReviver) as Message;
       messages.push(msg);
 
       messages = messages;
@@ -28,6 +29,7 @@
       method: 'POST',
       body: JSON.stringify({
         content: messageContent,
+        datetime: Date.now(),
       })
     });
     messageContent = '';
@@ -38,13 +40,14 @@
   <div class="messages">
     {#each messages as message}
       <div class="message">
+        <span class="time">{message.datetime.getHours()}:{message.datetime.getMinutes().toString().padStart(2, '0')}</span>
         <span class="sender">{message.user}</span>
         <span class="content">{message.content}</span>
       </div>
     {/each}
   </div>
   <form class="sendmessage" on:submit={sendMessage}>
-    <input type="text" bind:value={messageContent} placeholder={`Message`} />
+    <input autofocus type="text" bind:value={messageContent} placeholder={`Message`} />
     <button class="inputbtn uploadbtn"><Icon icon='upload'/></button>
     <button class="inputbtn sendbtn"><Icon icon='send'/></button>
   </form>
@@ -73,6 +76,7 @@
     gap: .5rem;
     padding: .5rem;
     background-color: var(--bg2);
+    align-items: center;
 
     font-size: 16px;
 
@@ -83,6 +87,12 @@
 
   .sender {
     color: var(--lightblue);
+  }
+
+  .time {
+    color: var(--fg3);
+    font-style: italic;
+    font-size: 75%;
   }
 
   .sendmessage {

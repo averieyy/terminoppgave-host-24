@@ -16,10 +16,10 @@ export const POST : RequestHandler = async ({ cookies, params, request }) => {
   const user = User.getFromCookie(cookie);
   if (!user) return new Response('Not authenticated user', { status: 403 });
 
-  const { content } = await request.json();
+  const { content, datetime } : { content: string, datetime: number } = await request.json();
   if (!content) return new Response('Requires body field "content"', { status: 400 });
 
-  const messageobject = new Message(content, user);
+  const messageobject = new Message(content, user, new Date(datetime));
 
   channel.messages.push(messageobject);
 
