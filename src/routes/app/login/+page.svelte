@@ -4,11 +4,11 @@
 
   let redirectLocation = $page.url.searchParams.get('redirect');
 
-  let username: string;
-  let password: string;
+  let username: string = $state('');
+  let password: string = $state('');
 
-  let detailError = false;
-  let errorMessage = '';
+  let detailError: boolean = $state(false);
+  let errorMessage = $state('');
 
   function logIn() {
     fetch('/api/login', {
@@ -32,14 +32,14 @@
 </script>
 
 <main>
-  <form class="loginform" on:submit={logIn}>
+  <form class="loginform" onsubmit={logIn}>
     <h2>Log in</h2>
     {#if errorMessage !== ''}
       <span class="errormessage">{errorMessage}</span>
     {/if}
     <input class={`${detailError && 'error'} inputform`} placeholder="Username" type="text" bind:value={username} />
     <input placeholder="Password (not in use)" type="password" bind:value={password} />
-    <button on:click={logIn}>Log in</button>
+    <button onclick={logIn}>Log in</button>
   </form>
 </main>
 

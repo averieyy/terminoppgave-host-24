@@ -4,9 +4,9 @@
   import Icon from "./icon.svelte";
   import { DateReviver } from "../frontend/datereviver";
 
-  export let streamsource: string;
+  const { streamsource }: { streamsource: string } = $props();
 
-  let messages: Message[] = [];
+  let messages: Message[] = $state([]);
 
   onMount(() => {
     const stream = new EventSource(streamsource);
@@ -20,11 +20,15 @@
 
       messages = messages;
     });
+    stream.addEventListener('error', err => {
+      console.log('An error occured', err);
+    });
   });
 
-  let messageContent: string;
+  let messageContent: string = $state('');
 
-  function sendMessage() {
+  function sendMessage(ev: SubmitEvent) {
+    ev.preventDefault();
     fetch(`${streamsource}/send`, {
       method: 'POST',
       body: JSON.stringify({
@@ -46,8 +50,8 @@
       </div>
     {/each}
   </div>
-  <form class="sendmessage" on:submit={sendMessage}>
-    <input autofocus type="text" bind:value={messageContent} placeholder={`Message`} />
+  <form class="sendmessage" onsubmit={sendMessage}>
+    <input type="text" bind:value={messageContent} placeholder={`Message`} />
     <button class="inputbtn uploadbtn"><Icon icon='upload'/></button>
     <button class="inputbtn sendbtn"><Icon icon='send'/></button>
   </form>
