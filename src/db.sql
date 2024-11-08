@@ -1,6 +1,8 @@
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
-  username TEXT NOT NULL CONSTRAINT unique_username UNIQUE
+  username TEXT NOT NULL CONSTRAINT unique_username UNIQUE,
+  hash TEXT NOT NULL,
+  salt TEXT NOT NULL
 );
 
 CREATE TABLE channel (

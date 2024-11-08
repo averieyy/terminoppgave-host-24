@@ -1,6 +1,6 @@
 <script lang="ts">
   import { page } from "$app/stores";
-  import Channelview from "$lib/frontend/views/channelview.svelte";
+  import Channelview from "$lib/widgets/channelview.svelte";
   
   let channel = $page.params.channelid;
 </script>

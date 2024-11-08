@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import type { Message } from "../types";
-  import Icon from "../icon.svelte";
-    import { DateReviver } from "../datereviver";
+  import type { Message } from "../frontend/types";
+  import Icon from "./icon.svelte";
+  import { DateReviver } from "../frontend/datereviver";
 
   export let streamsource: string;
 
@@ -126,8 +126,5 @@
       align-items: center;
 
     }
-  }
-  .icon {
-    font-size: 1.375rem;
   }
 </style>
