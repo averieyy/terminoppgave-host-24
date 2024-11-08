@@ -2,20 +2,22 @@ import { Channel } from "$lib/server/channel";
 import { Message } from "$lib/server/message";
 import { StreamController } from "$lib/server/stream";
 import { Member, User } from "$lib/server/user";
-import type { RequestHandler } from "@sveltejs/kit";
+import { json, type RequestHandler } from "@sveltejs/kit";
 
 export const GET: RequestHandler = ({ params, cookies }) => {
-  if (!params.channelid) return new Response('Could not find channel', { status: 404 });
+  if (!params.channelid) return json({message: 'Could not find channel'}, { status: 404 });
   const channelid = parseInt(params.channelid as string);
 
   const channel = Channel.byId(channelid);
-  if (!channel) return new Response('Could not find channel', { status: 404 });
+  if (!channel) return json({ message: 'Could not find channel' }, { status: 404 });
+
+  console.log(User.users);
 
   const token = cookies.get('token');
-  if (!token) return new Response('Not authenticated', { status: 403 });
+  if (!token) return json({ message: 'Not authenticated, token' }, { status: 403 });
 
   const user = User.getFromCookie(token);
-  if (!user) return new Response('Not authenticated', { status: 403 });
+  if (!user) return json({ message: 'Not authenticated' }, { status: 403 });
   
   let channelmember : Member;
 

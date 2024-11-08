@@ -1,4 +1,7 @@
+import { DatabaseConnection } from "./database/connection";
+import type { IUser } from "./database/types";
 import type { StreamController } from "./stream";
+import { randomBytes } from 'crypto';
 
 export class User {
   
@@ -6,31 +9,27 @@ export class User {
 
   name: string;
   id: number;
+  hash: string;
+  salt: string;
   cookies: string[] = [];
 
-  constructor (name: string) {
+  constructor (name: string, id: number, hash: string, salt: string) {
     this.name = name;
-    this.id = this.genId();
-
-    User.users.push(this);
+    this.id = id;
+    this.hash = hash;
+    this.salt = salt;
   }
 
   static getFromCookie (cookie: string) : User | undefined {
     return User.users.find(u => u.cookies.includes(cookie));
   }
 
-  genId () : number {
-    // TODO: Let the database do this.
-    const randomNumber = Math.floor(Math.random() * 0x1000000);
-    
-    // I do not care about duplicates for now, because the database will handle it after a while.
-    this.id = randomNumber;
-    return randomNumber;
-  }
+  genCookie () : string {
+    let cookie = randomBytes(16).toString('base64');
 
-  genCookie () {
-    const randomNumber = Math.floor(Math.random() * 0x100000000);
-    const cookie = `${this.id.toString(16)}::${randomNumber.toString(16)}`;
+    while (User.users.find(u => u.cookies.includes(cookie))) {
+      cookie = randomBytes(16).toString('base64');
+    }
     
     this.cookies.push(cookie);
     return cookie;
@@ -42,9 +41,14 @@ export class Member extends User {
   controller: StreamController;
 
   constructor (user: User, controller: StreamController, displayName: string | undefined) {
-    super(User.name);
+    super(User.name, user.id, user.hash, user.salt);
 
     this.controller = controller;
     this.displayName = displayName || user.name;
   }
 }
+
+User.users = (await DatabaseConnection.query<IUser>('SELECT * FROM users;'))
+  .map(u => new User(u.username, u.id, u.hash, u.salt));
+
+console.log(User.users);

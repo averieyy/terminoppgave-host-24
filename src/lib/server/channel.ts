@@ -1,8 +1,9 @@
-import type { Message } from "./message";
-import type { Member, User } from "./user";
+import { DatabaseConnection } from "./database/connection";
+import type { IChannel, IMessage } from "./database/types";
+import { Message } from "./message";
+import { User, type Member } from "./user";
 
 export class Channel {
-
   static channels: Channel[] = [];
 
   messages: Message[] = [];
@@ -42,4 +43,20 @@ export class Channel {
   }
 }
 
-Channel.channels.push(new Channel(12, 'Channel'));
+// Init channels
+Channel.channels = (await DatabaseConnection.query<IChannel>('SELECT * FROM channel;')).map(c => new Channel(c.id, c.name));
+
+for (const channel of Channel.channels) {
+  const messages = await DatabaseConnection.query<IMessage>('SELECT * FROM messages WHERE channelid = $1::integer;', channel.id);
+
+  const messageObjects = [];
+
+  for (let m of messages) {
+    const sender = User.users.find(u => u.id == m.senderid);
+
+    if (sender)
+      messageObjects.push(new Message(m.content, sender, m.sentat));
+  }
+
+  channel.messages = messageObjects;
+}

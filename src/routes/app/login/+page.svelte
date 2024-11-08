@@ -11,6 +11,8 @@
   let errorMessage = $state('');
 
   function logIn() {
+    console.log(username, password);
+    
     fetch('/api/login', {
       method: 'POST',
       body: JSON.stringify({
@@ -19,7 +21,7 @@
       }),
     }).then(async resp => {
       if (resp.ok) {
-        goto(redirectLocation || '/app/channel/12');
+        goto(redirectLocation || '/app/channel/1');
       }
       else {
         username = '';
