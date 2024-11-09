@@ -1,8 +1,8 @@
 export interface DatabaseFetchable {};
 
 export interface IChannel extends DatabaseFetchable {
-  id: number,
-  name: string,
+  id: number;
+  name: string;
 }
 
 export interface IMessage extends DatabaseFetchable {
@@ -18,4 +18,11 @@ export interface IUser extends DatabaseFetchable {
   username: string;
   hash: string;
   salt: string;
+}
+
+export interface IToken extends DatabaseFetchable {
+  id: number;
+  content: string;
+  userid: number;
+  expires: Date;
 }

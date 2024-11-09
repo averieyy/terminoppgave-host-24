@@ -11,8 +11,6 @@ export const GET: RequestHandler = ({ params, cookies }) => {
   const channel = Channel.byId(channelid);
   if (!channel) return json({ message: 'Could not find channel' }, { status: 404 });
 
-  console.log(User.users);
-
   const token = cookies.get('token');
   if (!token) return json({ message: 'Not authenticated, token' }, { status: 403 });
 

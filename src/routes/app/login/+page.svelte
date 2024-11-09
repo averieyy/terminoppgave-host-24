@@ -11,7 +11,6 @@
   let errorMessage = $state('');
 
   function logIn() {
-    console.log(username, password);
     
     fetch('/api/login', {
       method: 'POST',
@@ -27,7 +26,7 @@
         username = '';
         password = '';
         detailError = true;
-        errorMessage = await resp.text() || 'An error occured when trying to log in';
+        errorMessage = (await resp.json()).message || 'An error occured when trying to log in';
       }
     });
   }
@@ -40,8 +39,8 @@
       <span class="errormessage">{errorMessage}</span>
     {/if}
     <input class={`${detailError && 'error'} inputform`} placeholder="Username" type="text" bind:value={username} />
-    <input placeholder="Password (not in use)" type="password" bind:value={password} />
-    <button onclick={logIn}>Log in</button>
+    <input placeholder="Password" type="password" bind:value={password} />
+    <input type="submit" value="Log in">
   </form>
 </main>
 
@@ -67,7 +66,7 @@
     padding: 1rem;
     background-color: var(--bg3);
   }
-  input, button {
+  input {
     background-color: var(--bg4);
     border: none;
     color: var(--fg1);

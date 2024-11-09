@@ -12,23 +12,22 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
   }
 
   if (password.length < 8) {
-    return new Response('Password has to be longer than 8 characters', { status: 400 });
+    return json({ message: 'Password has to be longer than 8 characters' }, { status: 400 });
   }
-
-  const db = new DatabaseConnection();
 
   const user = await DatabaseConnection.queryOne<IUser>('SELECT * from users where username = $1::text', username);
   if (!user) return json({message: 'Could not find user'}, { status: 404 });
 
   const userobj = User.users.find(u => u.id == user.id);
 
-  if (!userobj) return json({message: 'Could not find user'}, { status: 404 })
+  if (!userobj) return json({message: 'Could not find user'}, { status: 404 });
+
+  if (User.hashPassword(password, user.salt) !== user.hash)
+    return json({ message: 'Password does not match' }, { status: 200 });
 
   const cookie = userobj.genCookie();
 
-  console.log(userobj);
-
   cookies.set('token', cookie, { path: '/', secure: false });
 
-  return new Response('Logged in as ' + username);
+  return json({ message: 'Logged in as ' + username }, { status: 200 });
 }

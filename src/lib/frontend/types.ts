@@ -19,7 +19,6 @@ export class Message {
   constructor (content: string, user: string, date: Date) {
     this.content = content;
     this.user = user;
-    console.log(date);
     this.datetime = date;
   }
 }

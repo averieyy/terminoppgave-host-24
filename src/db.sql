@@ -17,3 +17,10 @@ CREATE TABLE messages (
   channelid INT NOT NULL REFERENCES channel(id),
   sentat TIMESTAMP NOT NULL
 );
+
+CREATE TABLE tokens (
+  id SERIAL PRIMARY KEY,
+  content TEXT NOT NULL,
+  userid INT NOT NULL REFERENCES users(id),
+  expires TIMESTAMP NOT NULL
+);
