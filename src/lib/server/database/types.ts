@@ -1,11 +1,9 @@
-export interface DatabaseFetchable {};
-
-export interface IChannel extends DatabaseFetchable {
+export interface IChannel {
   id: number;
   name: string;
 }
 
-export interface IMessage extends DatabaseFetchable {
+export interface IMessage {
   id: number;
   content: string;
   senderid: number;
@@ -13,14 +11,7 @@ export interface IMessage extends DatabaseFetchable {
   sentat: Date;
 }
 
-export interface IUser extends DatabaseFetchable {
-  id: number;
-  username: string;
-  hash: string;
-  salt: string;
-}
-
-export interface IToken extends DatabaseFetchable {
+export interface IToken {
   id: number;
   content: string;
   userid: number;

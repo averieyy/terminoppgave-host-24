@@ -1,6 +1,5 @@
 import 'dotenv/config';
 import pg from "pg";
-import type { DatabaseFetchable } from './types';
 
 export class DatabaseConnection {
   public static pool: pg.Pool = new pg.Pool(this.createConfig());
@@ -16,11 +15,11 @@ export class DatabaseConnection {
     }
   }
 
-  public static async query<T extends pg.QueryResultRow & DatabaseFetchable> (query: string, ...values: any[]): Promise<T[]> {
+  public static async query<T extends pg.QueryResultRow> (query: string, ...values: any[]): Promise<T[]> {
     return (await this.pool.query<T>(query, values)).rows;
   }
 
-  public static async queryOne<T extends pg.QueryResultRow & DatabaseFetchable> (query: string, ...values: any[]): Promise<T> {
+  public static async queryOne<T extends pg.QueryResultRow> (query: string, ...values: any[]): Promise<T | undefined> {
     return (await this.pool.query<T>(query, values)).rows[0];
   }
 

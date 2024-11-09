@@ -1,12 +1,10 @@
 import { DatabaseConnection } from "./database/connection";
 import type { IChannel, IMessage } from "./database/types";
 import { Message } from "./message";
-import { User, type Member } from "./user";
+import { ChannelMembers, User, type Member } from "./user";
 
 export class Channel {
-  static channels: Channel[] = [];
 
-  messages: Message[] = [];
   id: number;
   name: string;
   members: Member[] = [];
@@ -14,18 +12,30 @@ export class Channel {
   constructor (id: number, name: string) {
     this.id = id;
     this.name = name;
-
-    Channel.channels.push(this);
   }
 
-  static byId(id: number) : Channel | undefined {
-    return Channel.channels.find(c => c.id == id);
+  static async byId(id: number) : Promise<Channel | undefined> {
+    const channel = await DatabaseConnection.queryOne<IChannel>('SELECT * FROM channel WHERE id = $1::integer', id);
+  
+    if (!channel) return;
+
+    return Channel.fromIChannel(channel);
   }
 
-  connect (member: Member) {
-    this.members.push(member);
+  async connect (member: Member): Promise<Message[]> {
+    if (!ChannelMembers[this.id]) ChannelMembers[this.id] = [member];
+    else ChannelMembers[this.id].push(member);
 
-    return this.messages;
+    const messages = await DatabaseConnection.query<IMessage>('SELECT * FROM messages WHERE channelid = $1::integer', this.id);
+    
+    const messageobjs: Message[] = [];
+
+    for (let m of messages) {
+      const message = await Message.fromIMessage(m);
+      if (message) messageobjs.push(message);
+    }
+
+    return messageobjs;
   }
 
   disconnect(member: Member) {
@@ -37,26 +47,12 @@ export class Channel {
   }
 
   broadcast(message: string | object, event: string = 'channelmessage') {
-    for (const member of this.members) {
+    for (const member of ChannelMembers[this.id]) {
       member.controller.sendMessage(event, message);
     }
   }
-}
 
-// Init channels
-Channel.channels = (await DatabaseConnection.query<IChannel>('SELECT * FROM channel;')).map(c => new Channel(c.id, c.name));
-
-for (const channel of Channel.channels) {
-  const messages = await DatabaseConnection.query<IMessage>('SELECT * FROM messages WHERE channelid = $1::integer;', channel.id);
-
-  const messageObjects = [];
-
-  for (let m of messages) {
-    const sender = User.users.find(u => u.id == m.senderid);
-
-    if (sender)
-      messageObjects.push(new Message(m.content, sender, m.sentat));
+  static fromIChannel(channel: IChannel): Channel {
+    return new Channel(channel.id, channel.name);
   }
-
-  channel.messages = messageObjects;
 }

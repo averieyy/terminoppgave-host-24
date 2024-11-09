@@ -1,5 +1,5 @@
 import { DatabaseConnection } from "$lib/server/database/connection";
-import type { IUser } from "$lib/server/database/types";
+import { Token } from "$lib/server/token";
 import { User } from "$lib/server/user";
 import { json, type RequestHandler } from "@sveltejs/kit";
 
@@ -15,19 +15,18 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
     return json({ message: 'Password has to be longer than 8 characters' }, { status: 400 });
   }
 
-  const user = await DatabaseConnection.queryOne<IUser>('SELECT * from users where username = $1::text', username);
+  const user = await DatabaseConnection.queryOne<User>('SELECT * from users where username = $1::text;', username);
   if (!user) return json({message: 'Could not find user'}, { status: 404 });
-
-  const userobj = User.users.find(u => u.id == user.id);
-
-  if (!userobj) return json({message: 'Could not find user'}, { status: 404 });
 
   if (User.hashPassword(password, user.salt) !== user.hash)
     return json({ message: 'Password does not match' }, { status: 200 });
 
-  const cookie = userobj.genCookie();
+  
+  const cookie = await Token.createNewToken(user);
 
-  cookies.set('token', cookie, { path: '/', secure: false });
+  if (!cookie) return json({ message: 'An error occured while trying to store token' }, { status: 500 });
+  
+  cookies.set('token', cookie.content, { path: '/', secure: false });
 
   return json({ message: 'Logged in as ' + username }, { status: 200 });
 }

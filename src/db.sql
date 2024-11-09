@@ -20,7 +20,7 @@ CREATE TABLE messages (
 
 CREATE TABLE tokens (
   id SERIAL PRIMARY KEY,
-  content TEXT NOT NULL,
+  content TEXT NOT NULL CONSTRAINT unique_token UNIQUE,
   userid INT NOT NULL REFERENCES users(id),
   expires TIMESTAMP NOT NULL
 );
