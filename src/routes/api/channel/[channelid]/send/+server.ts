@@ -2,7 +2,6 @@ import { Channel } from "$lib/server/channel";
 import { DatabaseConnection } from "$lib/server/database/connection";
 import { Message } from "$lib/server/message";
 import { Token } from "$lib/server/token";
-import { User } from "$lib/server/user";
 import { json, type RequestHandler } from "@sveltejs/kit";
 
 export const POST : RequestHandler = async ({ cookies, params, request }) => {
@@ -18,8 +17,9 @@ export const POST : RequestHandler = async ({ cookies, params, request }) => {
   const user = await Token.getUserFromToken(cookie);
   if (!user) return json({ message: 'Not authenticated user' }, { status: 403 });
 
-  const { content, datetime } : { content: string, datetime: number } = await request.json();
-  if (!content) return json({ message: 'Requires body field "content"' }, { status: 400 });
+  let { content, datetime } : { content: string, datetime: number } = await request.json();
+  content = content.trim();
+  if (!content || !content.trim()) return json({ message: 'Requires body field "content"' }, { status: 400 });
 
   const messageobject = new Message(content, user, new Date(datetime));
 

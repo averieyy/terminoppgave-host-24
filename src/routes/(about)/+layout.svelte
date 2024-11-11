@@ -1,7 +1,8 @@
-<script>
+<script lang="ts">
   import Header from "$lib/widgets/header.svelte";
+  import type { Snippet } from "svelte";
 
-  const { children } = $props();
+  const { children }: { children: Snippet } = $props();
 </script>
 
 <Header />

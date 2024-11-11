@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onMount, untrack } from "svelte";
   import type { Message } from "../frontend/types";
   import Icon from "./icon.svelte";
   import { DateReviver } from "../frontend/datereviver";
@@ -7,11 +7,15 @@
   const { streamsource }: { streamsource: string } = $props();
 
   let messages: Message[] = $state([]);
+  let messagelist: HTMLDivElement | undefined = $state();
+
+  let scrolling = false;
 
   onMount(() => {
     const stream = new EventSource(streamsource);
     stream.addEventListener('history', ev => {
       const msg = JSON.parse(ev.data, DateReviver) as Message[];
+      
       messages = msg;
     });
     stream.addEventListener('channelmessage', ev => {
@@ -23,12 +27,17 @@
     stream.addEventListener('error', err => {
       console.log('An error occured', err);
     });
+    messagelist?.addEventListener('scroll', () => {
+      scrolling = !messagelist || (messagelist.scrollTop + messagelist.clientHeight) < messagelist.scrollHeight;
+      if (!scrolling) console.log('autoscroll');
+    });
   });
 
   let messageContent: string = $state('');
 
   function sendMessage(ev: SubmitEvent) {
     ev.preventDefault();
+    if (!messageContent) return;
     fetch(`${streamsource}/send`, {
       method: 'POST',
       body: JSON.stringify({
@@ -38,10 +47,26 @@
     });
     messageContent = '';
   }
+
+  function scrollDown() {
+    scrolling = false;
+    messagelist?.scroll({ left: 0, top: messagelist.scrollHeight, behavior: 'instant' })
+  }
+
+  $effect(() => {
+    console.log('scrolling');
+
+    messages;
+
+    if (!scrolling) {
+      
+      scrollDown();
+    }
+  })
 </script>
 
 <div class="channelview">
-  <div class="messages">
+  <div class="messages" bind:this={messagelist}>
     {#each messages as message}
       <div class="message">
         <span class="time">{message.datetime.getHours().toString().padStart(2,'0')}:{message.datetime.getMinutes().toString().padStart(2, '0')}</span>
