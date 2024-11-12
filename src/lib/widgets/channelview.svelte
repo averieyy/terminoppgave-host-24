@@ -4,7 +4,7 @@
   import Icon from "./icon.svelte";
   import { DateReviver } from "../frontend/datereviver";
 
-  const { streamsource }: { streamsource: string } = $props();
+  const { streamsource, title }: { streamsource: string, title: string } = $props();
 
   let messages: Message[] = $state([]);
   let messagelist: HTMLDivElement | undefined = $state();
@@ -66,6 +66,9 @@
 </script>
 
 <div class="channelview">
+  <div class="header">
+    <span>#{title}</span>
+  </div>
   <div class="messages" bind:this={messagelist}>
     {#each messages as message}
       <div class="message">
@@ -155,5 +158,12 @@
       align-items: center;
 
     }
+  }
+  .header {
+    padding: 1rem;
+    padding-left: .5rem;
+    padding-right: .5rem;
+    background-color: var(--bg2);
+    font-style: italic;
   }
 </style>

@@ -1,6 +1,7 @@
 export interface IChannel {
   id: number;
   name: string;
+  guildid: number;
 }
 
 export interface IMessage {
@@ -16,4 +17,11 @@ export interface IToken {
   content: string;
   userid: number;
   expires: Date;
+}
+
+export interface IGuild {
+  id: number;
+  name: string;
+  description: string;
+  colour: string;
 }

@@ -5,9 +5,17 @@ CREATE TABLE users (
   salt TEXT NOT NULL
 );
 
+CREATE TABLE guilds (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  description TEXT,
+  colour TEXT NOT NULL CONSTRAINT colour_hex_constraint CHECK (colour ~* '^#[a-f0-9]{6}$') -- Only valid hex colours allowed
+);
+
 CREATE TABLE channel (
   id SERIAL PRIMARY KEY,
-  name TEXT NOT NULL
+  name TEXT NOT NULL,
+  guildid INT NOT NULL REFERENCES guilds(id)
 );
 
 CREATE TABLE messages (
@@ -23,4 +31,9 @@ CREATE TABLE tokens (
   content TEXT NOT NULL CONSTRAINT unique_token UNIQUE,
   userid INT NOT NULL REFERENCES users(id),
   expires TIMESTAMP NOT NULL
+);
+
+CREATE TABLE guildmembers (
+  userid INT NOT NULL REFERENCES users(id),
+  guildid iNT NOT NULL REFERENCES guilds(id)
 );
