@@ -29,11 +29,14 @@
 </Popup>
 <div class="guilds">
   {#each guilds as guild}
-    <div class={`guild ${selectedid == guild.id ? 'selected' : ''}`} title={guild.name}>
+    <a
+      class={`guild ${selectedid == guild.id ? 'selected' : ''}`}
+      title={guild.name}
+      href={`/app/guild/${guild.id}`}>
       <span>
         {shortHand(guild.name)}
       </span>
-    </div>
+    </a>
   {/each}
   <button type="button" onclick={() => addpopupopen = true}>
     <Icon icon='add'/>
@@ -73,7 +76,7 @@
     background-color: var(--bg2);
 
     
-    &>div,button {
+    &>a,button {
       width: 3rem;
       aspect-ratio: 1 / 1;
       border: none;
@@ -87,6 +90,7 @@
       user-select: none;
 
       color: var(--fg1);
+      text-decoration: none;
   
       &:hover, &:active, &.selected {
         color: var(--bg1);
