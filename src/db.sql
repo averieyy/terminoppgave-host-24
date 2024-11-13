@@ -36,10 +36,11 @@ CREATE TABLE tokens (
 CREATE TABLE guildmembers (
   userid INT NOT NULL REFERENCES users(id),
   guildid iNT NOT NULL REFERENCES guilds(id),
-  administrator BOOLEAN NOT NULL DEFAULT FALSE
+  administrator BOOLEAN NOT NULL DEFAULT FALSE,
+  CONSTRAINT guildmembers_unique UNIQUE (userid, guildid)
 );
 
 CREATE TABLE invitation (
   guildid INT NOT NULL REFERENCES guilds(id),
-  uuid TEXT NOT NULL
+  uuid TEXT NOT NULL CONSTRAINT invitation_unique UNIQUE
 );

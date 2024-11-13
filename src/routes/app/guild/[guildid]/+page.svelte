@@ -1,5 +1,6 @@
 <script lang="ts">
   import { afterNavigate, goto } from '$app/navigation';
+  import { page } from '$app/stores';
   import Guildlist from '$lib/widgets/guildlist.svelte';
   import Icon from '$lib/widgets/icon.svelte';
   import Popup from '$lib/widgets/popup.svelte';
@@ -10,9 +11,12 @@
   const { guild, guilds, admin, channels } = $derived(data); // To make it so that you can go from one guild page to another. <https://github.com/sveltejs/kit/issues/1497>
 
   let createChannelPopupOpen: boolean = $state(false);
+  let createInvitePopupOpen: boolean = $state(false);
 
   let newchannelname: string = $state('');
   let newchannelerror: string = $state('');
+
+  let inviteUUID: string = $state('');
 
   async function createChannel () {
     const response = await fetch('/api/channel/create', {
@@ -32,14 +36,41 @@
       goto(`/app/channel/${id}`);
     }
   }
+
+  async function createInvitation() {
+    if (!admin) return;
+
+    const response = await fetch('/api/guild/invite', {
+      method: 'POST',
+      body: JSON.stringify({
+        guildid: guild.id
+      })
+    });
+
+    if (!response.ok) {
+
+    }
+    else {
+      inviteUUID = (await response.json()).uuid;
+      createInvitePopupOpen = true;
+    }
+  }
 </script>
 
-<Popup title="Create channel" open={createChannelPopupOpen} close={() => createChannelPopupOpen = false}>
-  <form class="createchannelform" onsubmit={createChannel}>
-    <input type="text" bind:value={newchannelname}>
-    <input type="submit" value="Create channel">
-  </form>
-</Popup>
+{#if admin}
+  <Popup title="Create channel" open={createChannelPopupOpen} close={() => createChannelPopupOpen = false}>
+    <form class="createchannelform" onsubmit={createChannel}>
+      <input type="text" bind:value={newchannelname}>
+      <input type="submit" value="Create channel">
+    </form>
+  </Popup>
+  <Popup title="New invitation" open={createInvitePopupOpen} close={() => createInvitePopupOpen = false}>
+    <div class="newinvite">
+      <span>This is your sparkling new invite link. Share it with your friends to invite them.</span>
+      <code>{document.location.origin}/app/invite/{inviteUUID}</code>
+    </div>
+  </Popup>
+{/if}
 <div class="outerpage">
   <Guildlist guilds={guilds} selectedid={guild.id} />
   <main>
@@ -47,6 +78,11 @@
       <h1>
         {guild.name}
       </h1>
+      {#if admin}
+        <button onclick={createInvitation}>
+          Create invitation link
+        </button>
+      {/if}
     </div>
     <div class="maincontent">
       <div class="channellist">
@@ -84,9 +120,26 @@
     padding: 1rem;
     background-color: var(--bg2);
 
-    & * {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 1rem;
+
+    & h1 {
       margin: 0;
       font-size: 1.5rem;
+    }
+
+    & button {
+      border: none;
+      background-color: var(--bg1);
+      color: var(--fg1);
+      padding: .5rem;
+
+      &:active, &:hover {
+        background-color: var(--lightblue);
+        color: var(--bg1);
+      }
     }
   }
   .maincontent {
@@ -135,5 +188,14 @@
       background-color: var(--bg2);
       color: var(--fg1);
     }
+  }
+  .newinvite {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  code {
+    padding: .5rem;
+    background-color: var(--bg2);
   }
 </style>

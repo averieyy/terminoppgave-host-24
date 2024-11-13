@@ -21,7 +21,7 @@ export const POST : RequestHandler = async ({ cookies, request }) => {
 
   const uuid = randomUUID();
 
-  const success = await DatabaseConnection.queryOne<{ uuid: string }>('INPUT INTO invitation (guildid, uuid) VALUES ($1::integer, $1::text) RETURNING uuid;', guildid, uuid);
+  const success = await DatabaseConnection.queryOne<{ uuid: string }>('INSERT INTO invitation (guildid, uuid) VALUES ($1::integer, $2::text) RETURNING uuid;', guildid, uuid);
   if (!success) return json({ message: 'An error occured while trying to create invitation.' }, { status: 500 });
 
   return json({ uuid });
