@@ -8,16 +8,16 @@
   let addpopupopen: boolean = $state(false);
 </script>
 
-<Popup open={addpopupopen} title="Add server" close={() => addpopupopen = false}>
+<Popup open={addpopupopen} title="Add guild" close={() => addpopupopen = false}>
   <div class="addguildpopup">
-    <div>
-      <span>Join a server</span>
+    <a href="/app">
+      <span>Join a guild</span>
       <Icon icon="arrow_forward" />
-    </div>
-    <div>
-      <span>Create a server</span>
+    </a>
+    <a href="/app/guild/create">
+      <span>Create a guild</span>
       <Icon icon="arrow_forward" />
-    </div>
+    </a>
   </div>
 </Popup>
 <div class="guilds">
@@ -45,7 +45,7 @@
 
     gap: 1rem;
 
-    &>div {
+    &>a {
       display: flex;
       flex-direction: row;
       align-items: center;
@@ -53,6 +53,10 @@
       padding: 1rem;
       border-radius: .5rem;
       background-color: var(--bg2);
+
+      /* Cuz <a> tag */
+      color: inherit;
+      text-decoration: none;
 
       &:active, &:hover {
         background-color: var(--lightblue);
