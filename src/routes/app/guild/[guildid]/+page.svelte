@@ -6,7 +6,7 @@
   import Popup from '$lib/widgets/popup.svelte';
   import type { PageData } from './$types';
 
-  const { data }: { data: PageData } = $props();
+  const { data } = $props();
 
   const { guild, guilds, admin, channels } = $derived(data); // To make it so that you can go from one guild page to another. <https://github.com/sveltejs/kit/issues/1497>
 
@@ -67,7 +67,7 @@
   <Popup title="New invitation" open={createInvitePopupOpen} close={() => createInvitePopupOpen = false}>
     <div class="newinvite">
       <span>This is your sparkling new invite link. Share it with your friends to invite them.</span>
-      <code>{document.location.origin}/app/invite/{inviteUUID}</code>
+      <code>{$page.url.origin}/app/invite/{inviteUUID}</code>
     </div>
   </Popup>
 {/if}
