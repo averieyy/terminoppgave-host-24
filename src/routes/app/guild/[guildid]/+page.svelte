@@ -5,7 +5,7 @@
 
   const { data }: { data: PageData } = $props();
 
-  const { guild, guilds, channels } = data;
+  const { guild, guilds, channels, admin } = data;
 </script>
 
 <div class="outerpage">
@@ -25,6 +25,12 @@
             <Icon icon='arrow_forward'/>
           </a>
         {/each}
+        {#if admin}
+          <button class="channelcard">
+            <span>Create new channel</span>
+            <Icon icon='add'/>
+          </button>
+        {/if}
       </div>
     </div>
   </main>
@@ -64,6 +70,7 @@
     flex-direction: column;
     max-width: 300px;
     width: 100%;
+    gap: .5rem;
   }
   .channelcard {
     padding: 1rem;
@@ -73,9 +80,16 @@
     color: inherit;
     text-decoration: none;
     
+    border: none;
+    
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+
+    &:hover, &:active {
+      color: var(--bg1);
+      background-color: var(--lightblue);
+    }
   }
 </style>
