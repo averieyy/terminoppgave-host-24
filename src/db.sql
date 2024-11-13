@@ -38,3 +38,8 @@ CREATE TABLE guildmembers (
   guildid iNT NOT NULL REFERENCES guilds(id),
   administrator BOOLEAN NOT NULL DEFAULT FALSE
 );
+
+CREATE TABLE invitation (
+  guildid INT NOT NULL REFERENCES guilds(id),
+  uuid TEXT NOT NULL
+);
