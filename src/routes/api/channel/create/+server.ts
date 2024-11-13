@@ -22,7 +22,7 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
   if (existingChannel) return json({ message: `A channel called ${name} already exists in ${guild.name}` }, { status: 409 });
 
   // Add channel
-  const channelid = await DatabaseConnection.queryOne<{ id: number }>('INSERT INTO channel (name, guildid) VALUES ($1::text, $2::integer);', name, guildid);
+  const channelid = await DatabaseConnection.queryOne<{ id: number }>('INSERT INTO channel (name, guildid) VALUES ($1::text, $2::integer) RETURNING id;', name, guildid);
   if (!channelid) return json({ message: 'An error occured while trying to add channel' }, { status: 500 });
 
   return json({ id: channelid.id });
