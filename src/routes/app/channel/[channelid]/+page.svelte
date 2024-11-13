@@ -11,6 +11,12 @@
 
 </script>
 
+<svelte:head>
+  <title>
+    #{channel.name} - Roundtalk
+  </title>
+</svelte:head>
+
 <main>
   <Guildlist guilds={guilds} selectedid={channel.guildid} />
   <div class="channel">

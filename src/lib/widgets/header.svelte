@@ -17,7 +17,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    padding: .5rem;
+    padding: 1rem;
   }
   .loginregister {
     display: flex;
@@ -28,8 +28,14 @@
     & a {
       color: var(--fg1);
       text-decoration: none;
-      padding: .5rem;
-      background-color: var(--blue);
+      padding: .75rem;
+      background-color: var(--bg1);
+      border-radius: .5rem;
+
+      &:hover, &:active {
+        background-color: var(--lightblue);
+        color: var(--bg1);
+      }
     }
   }
 </style>

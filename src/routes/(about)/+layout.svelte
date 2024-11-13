@@ -5,7 +5,23 @@
   const { children }: { children: Snippet } = $props();
 </script>
 
-<Header />
-<main>
-  {@render children()}
-</main>
+<div class="body">
+  <Header />
+  <main>
+    {@render children()}
+  </main>
+</div>
+
+<style>
+  .body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+  }
+  main {
+    background-color: var(--bg1);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+</style>
