@@ -1,18 +1,11 @@
 <script lang="ts">
   import Icon from "./icon.svelte";
   import Popup from "./popup.svelte";
+  import { shortHand } from "$lib/frontend/guild";
 
   const { guilds, selectedid }: { guilds: { name: string, colour: string, id: number }[], selectedid?: number } = $props();
 
   let addpopupopen: boolean = $state(false);
-
-  function shortHand(text: string): string {
-    const words = text.split(' ');
-    const initials = words.map(w => w[0]);
-
-    if (initials.length == 1) return text.slice(0,2);
-    return initials.slice(0,4).join('');
-  }
 </script>
 
 <Popup open={addpopupopen} title="Add server" close={() => addpopupopen = false}>
@@ -31,6 +24,7 @@
   {#each guilds as guild}
     <a
       class={`guild ${selectedid == guild.id ? 'selected' : ''}`}
+      style={`background-color: ${selectedid == guild.id && guild.colour};`}
       title={guild.name}
       href={`/app/guild/${guild.id}`}>
       <span>

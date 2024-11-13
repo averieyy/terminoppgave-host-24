@@ -21,5 +21,8 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
   const idresponse = await DatabaseConnection.queryOne<{id: number}>('INSERT INTO guilds (name, description, colour) VALUES ($1::text, $2::text, $3::text) RETURNING id;', name, description, colour);
   if (!idresponse) return json({ message: 'An error occured while trying to create guild' }, { status: 500 });
 
+  // Make user join guild
+  await DatabaseConnection.execute('INSERT INTO guildmembers (userid, guildid) VALUES ($1::integer, $2::integer)', user.id, idresponse.id);
+
   return json({ id: idresponse.id }, { status: 200 });
 }
