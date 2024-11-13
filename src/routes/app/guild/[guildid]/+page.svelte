@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { goto } from '$app/navigation';
+  import { afterNavigate, goto } from '$app/navigation';
   import Guildlist from '$lib/widgets/guildlist.svelte';
   import Icon from '$lib/widgets/icon.svelte';
   import Popup from '$lib/widgets/popup.svelte';
@@ -7,7 +7,7 @@
 
   const { data }: { data: PageData } = $props();
 
-  const { guild, guilds, channels, admin } = data;
+  const { guild, guilds, admin, channels } = $derived(data); // To make it so that you can go from one guild page to another. <https://github.com/sveltejs/kit/issues/1497>
 
   let createChannelPopupOpen: boolean = $state(false);
 
