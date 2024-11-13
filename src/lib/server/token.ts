@@ -31,7 +31,8 @@ export class Token {
     }
   }
 
-  static async getUserFromToken(token: string): Promise<User | undefined> {
+  static async getUserFromToken(token: string | undefined): Promise<User | undefined> {
+    if (!token) return;
     const user = await DatabaseConnection.queryOne<User>('SELECT users.* FROM tokens INNER JOIN users ON users.id = tokens.userid WHERE tokens.content = $1::text;', token);
     return user;
   }
