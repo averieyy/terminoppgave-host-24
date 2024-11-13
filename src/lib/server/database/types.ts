@@ -25,3 +25,9 @@ export interface IGuild {
   description: string;
   colour: string;
 }
+
+export interface IGuildMember {
+  guildid: number;
+  userid: number;
+  administrator: boolean;
+}
