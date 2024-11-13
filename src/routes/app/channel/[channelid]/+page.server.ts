@@ -16,7 +16,7 @@ export const load: PageServerLoad = async ({ cookies, params, url }) => {
   const channel = await DatabaseConnection.queryOne<IChannel>('SELECT * FROM channel WHERE id = $1::integer', params.channelid);
   if (!channel) redirect(302, '/app');
 
-  const guilds = await DatabaseConnection.query<Guild>('SELECT guilds.* FROM guildmembers INNER JOIN guilds ON guildmembers.guildid = guilds.id');
+  const guilds = await DatabaseConnection.query<Guild>('SELECT guilds.* FROM guildmembers INNER JOIN guilds ON guildmembers.guildid = guilds.id WHERE guildmembers.userid = $1::integer', user.id);
 
   if (!guilds.find(g => g.id == channel.guildid)) redirect(302, '/app');
 

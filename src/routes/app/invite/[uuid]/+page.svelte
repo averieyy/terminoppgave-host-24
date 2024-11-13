@@ -37,7 +37,7 @@
     <h2>
       {guild.name}
     </h2>
-    <button>Accept invitation</button>
+    <button onclick={accept}>Accept invitation</button>
   </div>
 </main>
 

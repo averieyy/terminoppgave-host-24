@@ -12,7 +12,7 @@ export const load: PageServerLoad = async ({ cookies, url }) => {
   const user = await Token.getUserFromToken(token);
   if (!user) redirect(302, `/app/login?redirect=${url.pathname}`);
 
-  const guilds = await DatabaseConnection.query<Guild>('SELECT guilds.* FROM guildmembers INNER JOIN guilds ON guildmembers.guildid = guilds.id');
+  const guilds = await DatabaseConnection.query<Guild>('SELECT guilds.* FROM guildmembers INNER JOIN guilds ON guildmembers.guildid = guilds.id WHERE guildmembers.userid = $1::integer', user.id);
 
   return {
     guilds
