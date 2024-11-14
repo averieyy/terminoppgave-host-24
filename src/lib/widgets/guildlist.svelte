@@ -1,7 +1,7 @@
 <script lang="ts">
   import Icon from "./icon.svelte";
   import Popup from "./popup.svelte";
-  import { shortHand } from "$lib/frontend/guild";
+  import { isLight, shortHand } from "$lib/frontend/guild";
 
   const { guilds, selectedid }: { guilds: { name: string, colour: string, id: number }[], selectedid?: number } = $props();
 
@@ -28,7 +28,7 @@
   {#each guilds as guild}
     <a
       class={`guild ${selectedid == guild.id ? 'selected' : ''}`}
-      style={`background-color: ${selectedid == guild.id && guild.colour};`}
+      style={`background-color: ${guild.colour}; color: ${isLight(guild.colour) ? 'var(--bg1)' : 'var(--fg1)'};`}
       title={guild.name}
       href={`/app/guild/${guild.id}`}>
       <span>
@@ -79,26 +79,29 @@
     padding: .5rem;
     background-color: var(--bg2);
 
+    &>button {
+      background-color: var(--lightblue);
+      color: var(--bg1);
+    }
     
     &>a,button {
       width: 3rem;
       aspect-ratio: 1 / 1;
       border: none;
       border-radius: 1rem;
-      background-color: var(--bg1);
       
       display: flex;
       justify-content: center;
       align-items: center;
       
       user-select: none;
+      cursor: pointer;
 
-      color: var(--fg1);
       text-decoration: none;
   
-      &:hover, &:active, &.selected {
-        color: var(--bg1);
-        background-color: var(--lightblue);
+      &:not(:hover, :active, .selected) {
+        background-color: var(--bg1) !important;
+        color: var(--fg1) !important;
       }
     }
   }
