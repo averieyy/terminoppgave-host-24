@@ -1,10 +1,9 @@
 <script lang="ts">
-  import { afterNavigate, goto } from '$app/navigation';
+  import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import Guildlist from '$lib/widgets/guildlist.svelte';
   import Icon from '$lib/widgets/icon.svelte';
   import Popup from '$lib/widgets/popup.svelte';
-  import type { PageData } from './$types';
 
   const { data } = $props();
 
@@ -90,13 +89,17 @@
         {#each channels as channel}
           <a class="channelcard" href={`/app/channel/${channel.id}/`}>
             <span>#{channel.name}</span>
-            <Icon icon='arrow_forward'/>
+            <div class="icon">
+              <Icon icon='arrow_forward'/>
+            </div>
           </a>
         {/each}
         {#if admin}
           <button class="channelcard" onclick={() => createChannelPopupOpen = true}>
             <span>Create new channel</span>
-            <Icon icon='add'/>
+            <div class="icon">
+              <Icon icon='add'/>
+            </div>
           </button>
         {/if}
       </div>
@@ -197,5 +200,12 @@
   code {
     padding: .5rem;
     background-color: var(--bg2);
+  }
+  .icon {
+    font-size: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
 </style>

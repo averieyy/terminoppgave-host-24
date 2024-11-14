@@ -76,6 +76,7 @@
     border: none;
     padding: .5rem;
     border-radius: .5rem;
+    font-size: 1.5rem;
 
     &:hover, &:active {
       background-color: var(--lightblue);

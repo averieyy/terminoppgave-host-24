@@ -12,11 +12,15 @@
   <div class="addguildpopup">
     <a href="/app">
       <span>Join a guild</span>
-      <Icon icon="arrow_forward" />
+      <div class="icon">
+        <Icon icon="arrow_forward" />
+      </div>
     </a>
     <a href="/app/guild/create">
       <span>Create a guild</span>
-      <Icon icon="arrow_forward" />
+      <div class="icon">
+        <Icon icon="arrow_forward" />
+      </div>
     </a>
   </div>
 </Popup>
@@ -33,7 +37,9 @@
     </a>
   {/each}
   <button type="button" onclick={() => addpopupopen = true}>
-    <Icon icon='add'/>
+    <div class="icon">
+      <Icon icon='add'/>
+    </div>
   </button>
 </div>
 
@@ -95,5 +101,11 @@
         background-color: var(--lightblue);
       }
     }
+  }
+  .icon {
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 </style>

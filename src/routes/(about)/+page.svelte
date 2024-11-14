@@ -20,11 +20,15 @@
   <nav>
     <a href="/app/register">
       Join Roundtalk
-      <Icon icon="arrow_forward"/>
+      <div class="icon">
+        <Icon icon="arrow_forward"/>
+      </div>
     </a>
     <a href="/about">
       About
-      <Icon icon="arrow_forward"/>
+      <div class="icon">
+        <Icon icon="arrow_forward"/>
+      </div>
     </a>
   </nav>
 </article>
@@ -94,5 +98,8 @@
         color: var(--bg1);
       }
     }
+  }
+  .icon {
+    font-size: 1.5rem;
   }
 </style>
