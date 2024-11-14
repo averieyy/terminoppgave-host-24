@@ -3,11 +3,12 @@
   import { page } from '$app/stores';
   import Guildlist from '$lib/widgets/guildlist.svelte';
   import Icon from '$lib/widgets/icon.svelte';
+  import Memberlist from '$lib/widgets/memberlist.svelte';
   import Popup from '$lib/widgets/popup.svelte';
 
   const { data } = $props();
 
-  const { guild, guilds, admin, channels } = $derived(data); // To make it so that you can go from one guild page to another. <https://github.com/sveltejs/kit/issues/1497>
+  const { guild, guilds, admin, channels, members } = $derived(data); // To make it so that you can go from one guild page to another. <https://github.com/sveltejs/kit/issues/1497>
 
   let createChannelPopupOpen: boolean = $state(false);
   let createInvitePopupOpen: boolean = $state(false);
@@ -105,6 +106,7 @@
       </div>
     </div>
   </main>
+  <Memberlist members={members} />
 </div>
 
 <style>

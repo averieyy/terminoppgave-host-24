@@ -4,6 +4,7 @@ import { Token } from "$lib/server/token";
 import { DatabaseConnection } from "$lib/server/database/connection";
 import type { Guild } from "$lib/server/guild";
 import type { IChannel, IGuildMember } from "$lib/server/database/types";
+import { ChannelMembers, Member } from "$lib/server/user";
 
 export const load: PageServerLoad = async ({ cookies, params, url }) => {
   // Get User
@@ -19,6 +20,17 @@ export const load: PageServerLoad = async ({ cookies, params, url }) => {
   const channels = await DatabaseConnection.query<IChannel>('SELECT * FROM channel WHERE guildid = $1::integer', guild.id);
 
   const guilds = await DatabaseConnection.query<Guild & IGuildMember>('SELECT * FROM guildmembers INNER JOIN guilds ON guildmembers.guildid = guilds.id WHERE guildmembers.userid = $1::integer', user.id);
+
+  const members = await DatabaseConnection.query<{username: string, userid: number}>('SELECT users.username, guildmembers.userid FROM guildmembers INNER JOIN users ON guildmembers.userid = users.id WHERE guildmembers.guildid = $1::integer', guild.id);
+
+  const memberactivity: Member[] = channels.map(c => ChannelMembers[c.id]).flat();
+
+  const membersbyactivity = members.map(m => {
+    return {
+      username: m.username,
+      online: !!memberactivity.find(u => u?.id == m.userid)
+    }
+  })
 
   let admin: boolean = false;
   
@@ -36,6 +48,7 @@ export const load: PageServerLoad = async ({ cookies, params, url }) => {
     guild,
     guilds,
     channels,
-    admin
+    admin,
+    members: membersbyactivity
   }
 };
