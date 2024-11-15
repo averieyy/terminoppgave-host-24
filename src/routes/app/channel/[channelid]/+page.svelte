@@ -2,13 +2,13 @@
   import { page } from "$app/stores";
   import Channelview from "$lib/widgets/channelview.svelte";
   import Guildlist from "$lib/widgets/guildlist.svelte";
+    import Memberlist from "$lib/widgets/memberlist.svelte";
   import type { PageData } from "./$types";
 
   const { data }: { data: PageData } = $props();
 
   let channelid = $page.params.channelid;
-  const { channel, guilds } = data;
-
+  const { channel, guilds, members } = data;
 </script>
 
 <svelte:head>
@@ -22,6 +22,7 @@
   <div class="channel">
     <Channelview title={channel.name} streamsource={`/api/channel/${channelid}`}/>
   </div>
+  <Memberlist members={members} />
 </main>
 
 <style>
