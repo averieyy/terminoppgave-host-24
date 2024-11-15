@@ -123,12 +123,16 @@
   }
   .header {
     padding: 1rem;
+    height: 2rem;
+
     background-color: var(--bg2);
 
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
     gap: 1rem;
+
 
     & h1 {
       margin: 0;

@@ -12,7 +12,9 @@
 <div class={`memberlistsidebar ${closed ? 'closed' : 'open'}`}>
   <div class="closebararea">
     <button class="closesidebar" onclick={() => closed = !closed} title={closed ? 'Open' : 'Close'}>
-      <Icon icon="chevron_right"/>
+      <span>
+        <Icon icon="chevron_right"/>
+      </span>
     </button>
   </div>
   <div class="memberlist">
@@ -47,6 +49,11 @@
   .memberlist {
     display: flex;
     flex-direction: column;
+    flex: 1;
+    
+    overflow-y: auto;
+
+    transition: width .125s ease;
 
     width: 10rem;
   }
@@ -104,6 +111,10 @@
   .memberlistsidebar {
     display: flex;
     flex-direction: column;
+
+    overflow: hidden;
+
+    align-items: flex-end;
   }
   .closesidebar {
     height: 2rem;
@@ -116,6 +127,13 @@
     color: var(--fg1);
     border-radius: .5rem;
     font-size: 1.25rem;
+
+    & * {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: rotate .125s ease;
+    }
 
     &:hover, &:active {
       background-color: var(--lightblue);
@@ -131,12 +149,12 @@
     justify-content: center;
   }
   .closed>.memberlist {
-    display: none;
+    width: 0;
   }
-  .open .closesidebar {
+  .open .closesidebar * {
     rotate: 0deg;
   }
-  .closed .closesidebar {
+  .closed .closesidebar * {
     rotate: 180deg;
   }
 </style>

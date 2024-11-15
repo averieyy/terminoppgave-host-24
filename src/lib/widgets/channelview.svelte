@@ -173,8 +173,12 @@
     padding: 1rem;
     padding-left: .5rem;
     padding-right: .5rem;
+    height: 2rem;
     background-color: var(--bg2);
     font-style: italic;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
   }
   .datedivide {
     display: flex;
