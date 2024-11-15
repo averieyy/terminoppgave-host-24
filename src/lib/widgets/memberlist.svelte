@@ -1,8 +1,8 @@
 <script lang="ts">
   const { members }: { members: { username: string, online: boolean }[] } = $props();
 
-  const onlinemembers = members.filter(m => m.online);
-  const offlinemembers = members.filter(m => !m.online);
+  const onlinemembers = $derived(members.filter(m => m.online));
+  const offlinemembers = $derived(members.filter(m => !m.online));
 </script>
 
 <div class="memberlist">
