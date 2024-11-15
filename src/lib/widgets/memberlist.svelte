@@ -1,35 +1,46 @@
 <script lang="ts">
+    import Icon from "./icon.svelte";
+
   const { members }: { members: { username: string, online: boolean }[] } = $props();
 
   const onlinemembers = $derived(members.filter(m => m.online));
   const offlinemembers = $derived(members.filter(m => !m.online));
+
+  let closed = $state(false);
 </script>
 
-<div class="memberlist">
-  <div class="memberlistsubheader">
-    Online
+<div class={`memberlistsidebar ${closed ? 'closed' : 'open'}`}>
+  <div class="closebararea">
+    <button class="closesidebar" onclick={() => closed = !closed} title={closed ? 'Open' : 'Close'}>
+      <Icon icon="chevron_right"/>
+    </button>
   </div>
-  {#each onlinemembers as member}
-    <div class="member online">
-      <div class="onlineicon">
-        <div></div>
-      </div>
-      {member.username}
-    </div>
-  {/each}
-  {#if offlinemembers.length > 0}
+  <div class="memberlist">
     <div class="memberlistsubheader">
-      Offline
+      Online
     </div>
-    {#each offlinemembers as member}
-      <div class="member offline">
-        <div class="offlineicon">
+    {#each onlinemembers as member}
+      <div class="member online">
+        <div class="onlineicon">
           <div></div>
         </div>
         {member.username}
       </div>
     {/each}
-  {/if}
+    {#if offlinemembers.length > 0}
+      <div class="memberlistsubheader">
+        Offline
+      </div>
+      {#each offlinemembers as member}
+        <div class="member offline">
+          <div class="offlineicon">
+            <div></div>
+          </div>
+          {member.username}
+        </div>
+      {/each}
+    {/if}
+  </div>
 </div>
 
 <style>
@@ -89,5 +100,43 @@
     margin-bottom: .25rem;
     padding-left: .5rem;
     border-bottom: .125rem solid var(--lightblue);
+  }
+  .memberlistsidebar {
+    display: flex;
+    flex-direction: column;
+  }
+  .closesidebar {
+    height: 2rem;
+    width: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background-color: var(--bg1);
+    color: var(--fg1);
+    border-radius: .5rem;
+    font-size: 1.25rem;
+
+    &:hover, &:active {
+      background-color: var(--lightblue);
+      color: var(--bg1);
+    }
+  }
+  .closebararea {
+    height: 4rem;
+    width: 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .closed>.memberlist {
+    display: none;
+  }
+  .open .closesidebar {
+    rotate: 0deg;
+  }
+  .closed .closesidebar {
+    rotate: 180deg;
   }
 </style>
