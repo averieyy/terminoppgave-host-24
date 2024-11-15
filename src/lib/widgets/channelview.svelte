@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount, untrack } from "svelte";
+  import { onMount } from "svelte";
   import type { Message } from "../frontend/types";
   import Icon from "./icon.svelte";
   import { DateReviver } from "../frontend/datereviver";
@@ -8,6 +8,11 @@
 
   let messages: Message[] = $state([]);
   let messagelist: HTMLDivElement | undefined = $state();
+
+  let messagewithdates: (Message & { firsttoday: boolean })[] = $derived(messages.map((m,i) => {
+    if (!messages[i-1] || m.datetime.toDateString() != messages[i-1].datetime.toDateString()) return { ...m, firsttoday: true }
+    return { ...m, firsttoday: false };
+  }));
 
   let scrolling = false;
 
@@ -70,7 +75,12 @@
     <span>#{title}</span>
   </div>
   <div class="messages" bind:this={messagelist}>
-    {#each messages as message}
+    {#each messagewithdates as message}
+      {#if message.firsttoday}
+        <div class="datedivide">
+          {message.datetime.toDateString()}
+        </div>
+      {/if}
       <div class="message">
         <span class="time">{message.datetime.getHours().toString().padStart(2,'0')}:{message.datetime.getMinutes().toString().padStart(2, '0')}</span>
         <span class="sender">{message.user}</span>
@@ -165,5 +175,20 @@
     padding-right: .5rem;
     background-color: var(--bg2);
     font-style: italic;
+  }
+  .datedivide {
+    display: flex;
+    flex-direction: column;
+
+    margin: .5rem;
+    padding: .5rem;
+    margin-bottom: .125rem;
+    
+    border-bottom: .125rem solid var(--bg4);
+    
+    color: var(--bg4);
+    font-style: italic;
+    text-align: center;
+    font-size: .75rem;
   }
 </style>
