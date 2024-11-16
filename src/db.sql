@@ -54,3 +54,17 @@ CREATE TABLE textcontent (
   content TEXT NOT NULL,
   messageid INT NOT NULL REFERENCES messages(id)
 );
+
+CREATE TABLE files (
+  id SERIAL NOT NULL PRIMARY KEY,
+  path TEXT NOT NULL UNIQUE,
+  displayname TEXT NOT NULL,
+  mime TEXT NOT NULL,
+  uploaded TIMESTAMP NOT NULL
+);
+
+CREATE TABLE filecontent (
+  id SERIAL NOT NULL PRIMARY KEY,
+  fileid INT NOT NULL REFERENCES files(id),
+  messageid INT NOT NULL REFERENCES messages(id)
+);

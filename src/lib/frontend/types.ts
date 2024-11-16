@@ -11,6 +11,17 @@ export class TextContent implements messagecontent {
   }
 }
 
+export class FileContent implements messagecontent {
+  type = 'file';
+  fileid: string;
+  filename: string;
+
+  constructor (fildid: string, filename: string) {
+    this.fileid = fildid;
+    this.filename = filename;
+  }
+}
+
 export class Message {
   content: messagecontent[];
   user: string;

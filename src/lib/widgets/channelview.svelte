@@ -3,6 +3,7 @@
   import type { Message, TextContent } from "../frontend/types";
   import Icon from "./icon.svelte";
   import { DateReviver } from "../frontend/datereviver";
+    import Popup from "./popup.svelte";
 
   const { streamsource, title }: { streamsource: string, title: string } = $props();
 
@@ -68,8 +69,28 @@
       scrollDown();
     }
   });
+
+  let uploadform: HTMLFormElement | undefined = $state();
+  let formData: FormData = $derived(new FormData(uploadform));
+
+  async function uploadFile() {
+    await fetch('/api/upload', {
+      method: 'POST',
+      body: formData
+    });
+  }
 </script>
 
+<Popup open={true} title="Upload file" close={() => {}}>
+  <form bind:this={uploadform} onsubmit={uploadFile} class="uploadform">
+    <input type="file" name="file" id="uploadfile">
+    <label for="uploadfile">
+      <Icon icon='upload_file'/>
+      <span class="uploadsub">Choose file</span>
+    </label>
+    <input type="submit" value="Upload">
+  </form>
+</Popup>
 <div class="channelview">
   <div class="header">
     <span>#{title}</span>
@@ -205,5 +226,42 @@
     font-style: italic;
     text-align: center;
     font-size: .75rem;
+  }
+  .uploadform {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    min-width: 250px;
+
+    & label {
+      aspect-ratio: 2 / 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--bg2);
+
+      font-size: 3rem;
+      gap: .5rem;
+
+      user-select: none;
+
+      & .uploadsub {
+        font-size: .9rem;
+        font-style: italic;
+        color: var(--fg3);
+      }
+    }
+
+    & input {
+      padding: .5rem;
+      border: none;
+      background-color: var(--bg2);
+      color: var(--fg1);
+
+      &[type="file"] {
+        display: none;
+      }
+    }
   }
 </style>

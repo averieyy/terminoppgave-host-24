@@ -15,3 +15,20 @@ export class TextContent implements MessageContent {
       'content' in object;
   }
 }
+
+export class FileContent implements MessageContent {
+  type = "file";
+  fileid: number;
+  filename: string;
+
+  constructor (fileid: number, filename: string) {
+    this.fileid = fileid;
+    this.filename = filename;
+  }
+
+  static isFileContent(object: MessageContent): object is FileContent {
+    return object.type == "file" &&
+      'fileid' in object &&
+      'filename' in object;
+  }
+}
