@@ -170,7 +170,23 @@ Join a guild (from invite link)
 }
 ```
 
-> POST /api/guild/settings
+> POST /api/guild/join/discover
+
+Join a guild (from the discovery page)
+
+```json
+{
+  "guildid": number
+}
+```
+
+```json
+{
+  "message": "Joined guild"
+}
+```
+
+> PUT /api/guild/settings
 
 Update settings for a guild
 
