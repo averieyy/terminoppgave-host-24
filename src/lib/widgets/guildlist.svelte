@@ -36,6 +36,11 @@
       </span>
     </a>
   {/each}
+  <a href="/app/guild/discover" class={selectedid == -1 ? 'selected' : ''} style="background-color: var(--lightblue); color: var(--bg1);">
+    <div class="icon">
+      <Icon icon='explore'/>
+    </div>
+  </a>
   <button type="button" onclick={() => addpopupopen = true}>
     <div class="icon">
       <Icon icon='add'/>
