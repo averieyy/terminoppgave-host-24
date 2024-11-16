@@ -79,9 +79,14 @@
         {guild.name}
       </h1>
       {#if admin}
-        <button onclick={createInvitation}>
-          Create invitation link
-        </button>
+        <div class="adminbar">
+          <button onclick={createInvitation}>
+            Create invitation link
+          </button>
+          <a href={`/app/guild/${guild.id}/settings`}>
+            <Icon icon="settings"/>
+          </a>
+        </div>
       {/if}
     </div>
     <div class="maincontent">
@@ -138,7 +143,31 @@
       margin: 0;
       font-size: 1.5rem;
     }
+  }
+  .adminbar {
+    display: flex;
+    flex-direction: row;
+    gap: .5rem;
 
+    & a {
+      color: var(--fg1);
+      background-color: var(--bg1);
+      
+      text-decoration: none;
+      font-size: 1.25rem;
+      
+      width: 2rem;
+      height: 2rem;
+      
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &:hover, &:active {
+        background-color: var(--lightblue);
+        color: var(--bg1);
+      }
+    }
     & button {
       border: none;
       background-color: var(--bg1);
