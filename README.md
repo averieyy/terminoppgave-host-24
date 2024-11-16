@@ -50,6 +50,11 @@ Invitation||
 guildid|uuid
 int|text
 
+Guildsettings||
+-|-
+guildid|discoverable
+int|boolean
+
 ### Route explanation
 
 - Everything under `/app` is reserved for the app itself.
@@ -162,6 +167,24 @@ Join a guild (from invite link)
 ```json
 {
   "message": "Joined server"
+}
+```
+
+> POST /api/guild/settings
+
+Update settings for a guild
+
+```json
+{
+  "guildid": number,
+  "guild": Guild,
+  "guildsettings": IGuildSettings
+}
+```
+
+```json
+{
+  "message": "Updated"
 }
 ```
 

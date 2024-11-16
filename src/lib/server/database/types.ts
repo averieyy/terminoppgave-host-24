@@ -31,3 +31,8 @@ export interface IGuildMember {
   userid: number;
   administrator: boolean;
 }
+
+export interface IGuildSettings {
+  guildid: number;
+  discoverable: boolean;
+}

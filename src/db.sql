@@ -44,3 +44,8 @@ CREATE TABLE invitation (
   guildid INT NOT NULL REFERENCES guilds(id),
   uuid TEXT NOT NULL CONSTRAINT invitation_unique UNIQUE
 );
+
+CREATE TABLE guildsettings (
+  guildid INT NOT NULL REFERENCES guilds(id),
+  discoverable BOOLEAN NOT NULL DEFAULT FALSE
+);

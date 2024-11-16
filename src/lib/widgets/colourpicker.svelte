@@ -11,9 +11,9 @@
     '#b48ead',
   ];
 
-  const { changeColourCallback }: { changeColourCallback: (colour: string) => void } = $props();
+  const { changeColourCallback, colour }: { changeColourCallback: (colour: string) => void, colour?: string } = $props();
 
-  let selectedColour: string = $state(defaultColours[0]);
+  let selectedColour: string = $state(colour || defaultColours[0]);
 
   $effect(() => {
     changeColourCallback(selectedColour);
@@ -44,8 +44,8 @@
     display: flex;
     flex-direction: row;
     gap: .5rem;
-    overflow-x: auto;
-    padding: .5rem;
+    justify-content: center;
+    flex-wrap: wrap;
 
     & button {
       border: none;
