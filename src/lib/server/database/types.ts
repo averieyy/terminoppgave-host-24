@@ -36,3 +36,11 @@ export interface IGuildSettings {
   guildid: number;
   discoverable: boolean;
 }
+
+export interface IFile {
+  id: number;
+  path: string;
+  displayname: string;
+  mime: string;
+  uploaded: Date;
+}

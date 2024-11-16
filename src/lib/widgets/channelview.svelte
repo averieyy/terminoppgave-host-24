@@ -70,6 +70,7 @@
     }
   });
 
+  let uploadPopupOpen = $state(false);
   let uploadform: HTMLFormElement | undefined = $state();
   let formData: FormData = $derived(new FormData(uploadform));
 
@@ -81,7 +82,7 @@
   }
 </script>
 
-<Popup open={true} title="Upload file" close={() => {}}>
+<Popup open={uploadPopupOpen} title="Upload file" close={() => uploadPopupOpen = false}>
   <form bind:this={uploadform} onsubmit={uploadFile} class="uploadform">
     <input type="file" name="file" id="uploadfile">
     <label for="uploadfile">
@@ -115,8 +116,8 @@
   </div>
   <form class="sendmessage" onsubmit={sendMessage}>
     <input type="text" bind:value={messageContent} placeholder={`Message`} />
-    <button class="inputbtn uploadbtn"><Icon icon='upload'/></button>
-    <button class="inputbtn sendbtn"><Icon icon='send'/></button>
+    <button type="button" class="inputbtn uploadbtn" onclick={() => uploadPopupOpen = true}><Icon icon='upload'/></button>
+    <button type="submit" class="inputbtn sendbtn"><Icon icon='send'/></button>
   </form>
 </div>
 
