@@ -1,13 +1,14 @@
 import { DatabaseConnection } from "./database/connection";
 import type { IMessage } from "./database/types";
+import { type MessageContent, TextContent } from "./messagecontent";
 import type { User } from "./user";
 
 export class Message {
-  content: string;
   sender: User;
   datetime: Date;
+  content: MessageContent[];
 
-  constructor (content: string, sender: User, datetime: Date = new Date()) {
+  constructor (content: MessageContent[], sender: User, datetime: Date = new Date()) {
     this.content = content;
     this.sender = sender;
     this.datetime = datetime;
@@ -17,7 +18,15 @@ export class Message {
     const user = await DatabaseConnection.queryOne<User>('SELECT * FROM users WHERE id = $1::integer', m.senderid);
     if (!user) return;
 
-    return new Message(m.content, user, m.sentat);
+    const messagecontent: MessageContent[] = [
+      ...(await DatabaseConnection.query<{content: string}>(
+        'SELECT content FROM textcontent WHERE messageid = $1::integer',
+        m.id))
+        .map(c => new TextContent(c.content)),
+      // Other content types
+    ];
+
+    return new Message(messagecontent, user, m.sentat);
   }
 
   toSendable (): object {

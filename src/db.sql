@@ -20,7 +20,6 @@ CREATE TABLE channel (
 
 CREATE TABLE messages (
   id SERIAL PRIMARY KEY,
-  content TEXT NOT NULL,
   senderid INT NOT NULL REFERENCES users(id),
   channelid INT NOT NULL REFERENCES channel(id),
   sentat TIMESTAMP NOT NULL
@@ -48,4 +47,10 @@ CREATE TABLE invitation (
 CREATE TABLE guildsettings (
   guildid INT NOT NULL REFERENCES guilds(id),
   discoverable BOOLEAN NOT NULL DEFAULT FALSE
+);
+
+CREATE TABLE textcontent (
+  id SERIAL NOT NULL PRIMARY KEY,
+  content TEXT NOT NULL,
+  messageid INT NOT NULL REFERENCES messages(id)
 );

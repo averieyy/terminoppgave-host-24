@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import type { Message } from "../frontend/types";
+  import type { Message, TextContent } from "../frontend/types";
   import Icon from "./icon.svelte";
   import { DateReviver } from "../frontend/datereviver";
 
@@ -46,7 +46,7 @@
     fetch(`${streamsource}/send`, {
       method: 'POST',
       body: JSON.stringify({
-        content: messageContent,
+        content: [{ content: messageContent, type: "text" }],
         datetime: Date.now(),
       })
     });
@@ -67,7 +67,7 @@
       
       scrollDown();
     }
-  })
+  });
 </script>
 
 <div class="channelview">
@@ -84,7 +84,11 @@
       <div class="message">
         <span class="time">{message.datetime.getHours().toString().padStart(2,'0')}:{message.datetime.getMinutes().toString().padStart(2, '0')}</span>
         <span class="sender">{message.user}</span>
-        <span class="content">{message.content}</span>
+        {#each message.content as messageContent}
+          {#if messageContent.type == "text"}
+            <span class="content">{(messageContent as TextContent).content}</span>
+          {/if}
+        {/each}
       </div>
     {/each}
   </div>

@@ -3,7 +3,7 @@ export interface messagecontent {
 }
 
 export class TextContent implements messagecontent {
-  type = 'message';
+  type = 'text';
   content: string;
 
   constructor (content: string) {
@@ -12,11 +12,11 @@ export class TextContent implements messagecontent {
 }
 
 export class Message {
-  content: string;
+  content: messagecontent[];
   user: string;
   datetime: Date;
 
-  constructor (content: string, user: string, date: Date) {
+  constructor (content: messagecontent[], user: string, date: Date) {
     this.content = content;
     this.user = user;
     this.datetime = date;
