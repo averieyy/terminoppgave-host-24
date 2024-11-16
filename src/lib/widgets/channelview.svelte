@@ -166,7 +166,14 @@
       display: flex;
       justify-content: center;
       align-items: center;
+    }
+    & button {
+      font-size: 1.5rem;
 
+      &:hover, &:active {
+        background-color: var(--lightblue);
+        color: var(--bg1);
+      }
     }
   }
   .header {
