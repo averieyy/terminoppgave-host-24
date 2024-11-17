@@ -159,14 +159,16 @@
               <span class="content">{(messageContent as TextContent).content}</span>
             {/if}
             {#if messageContent.type == "file"}
-              <div class="messagefile">
-                <div class="fileicon">
-                  <Icon icon="description"/>
+              <div class="outerfilecontent">
+                <div class="messagefile">
+                  <div class="fileicon">
+                    <Icon icon="description"/>
+                  </div>
+                  <span class="filename">{(messageContent as FileContent).displayname}</span>
+                  <a href={`/api/upload/${(messageContent as FileContent).path}`} download class="download">
+                    <Icon icon='download'/>
+                  </a>
                 </div>
-                <span class="filename">{(messageContent as FileContent).displayname}</span>
-                <a href={`/api/upload/${(messageContent as FileContent).path}`} download class="download">
-                  <Icon icon='download'/>
-                </a>
               </div>
             {/if}
             {#if messageContent.type == "image"}
@@ -212,6 +214,12 @@
 </div>
 
 <style>
+  @media (max-width: 600px) {
+    .time {
+      display: none;
+    }
+  }
+
   .channelview {
     height: 100%;
     max-height: 100%;
@@ -375,7 +383,7 @@
     
     background-color: var(--bg3);
 
-    max-width: 300px;
+    flex: 1;
 
     & .fileicon, & .download, & .remove {
       width: 2rem;
@@ -412,10 +420,18 @@
     flex-direction: column;
     gap: .5rem;
     flex: 1;
+
+    max-width: 20rem;
+    width: 100%;
+
+    &>* {
+      max-width: 20rem;
+      max-height: 20rem;
+    }
   }
   .messageimage {
     max-width: 20rem;
-    max-height: 20rem;
+    width: 100%;
   }
   .imageattachment {
     display: flex;

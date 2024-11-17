@@ -115,6 +115,7 @@
     overflow: hidden;
 
     align-items: flex-end;
+    min-width: fit-content;
   }
   .closesidebar {
     height: 2rem;
