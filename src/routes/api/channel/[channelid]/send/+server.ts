@@ -21,7 +21,7 @@ export const POST : RequestHandler = async ({ cookies, params, request }) => {
   let { content, datetime } : { content: MessageContent[], datetime: number } = await request.json();
   
   if (!content || content.length == 0) return json({ message: 'Requires body field "content"' }, { status: 400 });
-  if (content.map(c => c.type === "text").includes(false)) return json({ message: 'Content has the wrong format' }, { status: 400 });
+  if (content.map(c => !!c.type).includes(false)) return json({ message: 'Content has the wrong format' }, { status: 400 });
 
   const typedcontent = content.map(c => {
     if (TextContent.isTextContent(c)) return c;
@@ -45,15 +45,15 @@ export const POST : RequestHandler = async ({ cookies, params, request }) => {
 
   // Log messagecontent to database
   for (const messagecontent of content) {
-    if (messagecontent instanceof TextContent)
+    if (TextContent.isTextContent(messagecontent))
       await DatabaseConnection.execute(
         'INSERT INTO textcontent (content, messageid) VALUES ($1::text, $2::integer)',
         messagecontent.content,
         msgid
       );
-    else if (messagecontent instanceof FileContent) {
+    else if (FileContent.isFileContent(messagecontent)) {
       await DatabaseConnection.execute(
-        'INSERT INTO filecontent (fileid, messageid) VALUES ($1::text, $2::integer)',
+        'INSERT INTO filecontent (fileid, messageid) VALUES ((SELECT id FROM files WHERE path = $1::text), $2::integer)',
         messagecontent.path,
         msgid
       );

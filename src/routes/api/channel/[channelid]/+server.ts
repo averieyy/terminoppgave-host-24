@@ -23,7 +23,8 @@ export const GET: RequestHandler = async ({ params, cookies }) => {
   const stream = new ReadableStream({
     async start(controller) {
       channelmember = new Member(user, new StreamController(controller), user.username);
-      const messages = await channel.connect(channelmember);
+      const messages = (await channel.connect(channelmember))
+        .sort((a, b) => a.datetime.getTime() - b.datetime.getTime());
 
       channelmember.controller.sendMessage('history', messages.map(m => m.toSendable()));
     },

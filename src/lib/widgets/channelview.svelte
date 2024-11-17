@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import type { Message, TextContent } from "../frontend/types";
+  import { FileContent, TextContent, type Message, type messagecontent } from "../frontend/types";
   import Icon from "./icon.svelte";
   import { DateReviver } from "../frontend/datereviver";
   import Popup from "./popup.svelte";
@@ -39,19 +39,24 @@
     });
   });
 
-  let messageContent: string = $state('');
+  let messageTextContent: TextContent = $state(new TextContent(''));
+  let messageFileContent: FileContent[] = $state([]);
 
   function sendMessage(ev: SubmitEvent) {
     ev.preventDefault();
-    if (!messageContent) return;
+    if (messageFileContent.length + messageTextContent.content.length == 0) return;
     fetch(`${streamsource}/send`, {
       method: 'POST',
       body: JSON.stringify({
-        content: [{ content: messageContent, type: "text" }],
+        content: [
+          messageTextContent,
+          ...messageFileContent
+        ],
         datetime: Date.now(),
       })
     });
-    messageContent = '';
+    messageFileContent = [];
+    messageTextContent = new TextContent('');
   }
 
   function scrollDown() {
@@ -78,10 +83,24 @@
   $inspect(files);
 
   async function uploadFile() {
-    await fetch('/api/upload', {
+    const fileresp = await fetch('/api/upload', {
       method: 'POST',
       body: formData
     });
+    if (fileresp.ok) {
+      const path: string = (await fileresp.json()).path;
+      const file = formData.get('file');
+      if (!file || !(file instanceof File)) return;
+      messageFileContent.push(new FileContent(path, file.name));
+
+      messageFileContent = messageFileContent;
+    }
+  }
+
+  function removeFile (path: string) {
+    const index = messageFileContent.findIndex(f => f.path == path);
+    if (index == -1) return;
+    messageFileContent.splice(index, 1);
   }
 </script>
 
@@ -115,19 +134,51 @@
       <div class="message">
         <span class="time">{message.datetime.getHours().toString().padStart(2,'0')}:{message.datetime.getMinutes().toString().padStart(2, '0')}</span>
         <span class="sender">{message.user}</span>
-        {#each message.content as messageContent}
-          {#if messageContent.type == "text"}
-            <span class="content">{(messageContent as TextContent).content}</span>
-          {/if}
-        {/each}
+        <div class="messagecontent">
+          {#each message.content as messageContent}
+            {#if messageContent.type == "text"}
+              <span class="content">{(messageContent as TextContent).content}</span>
+            {/if}
+            {#if messageContent.type == "file"}
+              <div class="messagefile">
+                <div class="fileicon">
+                  <Icon icon="description"/>
+                </div>
+                <span class="filename">{(messageContent as FileContent).displayname}</span>
+                <a href={`/api/upload/${(messageContent as FileContent).path}`} download class="download">
+                  <Icon icon='download'/>
+                </a>
+              </div>
+            {/if}
+          {/each}
+        </div>
       </div>
     {/each}
   </div>
-  <form class="sendmessage" onsubmit={sendMessage}>
-    <input type="text" bind:value={messageContent} placeholder={`Message`} />
-    <button type="button" class="inputbtn uploadbtn" onclick={() => uploadPopupOpen = true}><Icon icon='upload'/></button>
-    <button type="submit" class="inputbtn sendbtn"><Icon icon='send'/></button>
-  </form>
+  <div class="messagebar">
+    {#if messageFileContent.length != 0}
+      <div class="files">
+        {#each messageFileContent as fileContent}
+          <div class="messagefile">
+            <div class="fileicon">
+              <Icon icon='description'/>
+            </div>
+            <span class="filename">
+              {fileContent.displayname}
+            </span>
+            <button class="remove" onclick={() => removeFile(fileContent.path)}>
+              <Icon icon='close'/>
+            </button>
+          </div>
+        {/each}
+      </div>
+    {/if}
+    <form class="sendmessage" onsubmit={sendMessage}>
+      <input type="text" bind:value={messageTextContent.content} placeholder={`Message`} />
+      <button type="button" class="inputbtn uploadbtn" onclick={() => uploadPopupOpen = true}><Icon icon='upload'/></button>
+      <button type="submit" class="inputbtn sendbtn"><Icon icon='send'/></button>
+    </form>
+  </div>
 </div>
 
 <style>
@@ -174,10 +225,8 @@
 
   .sendmessage {
     display: flex;
-    background-color: var(--bg2);
     flex-direction: row;
 
-    padding: 1rem;
     gap: .5rem;
     
     & input {
@@ -273,5 +322,65 @@
         display: none;
       }
     }
+  }
+  .messagebar {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    background-color: var(--bg2);
+    padding: 1rem;
+  }
+  .files {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+  }
+  .messagefile {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    
+    gap: .5rem;
+    padding: .5rem;
+    
+    background-color: var(--bg3);
+
+    max-width: 300px;
+
+    & .fileicon, & .download, & .remove {
+      width: 2rem;
+      height: 2rem;
+
+      border: none;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      font-size: 1.5rem;
+    }
+
+    & .filename {
+      flex: 1;
+      text-align: center;
+    }
+
+    & .download, & .remove {
+      border: none;
+      background-color: var(--bg2);
+      color: var(--fg1);
+      text-decoration: none;
+
+      &:hover, &:active {
+        background-color: var(--lightblue);
+        color: var(--bg1);
+      }
+    }
+  }
+  .messagecontent {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    flex: 1;
   }
 </style>
