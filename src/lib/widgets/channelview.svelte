@@ -83,15 +83,20 @@
   $inspect(files);
 
   async function uploadFile() {
+    const file = files?.[0];
+    
+    if (!(file instanceof File) || file.size >= 25165824) return;
+
     const fileresp = await fetch('/api/upload', {
       method: 'POST',
       body: formData
     });
     if (fileresp.ok) {
       const path: string = (await fileresp.json()).path;
-      const file = formData.get('file');
-      if (!file || !(file instanceof File)) return;
       messageFileContent.push(new FileContent(path, file.name));
+
+      uploadPopupOpen = false;
+      files = undefined;
 
       messageFileContent = messageFileContent;
     }

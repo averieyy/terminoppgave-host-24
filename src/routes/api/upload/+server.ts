@@ -13,6 +13,8 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
   const file = formData.get('file');
   if (!(file instanceof File)) return json({ message: 'File feild required' }, { status: 400 });
 
+  if (file.size >= 25165824) return json({ message: 'File too big' }, { status: 400 });
+
   const filename = randomUUID();
 
   // Write to file
