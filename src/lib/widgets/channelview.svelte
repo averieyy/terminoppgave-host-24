@@ -92,7 +92,9 @@
 
     const isImage = file.type.startsWith('image/');
 
-    console.log(file);
+    console.log($state.snapshot(file));
+
+    formData.set('file', file);
 
     const fileresp = await fetch('/api/upload', {
       method: 'POST',
@@ -116,6 +118,12 @@
     const index = messageFileContent.findIndex(f => f.path == path);
     if (index == -1) return;
     messageFileContent.splice(index, 1);
+  }
+
+  function removeImage (path: string) {
+    const index = messageImageContent.findIndex(f => f.path == path);
+    if (index == -1) return;
+    messageImageContent.splice(index, 1);
   }
 </script>
 
@@ -190,7 +198,12 @@
           </div>
         {/each}
         {#each messageImageContent as imageContent}
-          <img class="messageimage" src={`/api/upload/${imageContent.path}`} alt="User-contributed">
+          <div class="imageattachment">
+            <img class="messageimage" src={`/api/upload/${imageContent.path}`} alt="User-contributed">
+            <button class="remove" onclick={() => removeImage(imageContent.path)}>
+              <Icon icon='close'/>
+            </button>
+          </div>
         {/each}
       </div>
     {/if}
@@ -407,5 +420,25 @@
   .messageimage {
     max-width: 20rem;
     max-height: 20rem;
+  }
+  .imageattachment {
+    display: flex;
+    flex-direction: row;
+    width: fit-content;
+    gap: .5rem;
+
+    & button {
+      width: 2rem;
+      height: 2rem;
+      font-size: 1.5rem;
+      border: none;
+      background-color: var(--bg1);
+      color: var(--fg1);
+
+      &:hover, &:active {
+        background-color: var(--lightblue);
+        color: var(--bg1);
+      }
+    }
   }
 </style>
