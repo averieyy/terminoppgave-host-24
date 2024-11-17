@@ -24,6 +24,6 @@ export class DatabaseConnection {
   }
 
   public static async execute(query: string, ...values: any[]) {
-    (await this.pool).query(query, values);
+    this.pool.query(query, values);
   }
 }

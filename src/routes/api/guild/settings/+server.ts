@@ -22,12 +22,12 @@ export const PUT: RequestHandler = async ({ cookies, request }) => {
   const guildexists = !!DatabaseConnection.queryOne<Guild>('SELECT * FROM guilds WHERE id = $1::integer', guildid);
   if (!guildexists) return json({ message: 'Not found' }, { status: 404 });
 
-  const guildsettingsexist = !!DatabaseConnection.queryOne<IGuildSettings>('SELECT * FROM guildsettings WHERE guildid = $1::integer', guildid);
-  if (!guildsettingsexist) DatabaseConnection.execute('INSERT INTO guildsettings (guildid, discoverable) VALUES ($1::integer, $2::boolean)', guildsettings.guildid, guildsettings.discoverable)
+  const guildsettingsexist = !!(await DatabaseConnection.queryOne<IGuildSettings>('SELECT * FROM guildsettings WHERE guildid = $1::integer', guildid));
+  if (!guildsettingsexist) await DatabaseConnection.execute('INSERT INTO guildsettings (guildid, discoverable) VALUES ($1::integer, $2::boolean)', guildsettings.guildid, guildsettings.discoverable)
   else {
-    DatabaseConnection.execute('UPDATE guildsettings SET discoverable = $1::boolean WHERE guildid = $2::integer', guildsettings.discoverable, guildid);
+    await DatabaseConnection.execute('UPDATE guildsettings SET discoverable = $1::boolean WHERE guildid = $2::integer', guildsettings.discoverable, guildid);
   }
-  DatabaseConnection.execute('UPDATE guilds SET name = $1::text, colour = $2::text, description = $3::text WHERE id = $4::integer', guild.name, guild.colour, guild.description, guildid);
+  await DatabaseConnection.execute('UPDATE guilds SET name = $1::text, colour = $2::text, description = $3::text WHERE id = $4::integer', guild.name, guild.colour, guild.description, guildid);
 
   return json({ message: 'Updated' }, { status: 200 });
 }
