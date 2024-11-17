@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { onNavigate } from "$app/navigation";
+    import { goto, onNavigate } from "$app/navigation";
     import { isLight, shortHand } from "$lib/frontend/guild";
     import Colourpicker from "$lib/widgets/colourpicker.svelte";
   import Guildlist from "$lib/widgets/guildlist.svelte";
@@ -40,6 +40,16 @@ import type { PageData } from "./$types";
       save();
     }
   });
+
+  async function leaveGuild() {
+    const resp = await fetch('/api/guild/leave', {
+      method: 'POST',
+      body: JSON.stringify({
+        guildid: guild.id
+      })
+    });
+    if (resp.ok) goto('/app');
+  }
 </script>
 
 <main>
@@ -66,6 +76,12 @@ import type { PageData } from "./$types";
     <section>
       <h2>Settings</h2>
       <Toggle onchange={(value) => discoverable = value} start={guildsettings.discoverable} title="Discoverable"/>
+    </section>
+    <section>
+      <h2>Danger</h2>
+      <button class="danger" onclick={leaveGuild}>
+        Leave
+      </button>
     </section>
     <div class={`unsavedpopup ${unsavedChanges ? 'open' : 'closed'}`}>
       <div class="unsaved">
@@ -205,6 +221,18 @@ import type { PageData } from "./$types";
     &>span {
       flex: 1;
       text-align: center;
+    }
+  }
+  .danger {
+    padding: .5rem;
+    background-color: var(--red);
+    color: var(--fg1);
+    border: none;
+    font-weight: bold;
+
+    &:hover, &:active {
+      background-color: var(--bg2);
+      color: var(--red);
     }
   }
 </style>

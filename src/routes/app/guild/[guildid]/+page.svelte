@@ -55,6 +55,16 @@
       createInvitePopupOpen = true;
     }
   }
+
+  async function leaveGuild() {
+    const resp = await fetch('/api/guild/leave', {
+      method: 'POST',
+      body: JSON.stringify({
+        guildid: guild.id
+      })
+    });
+    if (resp.ok) goto('/app');
+  }
 </script>
 
 {#if admin}
@@ -87,6 +97,10 @@
             <Icon icon="settings"/>
           </a>
         </div>
+      {:else}
+        <button onclick={leaveGuild}>
+          Leave guild
+        </button>
       {/if}
     </div>
     <div class="maincontent">
@@ -144,6 +158,17 @@
       font-size: 1.5rem;
     }
   }
+  .header button {
+      border: none;
+      background-color: var(--bg1);
+      color: var(--fg1);
+      padding: .5rem;
+
+      &:active, &:hover {
+        background-color: var(--lightblue);
+        color: var(--bg1);
+      }
+    }
   .adminbar {
     display: flex;
     flex-direction: row;
@@ -164,17 +189,6 @@
       justify-content: center;
 
       &:hover, &:active {
-        background-color: var(--lightblue);
-        color: var(--bg1);
-      }
-    }
-    & button {
-      border: none;
-      background-color: var(--bg1);
-      color: var(--fg1);
-      padding: .5rem;
-
-      &:active, &:hover {
         background-color: var(--lightblue);
         color: var(--bg1);
       }
