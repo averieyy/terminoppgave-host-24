@@ -29,6 +29,20 @@ export class FileContent implements MessageContent {
   static isFileContent(object: MessageContent): object is FileContent {
     return object.type == "file" &&
       'path' in object &&
-      'displayname' in object
+      'displayname' in object;
+  }
+}
+
+export class ImageContent implements MessageContent {
+  type = "image";
+  path: string;
+
+  constructor (path: string) {
+    this.path = path;
+  }
+
+  static isImageContent(object: MessageContent): object is ImageContent {
+    return object.type == "image" &&
+      'path' in object;
   }
 }

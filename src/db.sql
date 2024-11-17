@@ -68,3 +68,9 @@ CREATE TABLE filecontent (
   fileid INT NOT NULL REFERENCES files(id),
   messageid INT NOT NULL REFERENCES messages(id)
 );
+
+CREATE TABLE imagecontent (
+  id SERIAL NOT NULL PRIMARY KEY,
+  fileid INT NOT NULL REFERENCES files(id),
+  messageid INT NOT NULL REFERENCES messages(id)
+);

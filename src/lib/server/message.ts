@@ -1,6 +1,6 @@
 import { DatabaseConnection } from "./database/connection";
 import type { IMessage } from "./database/types";
-import { FileContent, type MessageContent, TextContent } from "./messagecontent";
+import { FileContent, ImageContent, type MessageContent, TextContent } from "./messagecontent";
 import type { User } from "./user";
 
 export class Message {
@@ -27,6 +27,10 @@ export class Message {
         'SELECT path, displayname FROM filecontent INNER JOIN files ON files.id = filecontent.fileid WHERE messageid = $1::integer',
         m.id))
         .map(c => new FileContent(c.path, c.displayname)),
+      ...(await DatabaseConnection.query<{path: string,displayname: string}>(
+        'SELECT path FROM imagecontent INNER JOIN files ON files.id = imagecontent.fileid WHERE messageid = $1::integer',
+        m.id))
+        .map(c => new ImageContent(c.path)),
       // Other content types
     ];
 

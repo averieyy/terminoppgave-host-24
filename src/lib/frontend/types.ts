@@ -22,6 +22,15 @@ export class FileContent implements messagecontent {
   }
 }
 
+export class ImageContent implements messagecontent {
+  type = 'image';
+  path: string;
+
+  constructor (path: string) {
+    this.path = path;
+  }
+}
+
 export class Message {
   content: messagecontent[];
   user: string;

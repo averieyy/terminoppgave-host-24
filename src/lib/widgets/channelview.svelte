@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { FileContent, TextContent, type Message, type messagecontent } from "../frontend/types";
+  import { FileContent, ImageContent, TextContent, type Message, type messagecontent } from "../frontend/types";
   import Icon from "./icon.svelte";
   import { DateReviver } from "../frontend/datereviver";
   import Popup from "./popup.svelte";
@@ -41,6 +41,7 @@
 
   let messageTextContent: TextContent = $state(new TextContent(''));
   let messageFileContent: FileContent[] = $state([]);
+  let messageImageContent: ImageContent[] = $state([]);
 
   function sendMessage(ev: SubmitEvent) {
     ev.preventDefault();
@@ -50,12 +51,14 @@
       body: JSON.stringify({
         content: [
           messageTextContent,
-          ...messageFileContent
+          ...messageFileContent,
+          ...messageImageContent,
         ],
         datetime: Date.now(),
       })
     });
     messageFileContent = [];
+    messageImageContent = [];
     messageTextContent = new TextContent('');
   }
 
@@ -87,18 +90,25 @@
     
     if (!(file instanceof File) || file.size >= 25165824) return;
 
+    const isImage = file.type.startsWith('image/');
+
+    console.log(file);
+
     const fileresp = await fetch('/api/upload', {
       method: 'POST',
       body: formData
     });
     if (fileresp.ok) {
       const path: string = (await fileresp.json()).path;
-      messageFileContent.push(new FileContent(path, file.name));
+
+      if (isImage) messageImageContent.push(new ImageContent(path))
+      else messageFileContent.push(new FileContent(path, file.name));
 
       uploadPopupOpen = false;
       files = undefined;
-
-      messageFileContent = messageFileContent;
+    
+      if (isImage) messageImageContent = messageImageContent;
+      else messageFileContent = messageFileContent;
     }
   }
 
@@ -155,13 +165,16 @@
                 </a>
               </div>
             {/if}
+            {#if messageContent.type == "image"}
+              <img class="messageimage" src={`/api/upload/${(messageContent as ImageContent).path}`} alt="User-contributed">              
+            {/if}
           {/each}
         </div>
       </div>
     {/each}
   </div>
   <div class="messagebar">
-    {#if messageFileContent.length != 0}
+    {#if messageFileContent.length + messageImageContent.length != 0}
       <div class="files">
         {#each messageFileContent as fileContent}
           <div class="messagefile">
@@ -175,6 +188,9 @@
               <Icon icon='close'/>
             </button>
           </div>
+        {/each}
+        {#each messageImageContent as imageContent}
+          <img class="messageimage" src={`/api/upload/${imageContent.path}`} alt="User-contributed">
         {/each}
       </div>
     {/if}
@@ -387,5 +403,9 @@
     flex-direction: column;
     gap: .5rem;
     flex: 1;
+  }
+  .messageimage {
+    max-width: 20rem;
+    max-height: 20rem;
   }
 </style>

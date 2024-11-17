@@ -1,5 +1,4 @@
 import { Channel } from "$lib/server/channel";
-import { Message } from "$lib/server/message";
 import { StreamController } from "$lib/server/stream";
 import { Token } from "$lib/server/token";
 import { Member, User } from "$lib/server/user";
