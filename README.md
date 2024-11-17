@@ -55,6 +55,26 @@ Guildsettings||
 guildid|discoverable
 int|boolean
 
+Textcontent|||
+-|-|-
+id|content|messageid
+serial|text|int
+
+Files|||||
+-|-|-|-|-
+id|path|displayname|mime|uploaded
+serial|text|text|text|timestamp
+
+Filecontent|||
+-|-|-
+id|fileid|messageid
+serial|int|int
+
+Imagecontent|||
+-|-|-
+id|fileid|messageid
+serial|int|int
+
 ### Route explanation
 
 - Everything under `/app` is reserved for the app itself.
@@ -186,6 +206,22 @@ Join a guild (from the discovery page)
 }
 ```
 
+> POST /api/guild/leave
+
+Leave a guild
+
+```json
+{
+  "guildid": number
+}
+```
+
+```json
+{
+  "message": "Left guild"
+}
+```
+
 > PUT /api/guild/settings
 
 Update settings for a guild
@@ -235,5 +271,37 @@ Register user (sign up)
 ```json
 {
   "message": "Registered new user successfully"
+}
+```
+
+> POST /api/upload
+
+Upload an image
+
+Body is form data.
+file: File
+
+```json
+{
+  "path": string
+}
+```
+
+> GET /api/upload\[fileid\]
+
+Get the contents of an uploaded file
+
+Response is the binary contents of the file, with the correct MIME type as Content-Type header.
+
+> GET /api/upload/\[fileid\]/info
+
+Get metadata of an uploaded file
+
+```json
+{
+  "displayname": string,
+  "mime": string,
+  "uploaded": date (as string),
+  "path": string
 }
 ```
