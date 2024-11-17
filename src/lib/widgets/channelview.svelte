@@ -3,7 +3,7 @@
   import type { Message, TextContent } from "../frontend/types";
   import Icon from "./icon.svelte";
   import { DateReviver } from "../frontend/datereviver";
-    import Popup from "./popup.svelte";
+  import Popup from "./popup.svelte";
 
   const { streamsource, title }: { streamsource: string, title: string } = $props();
 
@@ -73,6 +73,9 @@
   let uploadPopupOpen = $state(false);
   let uploadform: HTMLFormElement | undefined = $state();
   let formData: FormData = $derived(new FormData(uploadform));
+  let files: FileList | undefined = $state();
+
+  $inspect(files);
 
   async function uploadFile() {
     await fetch('/api/upload', {
@@ -84,10 +87,16 @@
 
 <Popup open={uploadPopupOpen} title="Upload file" close={() => uploadPopupOpen = false}>
   <form bind:this={uploadform} onsubmit={uploadFile} class="uploadform">
-    <input type="file" name="file" id="uploadfile">
+    <input type="file" name="file" id="uploadfile" bind:files={files}>
     <label for="uploadfile">
       <Icon icon='upload_file'/>
-      <span class="uploadsub">Choose file</span>
+      {#if !files || files.length == 0}
+        <span class="uploadsub">Choose file</span>
+      {:else}
+        {#each files as file}
+          <span class="uploadsub">{file.name}</span>
+        {/each}
+      {/if}
     </label>
     <input type="submit" value="Upload">
   </form>

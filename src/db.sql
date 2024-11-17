@@ -65,6 +65,6 @@ CREATE TABLE files (
 
 CREATE TABLE filecontent (
   id SERIAL NOT NULL PRIMARY KEY,
-  fileid INT NOT NULL REFERENCES files(id),
+  path TEXT NOT NULL REFERENCES files(path),
   messageid INT NOT NULL REFERENCES messages(id)
 );

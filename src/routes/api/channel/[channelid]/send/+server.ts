@@ -1,7 +1,7 @@
 import { Channel } from "$lib/server/channel";
 import { DatabaseConnection } from "$lib/server/database/connection";
 import { Message } from "$lib/server/message";
-import { type MessageContent, TextContent } from "$lib/server/messagecontent";
+import { FileContent, type MessageContent, TextContent } from "$lib/server/messagecontent";
 import { Token } from "$lib/server/token";
 import { json, type RequestHandler } from "@sveltejs/kit";
 
@@ -25,6 +25,7 @@ export const POST : RequestHandler = async ({ cookies, params, request }) => {
 
   const typedcontent = content.map(c => {
     if (TextContent.isTextContent(c)) return c;
+    if (FileContent.isFileContent(c)) return c;
   }).filter(c => !!c);
 
   if(typedcontent.length == 0) return json({ message: 'Content has the wrong formatting' }, { status: 400 });
@@ -44,10 +45,16 @@ export const POST : RequestHandler = async ({ cookies, params, request }) => {
 
   // Log messagecontent to database
   for (const messagecontent of content) {
-    if (messagecontent instanceof TextContent) {
+    if (messagecontent instanceof TextContent)
       await DatabaseConnection.execute(
         'INSERT INTO textcontent (content, messageid) VALUES ($1::text, $2::integer)',
         messagecontent.content,
+        msgid
+      );
+    else if (messagecontent instanceof FileContent) {
+      await DatabaseConnection.execute(
+        'INSERT INTO filecontent (fileid, messageid) VALUES ($1::text, $2::integer)',
+        messagecontent.path,
         msgid
       );
     }

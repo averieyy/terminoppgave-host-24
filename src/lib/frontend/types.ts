@@ -13,12 +13,10 @@ export class TextContent implements messagecontent {
 
 export class FileContent implements messagecontent {
   type = 'file';
-  fileid: string;
-  filename: string;
+  path: string
 
-  constructor (fildid: string, filename: string) {
-    this.fileid = fildid;
-    this.filename = filename;
+  constructor (path: string) {
+    this.path = path;
   }
 }
 

@@ -18,17 +18,14 @@ export class TextContent implements MessageContent {
 
 export class FileContent implements MessageContent {
   type = "file";
-  fileid: number;
-  filename: string;
+  path: string;
 
-  constructor (fileid: number, filename: string) {
-    this.fileid = fileid;
-    this.filename = filename;
+  constructor (path: string, filename: string) {
+    this.path = path;
   }
 
   static isFileContent(object: MessageContent): object is FileContent {
     return object.type == "file" &&
-      'fileid' in object &&
-      'filename' in object;
+      'path' in object
   }
 }
