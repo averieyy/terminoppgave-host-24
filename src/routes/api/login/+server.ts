@@ -1,5 +1,5 @@
 import { DatabaseConnection } from "$lib/server/database/connection";
-import { Token } from "$lib/server/token";
+import { Token, TOKEN_TIMEOUT } from "$lib/server/token";
 import { User } from "$lib/server/user";
 import { json, type RequestHandler } from "@sveltejs/kit";
 

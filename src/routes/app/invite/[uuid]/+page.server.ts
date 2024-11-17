@@ -5,8 +5,7 @@ import { DatabaseConnection } from "$lib/server/database/connection";
 import { Guild } from "$lib/server/guild";
 
 export const load: PageServerLoad = async ({ cookies, params, url }) => {
-  const token = cookies.get('token');
-  const user = await Token.getUserFromToken(token);
+  const user = await Token.getUserFromToken(cookies);
 
   if (!user) redirect(302, `/app/login?redirect=${url.pathname}`);
 

@@ -5,8 +5,7 @@ import { DatabaseConnection } from "$lib/server/database/connection";
 import type { Guild } from "$lib/server/guild";
 
 export const load: PageServerLoad = async ({ cookies }) => {
-  const token = cookies.get('token');
-  const user = await Token.getUserFromToken(token);
+  const user = await Token.getUserFromToken(cookies);
   if (!user) redirect(302, '/app/login?redirect=/app/guild/discover');
 
   const guilds = await DatabaseConnection.query<Guild>('SELECT guilds.* FROM guildmembers INNER JOIN guilds ON guilds.id = guildmembers.guildid WHERE guildmembers.userid = $1::integer', user.id);

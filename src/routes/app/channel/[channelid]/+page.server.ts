@@ -8,10 +8,7 @@ import { ChannelMembers, User } from "$lib/server/user";
 
 export const load: PageServerLoad = async ({ cookies, params, url }) => {
   // Get user
-  const token = cookies.get('token');
-  if (!token) redirect(302, `/app/login?redirect=${url.pathname}`);
-
-  const user = await Token.getUserFromToken(token);
+  const user = await Token.getUserFromToken(cookies);
   if (!user) redirect(302, `/app/login?redirect=${url.pathname}`);
 
   const channel = await DatabaseConnection.queryOne<IChannel>('SELECT * FROM channel WHERE id = $1::integer', params.channelid);

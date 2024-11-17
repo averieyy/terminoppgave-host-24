@@ -12,10 +12,7 @@ export const POST : RequestHandler = async ({ cookies, params, request }) => {
   const channel = await Channel.byId(parseInt(channelid));
   if (!channel) return json({ message: 'Channel not found' }, { status: 404 });
 
-  const cookie = cookies.get('token');
-  if (!cookie) return json({ message: 'Not authenticated token' }, { status: 403 });
-
-  const user = await Token.getUserFromToken(cookie);
+  const user = await Token.getUserFromToken(cookies);
   if (!user) return json({ message: 'Not authenticated user' }, { status: 403 });
 
   let { content, datetime } : { content: MessageContent[], datetime: number } = await request.json();

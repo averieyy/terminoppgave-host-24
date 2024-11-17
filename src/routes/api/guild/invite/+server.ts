@@ -6,8 +6,7 @@ import { json, type RequestHandler } from "@sveltejs/kit";
 import { randomUUID } from 'crypto';
 
 export const POST : RequestHandler = async ({ cookies, request }) => {
-  const token = cookies.get('token');
-  const user = await Token.getUserFromToken(token);
+  const user = await Token.getUserFromToken(cookies);
   
   if (!user) return json({ message: 'Unauthorized' }, { status: 403 });
 

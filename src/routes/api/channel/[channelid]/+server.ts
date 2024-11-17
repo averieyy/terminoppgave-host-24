@@ -11,10 +11,7 @@ export const GET: RequestHandler = async ({ params, cookies }) => {
   const channel = await Channel.byId(channelid);
   if (!channel) return json({ message: 'Could not find channel' }, { status: 404 });
 
-  const token = cookies.get('token');
-  if (!token) return json({ message: 'Not authenticated, token' }, { status: 403 });
-
-  const user = await Token.getUserFromToken(token);
+  const user = await Token.getUserFromToken(cookies);
   if (!user) return json({ message: 'Not authenticated' }, { status: 403 });
   
   let channelmember : Member;

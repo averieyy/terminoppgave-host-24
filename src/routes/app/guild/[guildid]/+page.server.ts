@@ -8,10 +8,7 @@ import { ChannelMembers, Member } from "$lib/server/user";
 
 export const load: PageServerLoad = async ({ cookies, params, url }) => {
   // Get User
-  const token = cookies.get('token');
-  if (!token) redirect(302, `/app/login?redirect=${url.pathname}`);
-
-  const user = await Token.getUserFromToken(token);
+  const user = await Token.getUserFromToken(cookies);
   if (!user) redirect(302, `/app/login?redirect=${url.pathname}`);
 
   const guild = await DatabaseConnection.queryOne<Guild>('SELECT * FROM guilds WHERE id = $1::integer', params.guildid);

@@ -6,8 +6,7 @@ import { Guild } from "$lib/server/guild";
 import type { IGuildSettings, IGuildMember } from "$lib/server/database/types";
 
 export const load: PageServerLoad = async ({ cookies, params }) => {
-  const token = cookies.get('token');
-  const user = await Token.getUserFromToken(token);
+  const user = await Token.getUserFromToken(cookies);
   if (!user) redirect(302, `/app/guild/${params.guildid}`);
 
   // Get the guild

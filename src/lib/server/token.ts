@@ -1,7 +1,10 @@
+import type { Cookies } from "@sveltejs/kit";
 import { DatabaseConnection } from "./database/connection";
 import type { IToken } from "./database/types";
-import type { User } from "./user";
+import { User } from "./user";
 import { randomBytes } from 'crypto';
+
+export const TOKEN_TIMEOUT = 60 * 60 * 24 * 7; // One week
 
 export class Token {
   id: number;
@@ -24,16 +27,32 @@ export class Token {
     }
 
     const now = new Date();
-    const response = await DatabaseConnection.queryOne<{ id: number }>('INSERT INTO tokens (content, userid, expires) VALUES ($1::text, $2::integer, $3::timestamp) RETURNING id;', token, user.id, now);
+    const response = await DatabaseConnection.queryOne<{ id: number }>('INSERT INTO tokens (content, userid, expires) VALUES ($1::text, $2::integer, $3::timestamp) RETURNING id;', token, user.id, new Date(now.getTime() + TOKEN_TIMEOUT));
 
     if (response?.id) {
       return new Token(response.id, token, user, now);
     }
   }
 
-  static async getUserFromToken(token: string | undefined): Promise<User | undefined> {
+  static async getUserFromToken(cookies: Cookies): Promise<User | undefined> {
+    const token = cookies.get('token');
     if (!token) return;
-    const user = await DatabaseConnection.queryOne<User>('SELECT users.* FROM tokens INNER JOIN users ON users.id = tokens.userid WHERE tokens.content = $1::text;', token);
-    return user;
+
+    const now = Date.now();
+
+    const user_token = await DatabaseConnection.queryOne<User & IToken>('SELECT * FROM tokens INNER JOIN users ON users.id = tokens.userid WHERE tokens.content = $1::text;', token);
+
+    if (!user_token || user_token.expires.getTime() < now) return;
+
+    // Update token
+    await DatabaseConnection.execute('UPDATE tokens SET expires = $1::timestamp WHERE content = $2::text', new Date(now + TOKEN_TIMEOUT * 1000), token);
+    cookies.set('token', token, { path: '/', secure: false, maxAge: TOKEN_TIMEOUT });
+
+    return new User(
+      user_token.username,
+      user_token.userid,
+      user_token.hash,
+      user_token.salt
+    );
   }
 }

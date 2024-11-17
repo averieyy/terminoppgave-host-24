@@ -1,5 +1,5 @@
 import { DatabaseConnection } from "$lib/server/database/connection";
-import { Token } from "$lib/server/token";
+import { Token, TOKEN_TIMEOUT } from "$lib/server/token";
 import { User } from "$lib/server/user";
 import { json, type RequestHandler } from "@sveltejs/kit";
 
@@ -28,7 +28,7 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
 
   if (!token) return json({ message: 'An error occured while trying to store token' }, { status: 500 })
 
-  cookies.set('token', token.content, { path: '/', secure: false });
+  cookies.set('token', token.content, { path: '/', secure: false, maxAge: TOKEN_TIMEOUT });
 
   return json({ message: 'Registered new user successfully' }, { status: 200 });
 }

@@ -5,8 +5,7 @@ import { Token } from "$lib/server/token";
 import { json, type RequestHandler } from "@sveltejs/kit";
 
 export const POST: RequestHandler = async ({ cookies, request }) => {
-  const token = cookies.get('token');
-  const user = await Token.getUserFromToken(token);
+  const user = await Token.getUserFromToken(cookies);
   if (!user) return json({ message: 'Unauthorized' }, { status: 403 });
 
   const { guildid }: { guildid: number } = await request.json();
