@@ -35,12 +35,6 @@ import type { PageData } from "./$types";
     });
   }
 
-  onNavigate(() => {
-    if (unsavedChanges) {
-      save();
-    }
-  });
-
   async function leaveGuild() {
     const resp = await fetch('/api/guild/leave', {
       method: 'POST',
@@ -62,7 +56,7 @@ import type { PageData } from "./$types";
         <div class="guildprofile">
           <input type="text" bind:value={name} placeholder="Name">
           <textarea bind:value={description}></textarea>
-          <Colourpicker changeColourCallback={c => colour = c} />
+          <Colourpicker colour={colour} changeColourCallback={c => colour = c} />
         </div>
         <div class="outerpreview">
           <div class="preview" style={`background-color: ${colour}; color: ${isLight(colour) ? 'var(--bg1)' : 'var(--fg1)'};`}>
