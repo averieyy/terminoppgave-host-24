@@ -35,7 +35,6 @@
     });
     messagelist?.addEventListener('scroll', () => {
       scrolling = !messagelist || (messagelist.scrollTop + messagelist.clientHeight) < messagelist.scrollHeight;
-      if (!scrolling) console.log('autoscroll');
     });
   });
 
@@ -68,7 +67,6 @@
   }
 
   $effect(() => {
-    console.log('scrolling');
 
     messages;
 
@@ -91,8 +89,6 @@
     if (!(file instanceof File) || file.size >= 25165824) return;
 
     const isImage = file.type.startsWith('image/');
-
-    console.log($state.snapshot(file));
 
     formData.set('file', file);
 
