@@ -45,15 +45,15 @@
 
   function sendMessage(ev: SubmitEvent) {
     ev.preventDefault();
-    if (messageFileContent.length + messageTextContent.content.length == 0) return;
+    if (messageFileContent.length + messageImageContent.length + messageTextContent.content.length == 0) return;
     fetch(`${streamsource}/send`, {
       method: 'POST',
       body: JSON.stringify({
         content: [
-          messageTextContent,
+          messageTextContent.content ? messageTextContent : undefined,
           ...messageFileContent,
           ...messageImageContent,
-        ],
+        ].filter(c => !!c),
         datetime: Date.now(),
       })
     });
