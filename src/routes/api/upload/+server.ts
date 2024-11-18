@@ -1,7 +1,7 @@
 import { DatabaseConnection } from "$lib/server/database/connection";
 import { Token } from "$lib/server/token";
 import { json, type RequestHandler } from "@sveltejs/kit";
-import { randomUUID } from 'crypto';
+import { createHash } from 'crypto';
 import { existsSync, writeFileSync, statSync, mkdirSync } from 'fs';
 
 export const POST: RequestHandler = async ({ cookies, request }) => {
@@ -14,7 +14,11 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
 
   if (file.size >= 25165824) return json({ message: 'File too big' }, { status: 400 });
 
-  const filename = randomUUID();
+  const fileHash = createHash('shake256');
+  fileHash.update(await file.text());
+  const filename = fileHash.digest('base64url');
+
+  if (existsSync(`./uploads/${filename}`)) return json({ path: filename });
 
   // Write to file
   if (!existsSync('./uploads') || !statSync('./uploads').isDirectory())
