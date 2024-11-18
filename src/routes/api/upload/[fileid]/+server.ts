@@ -5,7 +5,7 @@ import { json, type RequestHandler } from "@sveltejs/kit";
 import { existsSync, readFileSync, statSync } from 'fs';
 
 export const GET: RequestHandler = async ({ cookies, params }) => {
-  const user = Token.getUserFromToken(cookies);
+  const user = await Token.getUserFromToken(cookies);
   if (!user) return json({ message: 'Unauthorized' }, { status: 404 });
 
   const file = await DatabaseConnection.queryOne<IFile>('SELECT * FROM files WHERE path = $1::text', params.fileid);

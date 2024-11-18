@@ -5,7 +5,7 @@ import { randomUUID } from 'crypto';
 import { existsSync, writeFileSync, statSync, mkdirSync } from 'fs';
 
 export const POST: RequestHandler = async ({ cookies, request }) => {
-  const user = Token.getUserFromToken(cookies);
+  const user = await Token.getUserFromToken(cookies);
   if (!user) return json({ message: 'Unauthorized' }, { status: 403 });
 
   const formData = await request.formData();

@@ -1,7 +1,7 @@
 import { Channel } from "$lib/server/channel";
 import { StreamController } from "$lib/server/stream";
 import { Token } from "$lib/server/token";
-import { Member, User } from "$lib/server/user";
+import { Member } from "$lib/server/user";
 import { json, type RequestHandler } from "@sveltejs/kit";
 
 export const GET: RequestHandler = async ({ params, cookies }) => {
