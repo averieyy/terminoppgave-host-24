@@ -22,6 +22,19 @@ export class FileContent implements messagecontent {
   }
 }
 
+export class TextFileContent implements messagecontent {
+  type = 'textfile';
+  path: string;
+  displayname: string;
+  preview: string;
+
+  constructor (path: string, displayname: string, preview: string) {
+    this.path = path;
+    this.displayname = displayname;
+    this.preview = preview;
+  }
+}
+
 export class ImageContent implements messagecontent {
   type = 'image';
   path: string;

@@ -19,7 +19,7 @@ export class TextContent implements MessageContent {
 export class FileContent implements MessageContent {
   type = "file";
   path: string;
-  displayname: string
+  displayname: string;
 
   constructor (path: string, displayname: string) {
     this.path = path;
@@ -29,6 +29,26 @@ export class FileContent implements MessageContent {
   static isFileContent(object: MessageContent): object is FileContent {
     return object.type == "file" &&
       'path' in object &&
+      'displayname' in object;
+  }
+}
+
+export class TextFileContent implements MessageContent {
+  type = "textfile";
+  path: string;
+  displayname: string;
+  preview: string;
+
+  constructor (path: string, displayname: string, preview: string) {
+    this.path = path;
+    this.displayname = displayname;
+    this.preview = preview;
+  }
+
+  static isTextFileContent(object: MessageContent): object is TextFileContent {
+    return object.type == "textfile" &&
+      'path' in object &&
+      'preview' in object &&
       'displayname' in object;
   }
 }
