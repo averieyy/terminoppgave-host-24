@@ -1,7 +1,7 @@
 import { Channel } from "$lib/server/channel";
 import { DatabaseConnection } from "$lib/server/database/connection";
 import { Message } from "$lib/server/message";
-import { FileContent, ImageContent, type MessageContent, TextContent } from "$lib/server/messagecontent";
+import { FileContent, ImageContent, type MessageContent, TextContent, TextFileContent } from "$lib/server/messagecontent";
 import { Token } from "$lib/server/token";
 import { json, type RequestHandler } from "@sveltejs/kit";
 
@@ -24,6 +24,7 @@ export const POST : RequestHandler = async ({ cookies, params, request }) => {
     if (TextContent.isTextContent(c)) return c;
     if (FileContent.isFileContent(c)) return c;
     if (ImageContent.isImageContent(c)) return c;
+    if (TextFileContent.isTextFileContent(c)) return c;
   }).filter(c => !!c);
 
   if(typedcontent.length == 0) return json({ message: 'Content has the wrong formatting' }, { status: 400 });
@@ -59,6 +60,13 @@ export const POST : RequestHandler = async ({ cookies, params, request }) => {
     else if (ImageContent.isImageContent(messagecontent)) {
       await DatabaseConnection.execute(
         'INSERT INTO imagecontent (fileid, messageid) VALUES ((SELECT id FROM files WHERE path = $1::text), $2::integer)',
+        messagecontent.path,
+        msgid
+      );
+    }
+    else if (TextFileContent.isTextFileContent(messagecontent)) {
+      await DatabaseConnection.execute(
+        'INSERT INTO textfilecontent (fileid, messageid) VALUES ((SELECT id FROM files WHERE path = $1::text), $2::integer)',
         messagecontent.path,
         msgid
       );

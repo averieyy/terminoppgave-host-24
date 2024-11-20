@@ -1,6 +1,7 @@
 import { DatabaseConnection } from "./database/connection";
 import type { IMessage } from "./database/types";
-import { FileContent, ImageContent, type MessageContent, TextContent } from "./messagecontent";
+import { FileContent, ImageContent, type MessageContent, TextContent, TextFileContent } from "./messagecontent";
+import { readFileSync } from 'fs';
 import type { User } from "./user";
 
 export class Message {
@@ -31,6 +32,15 @@ export class Message {
         'SELECT path FROM imagecontent INNER JOIN files ON files.id = imagecontent.fileid WHERE messageid = $1::integer',
         m.id))
         .map(c => new ImageContent(c.path)),
+      ...(await DatabaseConnection.query<{path: string, displayname: string}>(
+        'SELECT files.path, files.displayname FROM textfilecontent INNER JOIN files ON files.id = textfilecontent.fileid WHERE messageid = $1::integer',
+        m.id))
+        .map(c => {
+          // Get preview content
+          const preview = readFileSync(`./uploads/${c.path}`).toString().slice(0,128); // Get the first 128 characters of the file
+
+          return new TextFileContent(c.path, c.displayname, preview);
+        }),
       // Other content types
     ];
 

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { FileContent, ImageContent, TextContent, type Message, type messagecontent } from "../frontend/types";
+  import { FileContent, ImageContent, TextContent, TextFileContent, type Message } from "../frontend/types";
   import Icon from "./icon.svelte";
   import { DateReviver } from "../frontend/datereviver";
   import Popup from "./popup.svelte";
@@ -41,6 +41,7 @@
   let messageTextContent: TextContent = $state(new TextContent(''));
   let messageFileContent: FileContent[] = $state([]);
   let messageImageContent: ImageContent[] = $state([]);
+  let messageTextFileContent: TextFileContent[] = $state([]);
 
   function sendMessage(ev: SubmitEvent) {
     ev.preventDefault();
@@ -50,6 +51,7 @@
       body: JSON.stringify({
         content: [
           messageTextContent.content ? messageTextContent : undefined,
+          ...messageTextFileContent,
           ...messageFileContent,
           ...messageImageContent,
         ].filter(c => !!c),
@@ -58,6 +60,7 @@
     });
     messageFileContent = [];
     messageImageContent = [];
+    messageTextFileContent = [];
     messageTextContent = new TextContent('');
   }
 
@@ -157,8 +160,7 @@
           {#each message.content as messageContent}
             {#if messageContent.type == "text"}
               <span class="content">{(messageContent as TextContent).content}</span>
-            {/if}
-            {#if messageContent.type == "file"}
+            {:else if messageContent.type == "file"}
               <div class="outerfilecontent">
                 <div class="messagefile">
                   <div class="fileicon">
@@ -170,9 +172,20 @@
                   </a>
                 </div>
               </div>
-            {/if}
-            {#if messageContent.type == "image"}
+            {:else if messageContent.type == "image"}
               <img class="messageimage" src={`/api/upload/${(messageContent as ImageContent).path}`} alt="User-contributed">              
+            {:else if messageContent.type == "textfile"}
+              <div class="outerfilecontent">
+                <div class="messagefile">
+                  <div class="fileicon">
+                    <Icon icon="description"/>
+                  </div>
+                  <span class="filename">{(messageContent as TextFileContent).displayname}</span>
+                  <a href={`/api/upload/${(messageContent as TextFileContent).path}`} download class="download">
+                    <Icon icon='download'/>
+                  </a>
+                </div>
+              </div>
             {/if}
           {/each}
         </div>

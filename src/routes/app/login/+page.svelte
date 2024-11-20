@@ -20,7 +20,7 @@
       }),
     }).then(async resp => {
       if (resp.ok) {
-        goto(redirectLocation || '/app/channel/1');
+        goto(redirectLocation || '/app');
       }
       else {
         username = '';
