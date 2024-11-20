@@ -158,6 +158,23 @@ Create new guild
 }
 ```
 
+> POST /api/guild/demote
+
+Demote a guild member
+
+```json
+{
+  "userid": number,
+  "guildid": number
+}
+```
+
+```json
+{
+  "message": "Successfully demoted member"
+}
+```
+
 > POST /api/guild/invite
 
 Create invitation
@@ -219,6 +236,23 @@ Leave a guild
 ```json
 {
   "message": "Left guild"
+}
+```
+
+> POST /api/guild/promote
+
+Promote a guild member
+
+```json
+{
+  "userid": number,
+  "guildid": number
+}
+```
+
+```json
+{
+  "message": "Successfully promoted member"
 }
 ```
 

@@ -95,15 +95,14 @@ import type { PageData } from "./$types";
           <div class="memberentry">
             {member.username}
             {#if !member.administrator}
-              <button class="promotemember" onclick={() => toggleAdmin(member.id, false)}>
+              <button class="promotemember" onclick={() => toggleAdmin(member.id, false)} title="Promote member">
                 <Icon icon="add_moderator"/>
               </button>
             {:else if member.id !== userid}
-              <button class="promotemember" onclick={() => toggleAdmin(member.id, true)}>
+              <button class="promotemember" onclick={() => toggleAdmin(member.id, true)} title="Demote member">
                 <Icon icon="remove_moderator"/>
               </button>  
             {/if}
-            
           </div>
         {/each}
       </div>
