@@ -46,14 +46,20 @@ import type { PageData } from "./$types";
     if (resp.ok) goto('/app');
   }
 
-  async function promoteUser (userid: number) {
-    await fetch('/api/guild/promote', {
+  async function toggleAdmin (userid: number, admin: boolean) {
+    const oldmembers = $state.snapshot(members);
+    members = members.map(m => {return {...m, administrator: m.id == userid ? !admin : m.administrator}});
+    const resp = await fetch(admin ? '/api/guild/demote' : '/api/guild/promote', {
       method: 'POST',
       body: JSON.stringify({
         guildid: guild.id,
         memberid: userid
       })
-    })
+    });
+    if (!resp.ok) {
+      // Revert back
+      members = oldmembers;
+    }
   }
 </script>
 
@@ -89,10 +95,15 @@ import type { PageData } from "./$types";
           <div class="memberentry">
             {member.username}
             {#if !member.administrator}
-              <button class="promotemember" onclick={() => promoteUser(member.id)}>
-                <Icon icon="verified_user"/>
+              <button class="promotemember" onclick={() => toggleAdmin(member.id, false)}>
+                <Icon icon="add_moderator"/>
               </button>
+            {:else if member.id !== userid}
+              <button class="promotemember" onclick={() => toggleAdmin(member.id, true)}>
+                <Icon icon="remove_moderator"/>
+              </button>  
             {/if}
+            
           </div>
         {/each}
       </div>
