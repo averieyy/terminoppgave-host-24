@@ -20,10 +20,10 @@ Users||||
 id|username|hash|salt
 serial (int)|text|text|text
 
-Guilds||||
--|-|-|-
-id|name|description|colour
-serial (int)|text|text|text
+Guilds|||||
+-|-|-|-|-
+id|name|description|colour|deleted
+serial (int)|text|text|text|boolean (default false)
 
 Channel|||
 -|-|-
