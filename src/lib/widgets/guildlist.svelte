@@ -25,6 +25,9 @@
   </div>
 </Popup>
 <div class="guilds">
+  <a href="/app" class={`homebutton ${selectedid == -2 && 'selected'}`}>
+    <Icon icon="home"/>
+  </a>
   {#each guilds as guild}
     <a
       class={`guild ${selectedid == guild.id ? 'selected' : ''}`}
@@ -115,5 +118,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+  .homebutton {
+    background-color: var(--lightblue);
+    color: var(--bg1);
+    font-size: 1.5rem;
   }
 </style>

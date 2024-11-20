@@ -8,7 +8,7 @@
 </script>
 
 <div class="outerpage">
-  <Guildlist guilds={guilds} />
+  <Guildlist guilds={guilds} selectedid={-2} />
   <main>
     <div class="infobox">
       <h2>
