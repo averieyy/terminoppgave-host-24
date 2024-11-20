@@ -4,6 +4,7 @@
   import Icon from "./icon.svelte";
   import { DateReviver } from "../frontend/datereviver";
   import Popup from "./popup.svelte";
+    import Textfile from "./textfile.svelte";
 
   const { streamsource, title }: { streamsource: string, title: string } = $props();
 
@@ -129,6 +130,12 @@
     messageFileContent.splice(index, 1);
   }
 
+  function removeTextFile (file: TextFileContent) {
+    const index = messageTextFileContent.findIndex(f => f.path == file.path);
+    if (index == -1) return;
+    messageTextFileContent.splice(index, 1);
+  }
+
   function removeImage (path: string) {
     const index = messageImageContent.findIndex(f => f.path == path);
     if (index == -1) return;
@@ -185,17 +192,7 @@
             {:else if messageContent.type == "image"}
               <img class="messageimage" src={`/api/upload/${(messageContent as ImageContent).path}`} alt="User-contributed">              
             {:else if messageContent.type == "textfile"}
-              <div class="outerfilecontent">
-                <div class="messagefile">
-                  <div class="fileicon">
-                    <Icon icon="description"/>
-                  </div>
-                  <span class="filename">{(messageContent as TextFileContent).displayname}</span>
-                  <a href={`/api/upload/${(messageContent as TextFileContent).path}`} download class="download">
-                    <Icon icon='download'/>
-                  </a>
-                </div>
-              </div>
+              <Textfile textfile={messageContent as TextFileContent}/>
             {/if}
           {/each}
         </div>
@@ -203,8 +200,11 @@
     {/each}
   </div>
   <div class="messagebar">
-    {#if messageFileContent.length + messageImageContent.length != 0}
+    {#if messageFileContent.length + messageImageContent.length + messageTextFileContent.length != 0}
       <div class="files">
+        {#each messageTextFileContent as textFileContent}
+          <Textfile textfile={textFileContent} remove={removeTextFile} />
+        {/each}
         {#each messageFileContent as fileContent}
           <div class="messagefile">
             <div class="fileicon">
