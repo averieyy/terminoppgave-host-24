@@ -1,13 +1,14 @@
 <script lang="ts">
-    import { goto, onNavigate } from "$app/navigation";
-    import { isLight, shortHand } from "$lib/frontend/guild";
-    import Colourpicker from "$lib/widgets/colourpicker.svelte";
+  import { goto } from "$app/navigation";
+  import { isLight, shortHand } from "$lib/frontend/guild";
+  import Colourpicker from "$lib/widgets/colourpicker.svelte";
   import Guildlist from "$lib/widgets/guildlist.svelte";
-    import Toggle from "$lib/widgets/toggle.svelte";
+  import Icon from "$lib/widgets/icon.svelte";
+  import Toggle from "$lib/widgets/toggle.svelte";
 import type { PageData } from "./$types";
 
   const { data }: { data: PageData } = $props();
-  let { guild, guildsettings, guilds } = $state(data);
+  let { guild, guildsettings, guilds, members, userid } = $state(data);
   
   let { name, colour, description } = $state(guild);
   let { discoverable } = $state(guildsettings);
@@ -44,6 +45,16 @@ import type { PageData } from "./$types";
     });
     if (resp.ok) goto('/app');
   }
+
+  async function promoteUser (userid: number) {
+    await fetch('/api/guild/promote', {
+      method: 'POST',
+      body: JSON.stringify({
+        guildid: guild.id,
+        memberid: userid
+      })
+    })
+  }
 </script>
 
 <main>
@@ -70,6 +81,21 @@ import type { PageData } from "./$types";
     <section>
       <h2>Settings</h2>
       <Toggle onchange={(value) => discoverable = value} start={guildsettings.discoverable} title="Discoverable"/>
+    </section>
+    <section>
+      <h2>Members</h2>
+      <div class="memberslist">
+        {#each members as member}
+          <div class="memberentry">
+            {member.username}
+            {#if !member.administrator}
+              <button class="promotemember" onclick={() => promoteUser(member.id)}>
+                <Icon icon="verified_user"/>
+              </button>
+            {/if}
+          </div>
+        {/each}
+      </div>
     </section>
     <section>
       <h2>Danger</h2>
@@ -227,6 +253,47 @@ import type { PageData } from "./$types";
     &:hover, &:active {
       background-color: var(--bg2);
       color: var(--red);
+    }
+  }
+  .memberslist {
+    display: flex;
+    flex-direction: column;
+
+    &>* {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      padding: .5rem;
+      height: 2rem;
+    }
+
+    &>:nth-child(odd) {
+      background-color: var(--bg2);
+    }
+    &>:nth-child(even) {
+      background-color: var(--bg3);
+    }
+  }
+  .promotemember {
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+    
+    border: none;
+    background-color: var(--bg1);
+    border-radius: .25rem;
+    color: var(--fg1);
+
+    font-size: 1.5rem;
+
+    &:active, &:hover {
+      background-color: var(--lightblue);
+      color: var(--bg1);
     }
   }
 </style>

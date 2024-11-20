@@ -31,6 +31,8 @@ export const load: PageServerLoad = async ({ cookies, params }) => {
     }
   }
 
+  const members = await DatabaseConnection.query<{username: string, id: number, administrator: boolean}>('SELECT users.username, users.id, guildmembers.administrator FROM guildmembers INNER JOIN users ON users.id = userid WHERE guildid = $1::integer', guild.id);
+
   const guilds = await DatabaseConnection.query<Guild>('SELECT guilds.* FROM guildmembers INNER JOIN guilds ON guilds.id = guildmembers.guildid WHERE guildmembers.userid = $1::integer', user.id);
 
   if (!member) redirect(302, `/app/guild/${params.guildid}`);
@@ -38,6 +40,8 @@ export const load: PageServerLoad = async ({ cookies, params }) => {
   return {
     guild,
     guilds,
-    guildsettings
+    guildsettings,
+    members,
+    userid: user.id
   }
 };
