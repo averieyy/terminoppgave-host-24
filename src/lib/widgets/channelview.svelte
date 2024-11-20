@@ -45,7 +45,7 @@
 
   function sendMessage(ev: SubmitEvent) {
     ev.preventDefault();
-    if (messageFileContent.length + messageImageContent.length + messageTextContent.content.length == 0) return;
+    if (messageFileContent.length + messageTextFileContent.length + messageImageContent.length + messageTextContent.content.length == 0) return;
     fetch(`${streamsource}/send`, {
       method: 'POST',
       body: JSON.stringify({
@@ -92,6 +92,7 @@
     if (!(file instanceof File) || file.size >= 25165824) return;
 
     const isImage = file.type.startsWith('image/');
+    const isTextFile = file.type == 'text/plain';
 
     formData.set('file', file);
 
@@ -103,12 +104,21 @@
       const path: string = (await fileresp.json()).path;
 
       if (isImage) messageImageContent.push(new ImageContent(path))
+      else if (isTextFile)
+        messageTextFileContent.push(
+          new TextFileContent(
+            path,
+            file.name,
+            (await file.text()).slice(0, 50)
+          )
+        );
       else messageFileContent.push(new FileContent(path, file.name));
 
       uploadPopupOpen = false;
       files = undefined;
     
       if (isImage) messageImageContent = messageImageContent;
+      else if (isTextFile) messageTextFileContent = messageTextFileContent;
       else messageFileContent = messageFileContent;
     }
   }
