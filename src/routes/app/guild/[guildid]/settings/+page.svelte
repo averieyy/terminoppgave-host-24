@@ -46,6 +46,16 @@ import type { PageData } from "./$types";
     if (resp.ok) goto('/app');
   }
 
+  async function deleteGuild() {
+    const resp = await fetch('/api/guild/delete', {
+      method: 'POST',
+      body: JSON.stringify({
+        guildid: guild.id
+      })
+    });
+    if (resp.ok) goto('/app');
+  }
+
   async function toggleAdmin (userid: number, admin: boolean) {
     const oldmembers = $state.snapshot(members);
     members = members.map(m => {return {...m, administrator: m.id == userid ? !admin : m.administrator}});
@@ -111,6 +121,9 @@ import type { PageData } from "./$types";
       <h2>Danger</h2>
       <button class="danger" onclick={leaveGuild}>
         Leave
+      </button>
+      <button class="danger" onclick={deleteGuild}>
+        Delete guild
       </button>
     </section>
     <div class={`unsavedpopup ${unsavedChanges ? 'open' : 'closed'}`}>

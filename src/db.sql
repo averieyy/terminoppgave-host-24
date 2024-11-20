@@ -9,7 +9,8 @@ CREATE TABLE guilds (
   id SERIAL PRIMARY KEY,
   name TEXT NOT NULL,
   description TEXT,
-  colour TEXT NOT NULL CONSTRAINT colour_hex_constraint CHECK (colour ~* '^#[a-f0-9]{6}$') -- Only valid hex colours allowed
+  colour TEXT NOT NULL CONSTRAINT colour_hex_constraint CHECK (colour ~* '^#[a-f0-9]{6}$'), -- Only valid hex colours allowed
+  deleted BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 CREATE TABLE channel (
