@@ -29,9 +29,7 @@ export class Channel {
     const messages = await DatabaseConnection.query<IMessage>('SELECT * FROM messages WHERE channelid = $1::integer AND deleted = FALSE', this.id);
 
     const messageobjs: Message[] = [];
-
-    if (!OnlineMemberIds.includes(member.id)) OnlineMemberIds.push(member.id);
-
+    
     for (let m of messages) {
       const message = await Message.fromIMessage(m);
       if (message) messageobjs.push(message);
@@ -48,10 +46,6 @@ export class Channel {
     const channelmemberindex = ChannelMembers[this.id].findIndex(m => m.id == member.id);
     if (channelmemberindex != -1)
       ChannelMembers[this.id].splice(channelmemberindex, 1);
-
-    const index = OnlineMemberIds.indexOf(member.id);
-    if (index != -1)
-      OnlineMemberIds.splice(index, 1);
   }
 
   broadcast(message: string | object, event: string = 'channelmessage') {
