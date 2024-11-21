@@ -31,6 +31,7 @@ export const load: PageServerLoad = async ({ cookies, params, url }) => {
       description: g.description,
       colour: g.colour
     }}),
-    members
+    members,
+    userid: user.id
   }
 };

@@ -29,19 +29,21 @@ export const POST : RequestHandler = async ({ cookies, params, request }) => {
 
   if(typedcontent.length == 0) return json({ message: 'Content has the wrong formatting' }, { status: 400 });
 
-  const messageobject = new Message(typedcontent, user, new Date(datetime));
+  const dt = new Date(datetime);
 
   // Log to database
   const messageidobj = await DatabaseConnection.queryOne<{id: number}>(
     'INSERT INTO messages (senderid, channelid, sentat) VALUES ($1::integer, $2::integer, $3::timestamp) RETURNING id',
-    messageobject.sender.id,
+    user.id,
     channelid,
-    messageobject.datetime);
-
+    dt);
+    
+    
   const msgid = messageidobj?.id;
-
   if (!msgid) return json({ message: 'An err' }, { status: 500 });
-
+  
+  const messageobject = new Message(typedcontent, user, new Date(datetime), msgid);
+  
   // Log messagecontent to database
   for (const messagecontent of content) {
     if (TextContent.isTextContent(messagecontent))

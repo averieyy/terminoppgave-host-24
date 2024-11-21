@@ -8,11 +8,13 @@ export class Message {
   sender: User;
   datetime: Date;
   content: MessageContent[];
+  id: number;
 
-  constructor (content: MessageContent[], sender: User, datetime: Date = new Date()) {
+  constructor (content: MessageContent[], sender: User, datetime: Date = new Date(), id: number) {
     this.content = content;
     this.sender = sender;
     this.datetime = datetime;
+    this.id = id;
   }
 
   static async fromIMessage(m: IMessage): Promise<Message | undefined> {
@@ -44,14 +46,16 @@ export class Message {
       // Other content types
     ];
 
-    return new Message(messagecontent, user, m.sentat);
+    return new Message(messagecontent, user, m.sentat, m.id);
   }
 
   toSendable (): object {
     return {
       content: this.content,
       user: this.sender.username,
-      datetime: this.datetime
+      datetime: this.datetime,
+      id: this.id,
+      senderid: this.sender.id
     }
   }
 }

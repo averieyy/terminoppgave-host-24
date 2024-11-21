@@ -4,9 +4,9 @@
   import Icon from "./icon.svelte";
   import { DateReviver } from "../frontend/datereviver";
   import Popup from "./popup.svelte";
-    import Textfile from "./textfile.svelte";
+  import Textfile from "./textfile.svelte";
 
-  const { streamsource, title }: { streamsource: string, title: string } = $props();
+  const { streamsource, title, userid }: { streamsource: string, title: string, userid: number } = $props();
 
   let messages: Message[] = $state([]);
   let messagelist: HTMLDivElement | undefined = $state();
@@ -28,6 +28,14 @@
     stream.addEventListener('channelmessage', ev => {
       const msg = JSON.parse(ev.data, DateReviver) as Message;
       messages.push(msg);
+
+      messages = messages;
+    });
+    stream.addEventListener('messagedelete', ev => {
+      const { id } = JSON.parse(ev.data) as {id: number};
+      
+      const deleteindex = messages.findIndex(m => m.id == id);
+      messages.splice(deleteindex, 1);
 
       messages = messages;
     });
@@ -63,6 +71,24 @@
     messageImageContent = [];
     messageTextFileContent = [];
     messageTextContent = new TextContent('');
+  }
+
+  async function deleteMessage (messageid: number) {
+    const oldMessages = $state.snapshot(messages);
+
+    const messageindex = messages.findIndex(m => m.id == messageid);
+    messages.splice(messageindex, 1);
+
+    const resp = await fetch(`${streamsource}/delete`, {
+      method: 'DELETE',
+      body: JSON.stringify({
+        messageid
+      })
+    });
+
+    if (!resp.ok) {
+      messages = oldMessages;
+    }
   }
 
   function scrollDown() {
@@ -170,31 +196,43 @@
           {message.datetime.toDateString()}
         </div>
       {/if}
-      <div class="message">
-        <span class="time">{message.datetime.getHours().toString().padStart(2,'0')}:{message.datetime.getMinutes().toString().padStart(2, '0')}</span>
-        <span class="sender">{message.user}</span>
-        <div class="messagecontent">
-          {#each message.content as messageContent}
-            {#if messageContent.type == "text"}
-              <span class="content">{(messageContent as TextContent).content}</span>
-            {:else if messageContent.type == "file"}
-              <div class="outerfilecontent">
-                <div class="messagefile">
-                  <div class="fileicon">
-                    <Icon icon="description"/>
+      <div class="outermessage">
+        <div class="message">
+          <span class="time">{message.datetime.getHours().toString().padStart(2,'0')}:{message.datetime.getMinutes().toString().padStart(2, '0')}</span>
+          <span class="sender">{message.user}</span>
+          <div class="messagecontent">
+            {#each message.content as messageContent}
+              {#if messageContent.type == "text"}
+                <span class="content">{(messageContent as TextContent).content}</span>
+              {:else if messageContent.type == "file"}
+                <div class="outerfilecontent">
+                  <div class="messagefile">
+                    <div class="fileicon">
+                      <Icon icon="description"/>
+                    </div>
+                    <span class="filename">{(messageContent as FileContent).displayname}</span>
+                    <a href={`/api/upload/${(messageContent as FileContent).path}`} download class="download">
+                      <Icon icon='download'/>
+                    </a>
                   </div>
-                  <span class="filename">{(messageContent as FileContent).displayname}</span>
-                  <a href={`/api/upload/${(messageContent as FileContent).path}`} download class="download">
-                    <Icon icon='download'/>
-                  </a>
                 </div>
-              </div>
-            {:else if messageContent.type == "image"}
-              <img class="messageimage" src={`/api/upload/${(messageContent as ImageContent).path}`} alt="User-contributed">              
-            {:else if messageContent.type == "textfile"}
-              <Textfile textfile={messageContent as TextFileContent}/>
+              {:else if messageContent.type == "image"}
+                <img class="messageimage" src={`/api/upload/${(messageContent as ImageContent).path}`} alt="User-contributed">              
+              {:else if messageContent.type == "textfile"}
+                <Textfile textfile={messageContent as TextFileContent}/>
+              {/if}
+            {/each}
+          </div>
+          <div class="expand"></div>
+        </div>
+        <div class="outerhovermenu">
+          <div class="hovermenu">
+            {#if message.senderid == userid}
+              <button class="delete" onclick={() => deleteMessage(message.id)}>
+                <Icon icon="delete"/>
+              </button>
             {/if}
-          {/each}
+          </div>
         </div>
       </div>
     {/each}
@@ -261,6 +299,7 @@
   }
 
   .message {
+    flex: 1;
     display: flex;
     flex-direction: row;
     gap: .5rem;
@@ -475,5 +514,49 @@
         color: var(--bg1);
       }
     }
+  }
+  .delete {
+    background-color: inherit;
+
+    color: var(--fg1);
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: .25rem;
+    font-size: 1.25rem;
+    border: none;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover, &:active {
+      background-color: var(--lightblue);
+      color: var(--bg1);
+    }
+  }
+  .hovermenu {
+    display: none;
+    background-color: var(--bg3);
+    position: absolute;
+    translate: -100% 0;
+    top: -1rem;
+    left: -.5rem;
+    padding: .25rem;
+    border-radius: .5rem;
+  }
+  .outerhovermenu {
+    width: 0;
+    height: 0;
+    position: relative;
+  }
+  :hover>*>.hovermenu {
+    display: flex;
+    flex-direction: row;
+    height: fit-content;
+    gap: .5rem;
+  }
+  .outermessage {
+    display: flex;
+    flex-direction: row;
   }
 </style>

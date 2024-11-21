@@ -8,7 +8,7 @@
   const { data }: { data: PageData } = $props();
 
   let channelid = $page.params.channelid;
-  const { channel, guilds, members } = data;
+  const { channel, guilds, members, userid } = data;
 </script>
 
 <svelte:head>
@@ -20,7 +20,7 @@
 <main>
   <Guildlist guilds={guilds} selectedid={channel.guildid} />
   <div class="channel">
-    <Channelview title={channel.name} streamsource={`/api/channel/${channelid}`}/>
+    <Channelview title={channel.name} streamsource={`/api/channel/${channelid}`} userid={userid}/>
   </div>
   <Memberlist members={members} />
 </main>
