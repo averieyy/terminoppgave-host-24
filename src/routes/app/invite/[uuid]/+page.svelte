@@ -26,6 +26,10 @@
   }
 </script>
 
+<svelte:head>
+  <title>Join {guild.name} - Roundtalk</title>
+</svelte:head>
+
 <main>
   <div class="invitebody">
     <span>You've been invited to join</span>

@@ -31,6 +31,10 @@ function register() {
 }
 </script>
 
+<svelte:head>
+  <title>Register - Roundtalk</title>
+</svelte:head>
+
 <main>
 <form class="loginform" onsubmit={register}>
   <h2>Register</h2>

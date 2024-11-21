@@ -30,6 +30,10 @@
 
 </script>
 
+<svelte:head>
+  <title>Create guild - Roundtalk</title>
+</svelte:head>
+
 <div class="outerpage">
   <main>
     <div class="guildform">

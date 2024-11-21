@@ -32,6 +32,10 @@
   }
 </script>
 
+<svelte:head>
+  <title>Login - Roundtalk</title>
+</svelte:head>
+
 <main>
   <form class="loginform" onsubmit={logIn}>
     <h2>Log in</h2>

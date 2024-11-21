@@ -18,8 +18,9 @@
 </script>
 
 <svelte:head>
-  <title>Discover - Roundtalk</title>
+  <title>Discover guilds - Roundtalk</title>
 </svelte:head>
+
 <div class="outerpage">
   <Guildlist guilds={guilds} selectedid={-1}/>
   <main>

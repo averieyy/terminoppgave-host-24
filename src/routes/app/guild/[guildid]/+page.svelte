@@ -67,6 +67,10 @@
   }
 </script>
 
+<svelte:head>
+  <title>{guild.name} - Roundtalk</title>
+</svelte:head>
+
 {#if admin}
   <Popup title="Create channel" open={createChannelPopupOpen} close={() => createChannelPopupOpen = false}>
     <form class="createchannelform" onsubmit={createChannel}>

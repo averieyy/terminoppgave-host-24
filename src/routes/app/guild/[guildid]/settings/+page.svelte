@@ -73,6 +73,10 @@ import type { PageData } from "./$types";
   }
 </script>
 
+<svelte:head>
+  <title>Settings for {guild.name} - Roundtalk</title>
+</svelte:head>
+
 <main>
   <Guildlist guilds={guilds} selectedid={guild.id} />
   <div class="maincontent">

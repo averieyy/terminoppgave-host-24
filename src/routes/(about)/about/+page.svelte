@@ -4,6 +4,10 @@
 
 </script>
 
+<svelte:head>
+  <title>About roundtalk</title>
+</svelte:head>
+
 <div class="upper"></div>
 <div class="outerarticle">
   <article>
