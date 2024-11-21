@@ -23,7 +23,8 @@ CREATE TABLE messages (
   id SERIAL PRIMARY KEY,
   senderid INT NOT NULL REFERENCES users(id),
   channelid INT NOT NULL REFERENCES channel(id),
-  sentat TIMESTAMP NOT NULL
+  sentat TIMESTAMP NOT NULL,
+  deleted BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 CREATE TABLE tokens (

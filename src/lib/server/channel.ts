@@ -26,8 +26,8 @@ export class Channel {
     if (!ChannelMembers[this.id]) ChannelMembers[this.id] = [member];
     else ChannelMembers[this.id].push(member);
 
-    const messages = await DatabaseConnection.query<IMessage>('SELECT * FROM messages WHERE channelid = $1::integer', this.id);
-    
+    const messages = await DatabaseConnection.query<IMessage>('SELECT * FROM messages WHERE channelid = $1::integer AND deleted = FALSE', this.id);
+
     const messageobjs: Message[] = [];
 
     for (let m of messages) {
