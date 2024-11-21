@@ -53,3 +53,4 @@ export class Member extends User {
 }
 
 export const ChannelMembers: {[ key: number ]: Member[]} = {};
+export const OnlineMemberIds: number[] = [];

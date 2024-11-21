@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import { FileContent, ImageContent, TextContent, TextFileContent, type Message } from "../frontend/types";
   import Icon from "./icon.svelte";
   import { DateReviver } from "../frontend/datereviver";
@@ -20,8 +20,10 @@
 
   let scrolling = false;
 
+  let stream: EventSource;
+
   onMount(() => {
-    const stream = new EventSource(streamsource);
+    stream = new EventSource(streamsource);
     stream.addEventListener('history', ev => {
       const msg = JSON.parse(ev.data, DateReviver) as Message[];
       
@@ -47,6 +49,12 @@
     messagelist?.addEventListener('scroll', () => {
       scrolling = !messagelist || (messagelist.scrollTop + messagelist.clientHeight) < messagelist.scrollHeight;
     });
+  });
+
+  onDestroy(() => {
+    if (stream) {
+      stream.close();
+    }
   });
 
   let messageTextContent: TextContent = $state(new TextContent(''));

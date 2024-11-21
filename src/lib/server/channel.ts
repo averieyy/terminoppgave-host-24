@@ -1,7 +1,7 @@
 import { DatabaseConnection } from "./database/connection";
 import type { IChannel, IMessage } from "./database/types";
 import { Message } from "./message";
-import { ChannelMembers, User, type Member } from "./user";
+import { ChannelMembers, Member, OnlineMemberIds, User } from "./user";
 
 export class Channel {
 
@@ -30,6 +30,8 @@ export class Channel {
 
     const messageobjs: Message[] = [];
 
+    if (!OnlineMemberIds.includes(member.id)) OnlineMemberIds.push(member.id);
+
     for (let m of messages) {
       const message = await Message.fromIMessage(m);
       if (message) messageobjs.push(message);
@@ -40,10 +42,16 @@ export class Channel {
 
   disconnect(member: Member) {
     const memberindex = this.members.findIndex(m => m.id == member.id);
-    
-    if (memberindex == -1) return;
-    
-    this.members.splice(memberindex, 1);
+    if (memberindex != -1)
+      this.members.splice(memberindex, 1);
+
+    const channelmemberindex = ChannelMembers[this.id].findIndex(m => m.id == member.id);
+    if (channelmemberindex != -1)
+      ChannelMembers[this.id].splice(channelmemberindex, 1);
+
+    const index = OnlineMemberIds.indexOf(member.id);
+    if (index != -1)
+      OnlineMemberIds.splice(index, 1);
   }
 
   broadcast(message: string | object, event: string = 'channelmessage') {

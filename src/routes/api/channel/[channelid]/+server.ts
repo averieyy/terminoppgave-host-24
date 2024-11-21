@@ -26,6 +26,7 @@ export const GET: RequestHandler = async ({ params, cookies }) => {
     },
     cancel() {
       channel.disconnect(channelmember);
+      console.log(`${user.username} disconnected`);
     }
   });
 

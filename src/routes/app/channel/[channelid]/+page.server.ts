@@ -4,7 +4,7 @@ import { Token } from "$lib/server/token";
 import { DatabaseConnection } from "$lib/server/database/connection";
 import type { IGuildMember, IChannel } from "$lib/server/database/types";
 import { Guild } from "$lib/server/guild";
-import { ChannelMembers, User } from "$lib/server/user";
+import { ChannelMembers, OnlineMemberIds, User } from "$lib/server/user";
 
 export const load: PageServerLoad = async ({ cookies, params, url }) => {
   // Get user
@@ -21,7 +21,9 @@ export const load: PageServerLoad = async ({ cookies, params, url }) => {
 
   const allmembers = await DatabaseConnection.query<IGuildMember & User>('SELECT * FROM guildmembers INNER JOIN users ON guildmembers.userid = users.id WHERE guildmembers.guildid = $1::integer', guild.id);
 
-  const members: {username: string, online: boolean}[] = allmembers.map(m => { return {username: m.username, online: !!(ChannelMembers[guild.id]?.find(u => u.id == m.id) || user.id == m.id)}});
+  console.log(OnlineMemberIds);
+
+  const members: {username: string, online: boolean}[] = allmembers.map(m => { return {username: m.username, online: OnlineMemberIds.includes(m.userid) || user.id == m.userid}});
   const member = allmembers.find(m => m.userid == user.id);
   if (!member) redirect(302, '/app');
 
