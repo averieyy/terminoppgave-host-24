@@ -81,9 +81,14 @@
     width: 100%;
 
     &>* {
-      max-width: 20rem;
+      max-width: 100%;
       max-height: 20rem;
     }
+  }
+
+  .content {
+    width: fit-content;
+    max-width: fit-content;
   }
 
   .delete:hover {
@@ -134,7 +139,7 @@
     height: fit-content;
     gap: .5rem;
   }
-  
+
   .outermessage {
     display: flex;
     flex-direction: row;
