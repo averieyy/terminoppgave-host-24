@@ -5,6 +5,8 @@
   import { DateReviver } from "../frontend/datereviver";
   import Popup from "./popup.svelte";
   import Textfile from "./textfile.svelte";
+  import Filecontent from "./filecontent.svelte";
+  import Messagew from "./messagew.svelte";
 
   const { streamsource, title, userid, admin=false }: { streamsource: string, title: string, userid: number, admin: boolean } = $props();
 
@@ -187,48 +189,7 @@
           {message.datetime.toDateString()}
         </div>
       {/if}
-      <div class="outermessage">
-        <div class="message">
-          <span class="time">{message.datetime.getHours().toString().padStart(2,'0')}:{message.datetime.getMinutes().toString().padStart(2, '0')}</span>
-          <span class="sender">{message.user}</span>
-          <div class="messagecontent">
-            {#each message.content as messageContent}
-              {#if messageContent.type == "text"}
-                <span class="content">{(messageContent as TextContent).content}</span>
-              {:else if messageContent.type == "file"}
-                <div class="outerfilecontent">
-                  <div class="messagefile">
-                    <div class="fileicon">
-                      <Icon icon="description"/>
-                    </div>
-                    <span class="filename">{(messageContent as FileContent).displayname}</span>
-                    <a href={`/api/upload/${(messageContent as FileContent).path}`} download class="download">
-                      <Icon icon='download'/>
-                    </a>
-                  </div>
-                </div>
-              {:else if messageContent.type == "image"}
-                <img class="messageimage" src={`/api/upload/${(messageContent as ImageContent).path}`} alt="User-contributed">              
-              {:else if messageContent.type == "textfile"}
-                <Textfile textfile={messageContent as TextFileContent}/>
-              {/if}
-            {/each}
-          </div>
-          <div class="expand"></div>
-        </div>
-        <div class="outerhovermenu">
-          <div class="hovermenu">
-            <button>
-              <Icon icon="more_horiz"/>
-            </button>
-            {#if message.senderid == userid || admin}
-              <button class="delete" onclick={() => deleteMessage(message.id)}>
-                <Icon icon="delete"/>
-              </button>
-            {/if}
-          </div>
-        </div>
-      </div>
+      <Messagew message={message} admin={admin} userid={userid} del={deleteMessage} />
     {/each}
   </div>
   <div class="messagebar">
@@ -238,17 +199,7 @@
           <Textfile textfile={textFileContent} remove={removeTextFile} />
         {/each}
         {#each messageFileContent as fileContent}
-          <div class="messagefile">
-            <div class="fileicon">
-              <Icon icon='description'/>
-            </div>
-            <span class="filename">
-              {fileContent.displayname}
-            </span>
-            <button class="remove" onclick={() => removeFile(fileContent.path)}>
-              <Icon icon='close'/>
-            </button>
-          </div>
+          <Filecontent filecontent={fileContent} remove={removeFile}/>
         {/each}
         {#each messageImageContent as imageContent}
           <div class="imageattachment">
@@ -269,12 +220,6 @@
 </div>
 
 <style>
-  @media (max-width: 600px) {
-    .time {
-      display: none;
-    }
-  }
-
   .channelview {
     height: 100%;
     max-height: 100%;
@@ -290,31 +235,6 @@
     flex-direction: column;
     flex: 1;
     overflow: scroll;
-  }
-
-  .message {
-    flex: 1;
-    display: flex;
-    flex-direction: row;
-    gap: .5rem;
-    padding: .5rem;
-    background-color: var(--bg1);
-
-    font-size: 16px;
-  }
-
-  .outermessage:hover>.message {
-    background-color: var(--bg2);
-  }
-
-  .sender {
-    color: var(--lightblue);
-  }
-
-  .time {
-    color: var(--bg4);
-    font-style: italic;
-    font-family: 'Jetbrains Mono', monospace;
   }
 
   .sendmessage {
@@ -429,62 +349,7 @@
     flex-direction: column;
     gap: .5rem;
   }
-  .messagefile {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    
-    gap: .5rem;
-    padding: .5rem;
-    
-    background-color: var(--bg3);
 
-    flex: 1;
-
-    & .fileicon, & .download, & .remove {
-      width: 2rem;
-      height: 2rem;
-
-      border: none;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      font-size: 1.5rem;
-    }
-
-    & .filename {
-      flex: 1;
-      text-align: center;
-    }
-
-    & .download, & .remove {
-      border: none;
-      background-color: var(--bg2);
-      color: var(--fg1);
-      text-decoration: none;
-
-      &:hover, &:active {
-        background-color: var(--lightblue);
-        color: var(--bg1);
-      }
-    }
-  }
-  .messagecontent {
-    display: flex;
-    flex-direction: column;
-    gap: .5rem;
-    flex: 1;
-
-    max-width: 20rem;
-    width: 100%;
-
-    &>* {
-      max-width: 20rem;
-      max-height: 20rem;
-    }
-  }
   .messageimage {
     max-width: 20rem;
     width: 100%;
@@ -508,54 +373,5 @@
         color: var(--bg1);
       }
     }
-  }
-  .delete:hover {
-    background-color: var(--red) !important;
-  }
-  .hovermenu {
-    display: none;
-    background-color: var(--bg3);
-    position: absolute;
-    translate: -100% 0;
-    top: -.75rem;
-    left: -.5rem;
-    padding: .25rem;
-    border-radius: .5rem;
-
-    &>button {
-
-      background-color: inherit;
-
-      color: var(--fg1);
-      width: 1.5rem;
-      height: 1.5rem;
-      border-radius: .25rem;
-      font-size: 1.25rem;
-      border: none;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      &:hover, &:active {
-        background-color: var(--lightblue);
-        color: var(--bg1);
-      }
-    }
-  }
-  .outerhovermenu {
-    width: 0;
-    height: 0;
-    position: relative;
-  }
-  :hover>*>.hovermenu {
-    display: flex;
-    flex-direction: row;
-    height: fit-content;
-    gap: .5rem;
-  }
-  .outermessage {
-    display: flex;
-    flex-direction: row;
   }
 </style>
