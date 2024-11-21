@@ -6,7 +6,7 @@
   import Popup from "./popup.svelte";
   import Textfile from "./textfile.svelte";
 
-  const { streamsource, title, userid }: { streamsource: string, title: string, userid: number } = $props();
+  const { streamsource, title, userid, admin=false }: { streamsource: string, title: string, userid: number, admin: boolean } = $props();
 
   let messages: Message[] = $state([]);
   let messagelist: HTMLDivElement | undefined = $state();
@@ -74,21 +74,12 @@
   }
 
   async function deleteMessage (messageid: number) {
-    const oldMessages = $state.snapshot(messages);
-
-    const messageindex = messages.findIndex(m => m.id == messageid);
-    messages.splice(messageindex, 1);
-
     const resp = await fetch(`${streamsource}/delete`, {
       method: 'DELETE',
       body: JSON.stringify({
         messageid
       })
     });
-
-    if (!resp.ok) {
-      messages = oldMessages;
-    }
   }
 
   function scrollDown() {
@@ -227,7 +218,10 @@
         </div>
         <div class="outerhovermenu">
           <div class="hovermenu">
-            {#if message.senderid == userid}
+            <button>
+              <Icon icon="more_horiz"/>
+            </button>
+            {#if message.senderid == userid || admin}
               <button class="delete" onclick={() => deleteMessage(message.id)}>
                 <Icon icon="delete"/>
               </button>
@@ -307,10 +301,10 @@
     background-color: var(--bg1);
 
     font-size: 16px;
+  }
 
-    &:hover {
-      background-color: var(--bg2);
-    }
+  .outermessage:hover>.message {
+    background-color: var(--bg2);
   }
 
   .sender {
@@ -515,34 +509,39 @@
       }
     }
   }
-  .delete {
-    background-color: inherit;
-
-    color: var(--fg1);
-    width: 1.5rem;
-    height: 1.5rem;
-    border-radius: .25rem;
-    font-size: 1.25rem;
-    border: none;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    &:hover, &:active {
-      background-color: var(--lightblue);
-      color: var(--bg1);
-    }
+  .delete:hover {
+    background-color: var(--red) !important;
   }
   .hovermenu {
     display: none;
     background-color: var(--bg3);
     position: absolute;
     translate: -100% 0;
-    top: -1rem;
+    top: -.75rem;
     left: -.5rem;
     padding: .25rem;
     border-radius: .5rem;
+
+    &>button {
+
+      background-color: inherit;
+
+      color: var(--fg1);
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: .25rem;
+      font-size: 1.25rem;
+      border: none;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &:hover, &:active {
+        background-color: var(--lightblue);
+        color: var(--bg1);
+      }
+    }
   }
   .outerhovermenu {
     width: 0;
