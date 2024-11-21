@@ -87,6 +87,8 @@
     padding: .5rem;
     background-color: var(--bg2);
 
+    overflow-y: auto;
+
     &>button {
       background-color: var(--lightblue);
       color: var(--bg1);

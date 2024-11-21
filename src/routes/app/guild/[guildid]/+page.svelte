@@ -199,8 +199,9 @@
     flex-direction: column;
     padding: 1rem;
     align-items: center;
-    justify-content: center;
     flex: 1;
+
+    overflow-y: auto;
   }
   .channellist {
     display: flex;

@@ -154,7 +154,7 @@ import type { PageData } from "./$types";
     flex-direction: column;
     gap: 1rem;
 
-    overflow: hidden;
+    overflow-y: auto;
 
     position: relative;
   }
@@ -222,12 +222,11 @@ import type { PageData } from "./$types";
     margin: .5rem;
   }
   .unsavedpopup {
-    position: absolute;
+    position: fixed;
     padding: 1rem;
     bottom: 0;
-    left: 0;
-    width: calc(100% - 2rem);
-
+    left: 4rem;
+    width: calc(100% - 6rem);
     
     transition: translate .125s ease;
     
