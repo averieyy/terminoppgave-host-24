@@ -1,5 +1,5 @@
 <script lang="ts">
-    import Icon from "./icon.svelte";
+  import Icon from "./icon.svelte";
 
   const { members }: { members: { username: string, online: boolean }[] } = $props();
 

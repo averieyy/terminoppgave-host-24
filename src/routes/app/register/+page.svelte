@@ -2,33 +2,33 @@
   import { goto } from "$app/navigation";
   import { page } from "$app/stores";
 
-let redirectLocation = $page.url.searchParams.get('redirect');
+  let redirectLocation = $page.url.searchParams.get('redirect');
 
-let username: string = $state('');
-let password: string = $state('');
+  let username: string = $state('');
+  let password: string = $state('');
 
-let detailError: boolean = $state(false);
-let errorMessage = $state('');
+  let detailError: boolean = $state(false);
+  let errorMessage = $state('');
 
-function register() {
-  fetch('/api/register', {
-    method: 'POST',
-    body: JSON.stringify({
-      username: username,
-      password: password,
-    }),
-  }).then(async resp => {
-    if (resp.ok) {
-      goto(redirectLocation || '/app');
-    }
-    else {
-      username = '';
-      password = '';
-      detailError = true;
-      errorMessage = (await resp.json()).message || 'An error occured when trying to register';
-    }
-  });
-}
+  function register() {
+    fetch('/api/register', {
+      method: 'POST',
+      body: JSON.stringify({
+        username: username,
+        password: password,
+      }),
+    }).then(async resp => {
+      if (resp.ok) {
+        goto(redirectLocation || '/app');
+      }
+      else {
+        username = '';
+        password = '';
+        detailError = true;
+        errorMessage = (await resp.json()).message || 'An error occured when trying to register';
+      }
+    });
+  }
 </script>
 
 <svelte:head>

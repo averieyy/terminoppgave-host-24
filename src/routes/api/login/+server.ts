@@ -4,7 +4,6 @@ import { User } from "$lib/server/user";
 import { json, type RequestHandler } from "@sveltejs/kit";
 
 export const POST: RequestHandler = async ({ cookies, request }) => {
-
   const { username, password } : { username: string, password: string } = await request.json();
 
   if (!username || !password) {
@@ -15,12 +14,11 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
     return json({ message: 'Password has to be longer than 8 characters' }, { status: 400 });
   }
 
-  const user = await DatabaseConnection.queryOne<User>('SELECT * from users where username = $1::text;', username);
+  const user = await DatabaseConnection.queryOne<User>('SELECT * FROM users WHERE username = $1::text;', username);
   if (!user) return json({message: 'Could not find user'}, { status: 404 });
 
   if (User.hashPassword(password, user.salt) !== user.hash)
     return json({ message: 'Password does not match' }, { status: 200 });
-
   
   const cookie = await Token.createNewToken(user);
 

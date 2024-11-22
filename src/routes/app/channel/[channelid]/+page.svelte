@@ -2,12 +2,12 @@
   import { page } from "$app/stores";
   import Channelview from "$lib/widgets/channelview.svelte";
   import Guildlist from "$lib/widgets/guildlist.svelte";
-    import Memberlist from "$lib/widgets/memberlist.svelte";
+  import Memberlist from "$lib/widgets/memberlist.svelte";
   import type { PageData } from "./$types";
 
-  const { data }: { data: PageData } = $props();
-
   let channelid = $page.params.channelid;
+  
+  const { data }: { data: PageData } = $props();
   const { channel, guilds, members, userid, admin } = data;
 </script>
 

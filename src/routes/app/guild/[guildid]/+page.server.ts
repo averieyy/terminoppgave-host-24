@@ -4,7 +4,7 @@ import { Token } from "$lib/server/token";
 import { DatabaseConnection } from "$lib/server/database/connection";
 import type { Guild } from "$lib/server/guild";
 import type { IChannel, IGuildMember } from "$lib/server/database/types";
-import { ChannelMembers, Member, OnlineMemberIds } from "$lib/server/user";
+import { OnlineMemberIds } from "$lib/server/user";
 
 export const load: PageServerLoad = async ({ cookies, params, url }) => {
   // Get User

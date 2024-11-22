@@ -7,7 +7,8 @@
   let stream: EventSource;
 
   onMount(() => {
-    stream = new EventSource('/api/online');
+    if (loggedin)
+      stream = new EventSource('/api/online');
   });
 
   onDestroy(() => {

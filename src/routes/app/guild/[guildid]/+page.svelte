@@ -7,7 +7,6 @@
   import Popup from '$lib/widgets/popup.svelte';
 
   const { data } = $props();
-
   const { guild, guilds, admin, channels, members } = $derived(data); // To make it so that you can go from one guild page to another. <https://github.com/sveltejs/kit/issues/1497>
 
   let createChannelPopupOpen: boolean = $state(false);

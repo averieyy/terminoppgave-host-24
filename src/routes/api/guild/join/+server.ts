@@ -5,7 +5,6 @@ import { json, type RequestHandler } from "@sveltejs/kit";
 
 export const POST: RequestHandler = async ({ cookies, request }) => {
   const user = await Token.getUserFromToken(cookies);
-
   if (!user) return json({ message: 'Unauthorized' }, { status: 403 });
 
   const { uuid }: { uuid: string } = await request.json();

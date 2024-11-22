@@ -1,6 +1,6 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
-    import { isLight, shortHand } from "$lib/frontend/guild.js";
+  import { isLight, shortHand } from "$lib/frontend/guild.js";
   import Guildlist from "$lib/widgets/guildlist.svelte";
 
   const { data } = $props();

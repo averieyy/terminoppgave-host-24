@@ -1,9 +1,8 @@
 <script lang="ts">
   import Guildlist from "$lib/widgets/guildlist.svelte";
-    import type { PageData } from "./$types";
+  import type { PageData } from "./$types";
 
   const { data }: { data: PageData } = $props();
-
   const { guilds } = data;
 </script>
 

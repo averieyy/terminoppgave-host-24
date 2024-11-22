@@ -1,6 +1,6 @@
 <script lang="ts">
-    import type { Snippet } from "svelte";
-    import Icon from "./icon.svelte";
+  import type { Snippet } from "svelte";
+  import Icon from "./icon.svelte";
 
   const { question, children }: { question: string, children: Snippet } = $props();
 

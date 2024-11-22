@@ -1,14 +1,14 @@
 <script lang="ts">
   import Header from "$lib/widgets/header.svelte";
   import type { Snippet } from "svelte";
-    import type { LayoutData } from "./$types";
+  import type { LayoutData } from "./$types";
 
   const { children, data }: { children: Snippet, data: LayoutData } = $props();
   const { loggedin } = data;
 </script>
 
 <div class="body">
-  <Header loggedin />
+  <Header loggedin={loggedin} />
   <main>
     {@render children()}
   </main>

@@ -1,6 +1,5 @@
 <script>
   import Icon from "$lib/widgets/icon.svelte";
-
 </script>
 
 <svelte:head>

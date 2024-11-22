@@ -14,7 +14,6 @@ export const DELETE: RequestHandler = async ({ cookies, request, params }) => {
   if (!channel) return json({ message: 'Channel not found' }, { status: 404 });
 
   const member = await DatabaseConnection.queryOne<IGuildMember>('SELECT guildmembers.* FROM channel INNER JOIN guildmembers ON channel.guildid = guildmembers.guildid WHERE channel.id = $1::integer AND guildmembers.userid = $2::integer', params.channelid, user.id);
-  
   if (!member) return json({ message: 'Unauthorized' }, { status: 403 });
   
   const { messageid }: { messageid: number } = await request.json();

@@ -11,7 +11,6 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
   const { guildid }: { guildid: number } = await request.json();
 
   const guild = await DatabaseConnection.queryOne<Guild>('SELECT guilds.* FROM guildsettings INNER JOIN guilds ON guilds.id = guildsettings.guildid WHERE guildsettings.discoverable = TRUE AND guildsettings.guildid = $1::integer', guildid);
-
   if (!guild) return json({ message: 'Guild not found' }, { status: 403 });
 
   const member = await DatabaseConnection.queryOne<IGuildMember>('SELECT * FROM guildmembers WHERE userid = $1::integer AND guildid = $2::integer', user.id, guildid);

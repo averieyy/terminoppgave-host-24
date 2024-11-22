@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { goto } from "$app/navigation";
-    import { page } from "$app/stores";
+  import { goto } from "$app/navigation";
+  import { page } from "$app/stores";
 
   let redirectLocation = $page.url.searchParams.get('redirect');
 

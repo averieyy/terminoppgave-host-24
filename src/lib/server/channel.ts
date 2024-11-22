@@ -1,7 +1,7 @@
 import { DatabaseConnection } from "./database/connection";
 import type { IChannel, IMessage } from "./database/types";
 import { Message } from "./message";
-import { ChannelMembers, Member, OnlineMemberIds, User } from "./user";
+import { ChannelMembers, Member } from "./user";
 
 export class Channel {
 
@@ -29,7 +29,7 @@ export class Channel {
     const messages = await DatabaseConnection.query<IMessage>('SELECT * FROM messages WHERE channelid = $1::integer AND deleted = FALSE', this.id);
 
     const messageobjs: Message[] = [];
-    
+
     for (let m of messages) {
       const message = await Message.fromIMessage(m);
       if (message) messageobjs.push(message);

@@ -5,7 +5,7 @@
   import Guildlist from "$lib/widgets/guildlist.svelte";
   import Icon from "$lib/widgets/icon.svelte";
   import Toggle from "$lib/widgets/toggle.svelte";
-import type { PageData } from "./$types";
+  import type { PageData } from "./$types";
 
   const { data }: { data: PageData } = $props();
   let { guild, guildsettings, guilds, members, userid } = $state(data);

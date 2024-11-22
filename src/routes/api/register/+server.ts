@@ -16,16 +16,13 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
   const users = await DatabaseConnection.query<User>('SELECT * FROM users WHERE username = $1::text', username);
   if (users.length > 0) return json({ message: 'Username already in use' }, { status: 409 });
 
-  // Unique username and good password
   const salt = User.genSalt();
   const hash = User.hashPassword(password, salt);
 
   const user = await User.createNewUser(username, hash, salt);
-
   if (!user) return json({ message: 'An error occured while trying to create new user' }, { status: 500 });
 
   const token = await Token.createNewToken(user);
-
   if (!token) return json({ message: 'An error occured while trying to store token' }, { status: 500 })
 
   cookies.set('token', token.content, { path: '/', secure: false, maxAge: TOKEN_TIMEOUT });

@@ -15,7 +15,6 @@ export const PUT: RequestHandler = async ({ cookies, request }) => {
   } = await request.json();
 
   const guildmember = await DatabaseConnection.queryOne<IGuildMember>('SELECT * FROM guildmembers WHERE guildid = $1::integer AND userid = $2::integer', guildid, user.id);
-
   if (!guildmember?.administrator) return json({ message: 'Unauthorized' }, { status: 403 });
   
   const guildexists = !!DatabaseConnection.queryOne<Guild>('SELECT * FROM guilds WHERE id = $1::integer', guildid);
@@ -26,6 +25,7 @@ export const PUT: RequestHandler = async ({ cookies, request }) => {
   else {
     await DatabaseConnection.execute('UPDATE guildsettings SET discoverable = $1::boolean WHERE guildid = $2::integer', guildsettings.discoverable, guildid);
   }
+  
   await DatabaseConnection.execute('UPDATE guilds SET name = $1::text, colour = $2::text, description = $3::text WHERE id = $4::integer', guild.name, guild.colour, guild.description, guildid);
 
   return json({ message: 'Updated' }, { status: 200 });

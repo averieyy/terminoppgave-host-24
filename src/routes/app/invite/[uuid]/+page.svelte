@@ -4,7 +4,6 @@
   import type { PageData } from "./$types";
 
   const { data }: { data: PageData } = $props();
-
   const { guild, uuid } = data;
 
   let errorMessage = $state('');

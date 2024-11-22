@@ -10,7 +10,6 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
   if (!user) return json({ message: 'Unauthorized' }, { status: 403 });
 
   const { guildid, name }: { guildid: number, name: string } = await request.json();
-
   if (!guildid || !name) return json({ message: 'Guild id or channel name missing' }, { status: 400 });
 
   const guild = await DatabaseConnection.queryOne<Guild>('SELECT * FROM guilds WHERE id = $1::integer;', guildid);

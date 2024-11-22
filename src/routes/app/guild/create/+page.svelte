@@ -3,7 +3,6 @@
   import { shortHand } from "$lib/frontend/guild";
   import Colourpicker from "$lib/widgets/colourpicker.svelte";
 
-
   let name: string = $state('');
   let description: string = $state('');
   let colour: string = $state('');
