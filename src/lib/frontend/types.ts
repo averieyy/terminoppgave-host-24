@@ -9,6 +9,10 @@ export class TextContent implements messagecontent {
   constructor (content: string) {
     this.content = content;
   }
+
+  static isTextContent (m: messagecontent): m is TextContent {
+    return m.type == 'text' && 'content' in m;
+  }
 }
 
 export class FileContent implements messagecontent {
@@ -50,9 +54,14 @@ export class Message {
   datetime: Date;
   id: number;
   senderid: number;
-  replyto?: number;
+  replyto: {
+    id: number,
+    sender: string,
+    content: messagecontent[],
+    deleted: boolean;
+  } | null;
 
-  constructor (content: messagecontent[], user: string, date: Date, id: number, senderid: number, replyto?: number) {
+  constructor (content: messagecontent[], user: string, date: Date, id: number, senderid: number, replyto: {id: number, sender: string, content: messagecontent[], deleted: boolean} | null) {
     this.content = content;
     this.user = user;
     this.datetime = date;

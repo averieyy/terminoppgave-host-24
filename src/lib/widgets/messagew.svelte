@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { FileContent, ImageContent, Message, TextContent, TextFileContent } from "$lib/frontend/types";
+  import { TextContent, type FileContent, type ImageContent, type Message, type TextFileContent } from "$lib/frontend/types";
   import Filecontent from "./filecontent.svelte";
   import Icon from "./icon.svelte";
   import Textfile from "./textfile.svelte";
@@ -8,21 +8,42 @@
 </script>
 
 <div class="outermessage">
-  <div class="message">
-    <span class="time">{message.datetime.getHours().toString().padStart(2,'0')}:{message.datetime.getMinutes().toString().padStart(2, '0')}</span>
-    <span class="sender">{message.user}</span>
-    <div class="messagecontent">
-      {#each message.content as messageContent}
-        {#if messageContent.type == "text"}
-          <span class="content">{(messageContent as TextContent).content}</span>
-        {:else if messageContent.type == "file"}
-          <Filecontent filecontent={messageContent as FileContent}/>
-        {:else if messageContent.type == "image"}
-          <img class="messageimage" src={`/api/upload/${(messageContent as ImageContent).path}`} alt="User-contributed">              
-        {:else if messageContent.type == "textfile"}
-          <Textfile textfile={messageContent as TextFileContent}/>
+  <div class="replymessage">
+    {#if message.replyto}
+      <div class="reply">
+        <Icon icon="reply"/>
+        {#if message.replyto.deleted}
+          <span>Message has been deleted</span>
+        {:else}
+          <span class="replyauthor">
+            {message.replyto.sender}
+          </span>
+          {#if (message.replyto.content.find(c => TextContent.isTextContent(c)))}
+            <span class="textcontent">
+              {message.replyto.content.find(c => TextContent.isTextContent(c))?.content}
+            </span>
+          {:else}
+            <span class="missingreplycontent">&lt; No text content &gt;</span>
+          {/if}
         {/if}
-      {/each}
+      </div>
+    {/if}
+    <div class="message">
+      <span class="time">{message.datetime.getHours().toString().padStart(2,'0')}:{message.datetime.getMinutes().toString().padStart(2, '0')}</span>
+      <span class="sender">{message.user}</span>
+      <div class="messagecontent">
+        {#each message.content as messageContent}
+          {#if messageContent.type == "text"}
+            <span class="content">{(messageContent as TextContent).content}</span>
+          {:else if messageContent.type == "file"}
+            <Filecontent filecontent={messageContent as FileContent}/>
+          {:else if messageContent.type == "image"}
+            <img class="messageimage" src={`/api/upload/${(messageContent as ImageContent).path}`} alt="User-contributed">              
+          {:else if messageContent.type == "textfile"}
+            <Textfile textfile={messageContent as TextFileContent}/>
+          {/if}
+        {/each}
+      </div>
     </div>
   </div>
   <div class="outerhovermenu">
@@ -52,12 +73,37 @@
     flex-direction: row;
     gap: .5rem;
     padding: .5rem;
-    background-color: var(--bg1);
 
     font-size: 16px;
   }
 
-  .outermessage:hover>.message {
+  .replymessage {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .replyauthor {
+    color: var(--blue);
+  }
+
+  .reply {
+    padding: .5rem;
+    font-size: 12px;
+    font-style: italic;
+    color: var(--fg3);
+
+    display: flex;
+    flex-direction: row;
+    gap: .5rem;
+    align-items: center;
+  }
+
+  .replymessage {
+    background-color: var(--bg1);
+  }
+
+  .outermessage:hover>.replymessage {
     background-color: var(--bg2);
   }
 

@@ -10,6 +10,7 @@ export interface IMessage {
   senderid: number;
   channelid: number;
   sentat: Date;
+  deleted: boolean;
   replyto?: number;
 }
 

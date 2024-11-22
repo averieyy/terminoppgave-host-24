@@ -9,14 +9,16 @@ export class Message {
   datetime: Date;
   content: MessageContent[];
   id: number;
-  replyto?: number;
+  deleted: boolean;
+  replyto?: Message;
 
-  constructor (content: MessageContent[], sender: User, datetime: Date = new Date(), id: number, replyto?:number) {
+  constructor (content: MessageContent[], sender: User, datetime: Date = new Date(), id: number, replyto?: Message, deleted = false) {
     this.content = content;
     this.sender = sender;
     this.datetime = datetime;
     this.id = id;
     this.replyto = replyto;
+    this.deleted = deleted;
   }
 
   static async fromIMessage(m: IMessage): Promise<Message | undefined> {
@@ -48,7 +50,18 @@ export class Message {
       // Other content types
     ];
 
-    return new Message(messagecontent, user, m.sentat, m.id, m.replyto);
+    const fetchReply: () => Promise<Message | undefined> = async () => {
+      if (m.replyto) {
+        const reply = await DatabaseConnection.queryOne<IMessage>('SELECT * FROM messages WHERE id = $1::integer AND channelid = $2::integer', m.replyto, m.channelid);
+        if (!reply || reply.channelid !== m.channelid) return;
+
+        const message = await this.fromIMessage(reply);
+        return message;
+      }
+      else return;
+    }
+
+    return new Message(messagecontent, user, m.sentat, m.id, await fetchReply(), m.deleted);
   }
 
   toSendable (): object {
@@ -57,7 +70,13 @@ export class Message {
       user: this.sender.username,
       datetime: this.datetime,
       id: this.id,
-      senderid: this.sender.id
+      senderid: this.sender.id,
+      replyto: this.replyto ? {
+        id: this.replyto.id,
+        sender: this.replyto.deleted && this.replyto.sender.username,
+        content: this.replyto.deleted ? this.replyto.content : [],
+        deleted: this.replyto.deleted
+      } : null
     }
   }
 }
