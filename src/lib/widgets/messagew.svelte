@@ -23,7 +23,7 @@
               {message.replyto.content.find(c => TextContent.isTextContent(c))?.content}
             </span>
           {:else}
-            <span class="missingreplycontent">&lt; No text content &gt;</span>
+            <span class="missingreplycontent">No text</span>
           {/if}
         {/if}
       </div>
@@ -100,6 +100,10 @@
 
   .replymessage {
     background-color: var(--bg1);
+  }
+
+  .missingreplycontent {
+    color: var(--bg4);
   }
 
   .outermessage:hover>.replymessage {

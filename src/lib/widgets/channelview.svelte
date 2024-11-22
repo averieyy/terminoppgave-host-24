@@ -212,13 +212,15 @@
         <span class="replyauthor">
           {messageReply.user}
         </span>
-        <span class="replycontent">
-          {#if messageReply.content.find(m => TextContent.isTextContent(m))}
+        {#if messageReply.content.find(m => TextContent.isTextContent(m))}
+          <span class="replycontent">
             {messageReply.content.find(m => TextContent.isTextContent(m))?.content}
-          {:else}
-            &lt; No text content &gt;
-          {/if}
-        </span>
+          </span>
+        {:else}
+          <span class="nocontent">No text</span>
+        {/if}
+        <div class="fullflex"></div>
+        <button class="unreply" onclick={() => messageReply = undefined}><Icon icon="close"/></button>
       </div>
     {/if}
     {#if messageFileContent.length + messageImageContent.length + messageTextFileContent.length != 0}
@@ -415,6 +417,32 @@
 
     & .replyauthor {
       color: var(--blue);
+    }
+
+    & .nocontent {
+      color: var(--bg4);
+    }
+  }
+  
+  .fullflex {
+    flex: 1;
+  }
+
+  .unreply {
+    border: none;
+    background-color: var(--bg3);
+    font-size: 1rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--fg1);
+    border-radius: .25rem;
+
+    &:active, &:hover {
+      background-color: var(--lightblue);
+      color: var(--bg1);
     }
   }
 </style>
