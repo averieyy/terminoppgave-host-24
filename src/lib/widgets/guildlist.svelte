@@ -2,6 +2,7 @@
   import Icon from "./icon.svelte";
   import Popup from "./popup.svelte";
   import { isLight, shortHand } from "$lib/frontend/guild";
+    import Logo from "./logo.svelte";
 
   const { guilds, selectedid }: { guilds: { name: string, colour: string, id: number }[], selectedid?: number } = $props();
 
@@ -26,7 +27,7 @@
 </Popup>
 <div class="guilds">
   <a href="/app" class={`homebutton ${selectedid == -2 && 'selected'}`}>
-    <Icon icon="home"/>
+    <Logo main={selectedid == -2 ? 'var(--bg1)' : 'var(--lightblue)'} alt={selectedid != -2 ? 'var(--bg1)' : 'var(--lightblue)'} width={40} height={40} />
   </a>
   {#each guilds as guild}
     <a
@@ -75,6 +76,7 @@
       &:active, &:hover {
         background-color: var(--lightblue);
         color: var(--bg1);
+        fill: var(--bg1);
       }
 
       user-select: none;
