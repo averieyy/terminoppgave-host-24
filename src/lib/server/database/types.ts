@@ -10,6 +10,7 @@ export interface IMessage {
   senderid: number;
   channelid: number;
   sentat: Date;
+  replyto?: number;
 }
 
 export interface IToken {

@@ -50,13 +50,15 @@ export class Message {
   datetime: Date;
   id: number;
   senderid: number;
+  replyto?: number;
 
-  constructor (content: messagecontent[], user: string, date: Date, id: number, senderid: number) {
+  constructor (content: messagecontent[], user: string, date: Date, id: number, senderid: number, replyto?: number) {
     this.content = content;
     this.user = user;
     this.datetime = date;
     this.id = id;
     this.senderid = senderid;
+    this.replyto = replyto;
   }
 }
 

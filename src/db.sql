@@ -24,7 +24,8 @@ CREATE TABLE messages (
   senderid INT NOT NULL REFERENCES users(id),
   channelid INT NOT NULL REFERENCES channel(id),
   sentat TIMESTAMP NOT NULL,
-  deleted BOOLEAN NOT NULL DEFAULT FALSE
+  deleted BOOLEAN NOT NULL DEFAULT FALSE,
+  replyto INT REFERENCES messages(id)
 );
 
 CREATE TABLE tokens (

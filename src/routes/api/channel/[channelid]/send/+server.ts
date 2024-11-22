@@ -15,7 +15,7 @@ export const POST : RequestHandler = async ({ cookies, params, request }) => {
   const user = await Token.getUserFromToken(cookies);
   if (!user) return json({ message: 'Not authenticated user' }, { status: 403 });
 
-  let { content, datetime } : { content: MessageContent[], datetime: number } = await request.json();
+  let { content, datetime, replyto } : { content: MessageContent[], datetime: number, replyto?: number } = await request.json();
   
   if (!content || content.length == 0) return json({ message: 'Requires body field "content"' }, { status: 400 });
   if (content.map(c => !!c.type).includes(false)) return json({ message: 'Content has the wrong format' }, { status: 400 });
@@ -33,10 +33,12 @@ export const POST : RequestHandler = async ({ cookies, params, request }) => {
 
   // Log to database
   const messageidobj = await DatabaseConnection.queryOne<{id: number}>(
-    'INSERT INTO messages (senderid, channelid, sentat) VALUES ($1::integer, $2::integer, $3::timestamp) RETURNING id',
+    'INSERT INTO messages (senderid, channelid, sentat, replyto) VALUES ($1::integer, $2::integer, $3::timestamp, $4) RETURNING id',
     user.id,
     channelid,
-    dt);
+    dt,
+    replyto || null
+  );
     
     
   const msgid = messageidobj?.id;
