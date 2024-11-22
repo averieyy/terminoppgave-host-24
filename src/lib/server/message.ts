@@ -73,8 +73,8 @@ export class Message {
       senderid: this.sender.id,
       replyto: this.replyto ? {
         id: this.replyto.id,
-        sender: this.replyto.deleted && this.replyto.sender.username,
-        content: this.replyto.deleted ? this.replyto.content : [],
+        sender: !this.replyto.deleted && this.replyto.sender.username,
+        content: !this.replyto.deleted ? this.replyto.content : [],
         deleted: this.replyto.deleted
       } : null
     }

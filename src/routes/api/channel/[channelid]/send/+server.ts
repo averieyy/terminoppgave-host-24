@@ -1,5 +1,6 @@
 import { Channel } from "$lib/server/channel";
 import { DatabaseConnection } from "$lib/server/database/connection";
+import type { IMessage } from "$lib/server/database/types";
 import { Message } from "$lib/server/message";
 import { FileContent, ImageContent, type MessageContent, TextContent, TextFileContent } from "$lib/server/messagecontent";
 import { Token } from "$lib/server/token";
@@ -40,11 +41,12 @@ export const POST : RequestHandler = async ({ cookies, params, request }) => {
     replyto || null
   );
     
-    
   const msgid = messageidobj?.id;
   if (!msgid) return json({ message: 'An err' }, { status: 500 });
-  
-  const messageobject = new Message(typedcontent, user, new Date(datetime), msgid);
+
+  const reply: IMessage | undefined = await DatabaseConnection.queryOne<IMessage>('SELECT * FROM messages WHERE id = $1::integer', replyto);
+
+  const messageobject = new Message(typedcontent, user, new Date(datetime), msgid, reply && await Message.fromIMessage(reply));
   
   // Log messagecontent to database
   for (const messagecontent of content) {

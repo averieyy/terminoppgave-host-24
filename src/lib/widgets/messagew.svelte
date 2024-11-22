@@ -4,7 +4,7 @@
   import Icon from "./icon.svelte";
   import Textfile from "./textfile.svelte";
 
-  const { message, userid, admin, del }: { message: Message, userid: number, admin: boolean, del: (id: number) => void } = $props();
+  const { message, userid, admin, del, replyto }: { message: Message, userid: number, admin: boolean, del: (id: number) => void, replyto: (messageid: number) => void } = $props();
 </script>
 
 <div class="outermessage">
@@ -48,8 +48,8 @@
   </div>
   <div class="outerhovermenu">
     <div class="hovermenu">
-      <button>
-        <Icon icon="more_horiz"/>
+      <button onclick={() => replyto(message.id)}>
+        <Icon icon="reply"/>
       </button>
       {#if message.senderid == userid || admin}
         <button class="delete" onclick={() => del(message.id)}>
@@ -96,7 +96,6 @@
     display: flex;
     flex-direction: row;
     gap: .5rem;
-    align-items: center;
   }
 
   .replymessage {

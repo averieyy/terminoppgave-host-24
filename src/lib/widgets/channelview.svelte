@@ -26,7 +26,7 @@
     stream = new EventSource(streamsource);
     stream.addEventListener('history', ev => {
       const msg = JSON.parse(ev.data, DateReviver) as Message[];
-      
+
       messages = msg;
     });
     stream.addEventListener('channelmessage', ev => {
@@ -61,6 +61,7 @@
   let messageFileContent: FileContent[] = $state([]);
   let messageImageContent: ImageContent[] = $state([]);
   let messageTextFileContent: TextFileContent[] = $state([]);
+  let messageReply: Message | undefined = $state();
 
   function sendMessage(ev: SubmitEvent) {
     ev.preventDefault();
@@ -75,21 +76,27 @@
           ...messageImageContent,
         ].filter(c => !!c),
         datetime: Date.now(),
+        replyto: messageReply?.id
       })
     });
     messageFileContent = [];
     messageImageContent = [];
     messageTextFileContent = [];
     messageTextContent = new TextContent('');
+    messageReply = undefined
   }
 
   async function deleteMessage (messageid: number) {
-    const resp = await fetch(`${streamsource}/delete`, {
+    await fetch(`${streamsource}/delete`, {
       method: 'DELETE',
       body: JSON.stringify({
         messageid
       })
     });
+  }
+
+  function replyto (messageid: number) {
+    messageReply = messages.find(m => m.id == messageid);
   }
 
   function scrollDown() {
@@ -111,8 +118,6 @@
   let uploadform: HTMLFormElement | undefined = $state();
   let formData: FormData = $derived(new FormData(uploadform));
   let files: FileList | undefined = $state();
-
-  $inspect(files);
 
   async function uploadFile() {
     const file = files?.[0];
@@ -197,10 +202,25 @@
           {message.datetime.toDateString()}
         </div>
       {/if}
-      <Messagew message={message} admin={admin} userid={userid} del={deleteMessage} />
+      <Messagew message={message} admin={admin} userid={userid} del={deleteMessage} replyto={replyto} />
     {/each}
   </div>
   <div class="messagebar">
+    {#if messageReply}
+      <div class="reply">
+        <Icon icon="reply"/>
+        <span class="replyauthor">
+          {messageReply.user}
+        </span>
+        <span class="replycontent">
+          {#if messageReply.content.find(m => TextContent.isTextContent(m))}
+            {messageReply.content.find(m => TextContent.isTextContent(m))?.content}
+          {:else}
+            &lt; No text content &gt;
+          {/if}
+        </span>
+      </div>
+    {/if}
     {#if messageFileContent.length + messageImageContent.length + messageTextFileContent.length != 0}
       <div class="files">
         {#each messageTextFileContent as textFileContent}
@@ -380,6 +400,21 @@
         background-color: var(--lightblue);
         color: var(--bg1);
       }
+    }
+  }
+
+  .reply {
+    display: flex;
+    flex-direction: row;
+    gap: .5rem;
+
+    color: var(--fg3);
+
+    font-style: italic;
+    font-size: 12px;
+
+    & .replyauthor {
+      color: var(--blue);
     }
   }
 </style>
