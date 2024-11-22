@@ -3,14 +3,14 @@
 </script>
 
 <svelte:head>
-  <title>Roundtalk</title>
+  <title>Eris</title>
 </svelte:head>
 
 <div class="hero">
   <img src="" alt="Hero">
   <div class="herocontent">
     <div class="innerherocontent">
-      <h2>Join roundtalk today!</h2>
+      <h2>Join Eris today!</h2>
       <p>Our platform provides the best experience in modern digital communications!</p>
     </div>
   </div>
@@ -18,7 +18,7 @@
 <article>
   <nav>
     <a href="/app/register">
-      Join Roundtalk
+      Join Eris
       <div class="icon">
         <Icon icon="arrow_forward"/>
       </div>

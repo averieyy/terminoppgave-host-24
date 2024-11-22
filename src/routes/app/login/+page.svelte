@@ -33,7 +33,7 @@
 </script>
 
 <svelte:head>
-  <title>Login - Roundtalk</title>
+  <title>Login - Eris</title>
 </svelte:head>
 
 <main>

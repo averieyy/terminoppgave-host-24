@@ -74,7 +74,7 @@
 </script>
 
 <svelte:head>
-  <title>Settings for {guild.name} - Roundtalk</title>
+  <title>Settings for {guild.name} - Eris</title>
 </svelte:head>
 
 <main>

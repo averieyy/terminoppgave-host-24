@@ -32,7 +32,7 @@
 </script>
 
 <svelte:head>
-  <title>Register - Roundtalk</title>
+  <title>Register - Eris</title>
 </svelte:head>
 
 <main>

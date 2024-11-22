@@ -26,7 +26,7 @@
 </script>
 
 <svelte:head>
-  <title>Join {guild.name} - Roundtalk</title>
+  <title>Join {guild.name} - Eris</title>
 </svelte:head>
 
 <main>

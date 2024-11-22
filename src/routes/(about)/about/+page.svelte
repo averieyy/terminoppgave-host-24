@@ -4,7 +4,7 @@
 </script>
 
 <svelte:head>
-  <title>About roundtalk</title>
+  <title>About Eris</title>
 </svelte:head>
 
 <div class="upper"></div>
@@ -12,7 +12,7 @@
   <article>
     <section id="introduction">
       <h1>About</h1>
-      <p>Roundtalk is a messaging platform for messaging friends and enemies. After creating your account, create or join a guild to start chatting!</p>
+      <p>Eris is a messaging platform for messaging friends and enemies. After creating your account, create or join a guild to start chatting!</p>
     </section>
     <section id="faq">
       <h2>FAQs</h2>

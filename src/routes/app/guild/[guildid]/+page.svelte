@@ -67,7 +67,7 @@
 </script>
 
 <svelte:head>
-  <title>{guild.name} - Roundtalk</title>
+  <title>{guild.name} - Eris</title>
 </svelte:head>
 
 {#if admin}

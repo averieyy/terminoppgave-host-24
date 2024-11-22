@@ -15,7 +15,7 @@
     </div>
     <div class="infobox">
       <h2>
-        Welcome to roundtalk!
+        Welcome to Eris!
       </h2>
       <p>
         You can join or create guilds by clicking on the "+" in the list to the right
@@ -26,7 +26,7 @@
 
 <svelte:head>
   <title>
-    Roundtalk
+    Eris
   </title>
 </svelte:head>
 

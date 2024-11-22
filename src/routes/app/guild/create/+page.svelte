@@ -30,7 +30,7 @@
 </script>
 
 <svelte:head>
-  <title>Create guild - Roundtalk</title>
+  <title>Create guild - Eris</title>
 </svelte:head>
 
 <div class="outerpage">

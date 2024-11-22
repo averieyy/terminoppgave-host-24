@@ -28,7 +28,7 @@
 <div class="guilds">
   <a href="/app" class={`homebutton ${selectedid == -2 && 'selected'}`}
     style="background-color: var(--lightblue); fill: var(--bg1);">
-    <Logo width={40} height={40} />
+    <Logo width={32} height={32} />
   </a>
   {#each guilds as guild}
     <a

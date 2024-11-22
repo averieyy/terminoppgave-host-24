@@ -18,7 +18,7 @@
 </script>
 
 <svelte:head>
-  <title>Discover guilds - Roundtalk</title>
+  <title>Discover guilds - Eris</title>
 </svelte:head>
 
 <div class="outerpage">

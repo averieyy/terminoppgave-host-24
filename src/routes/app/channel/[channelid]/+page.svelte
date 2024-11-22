@@ -6,14 +6,14 @@
   import type { PageData } from "./$types";
 
   let channelid = $page.params.channelid;
-  
+
   const { data }: { data: PageData } = $props();
   const { channel, guilds, members, userid, admin } = data;
 </script>
 
 <svelte:head>
   <title>
-    #{channel.name} - Roundtalk
+    #{channel.name} - Eris
   </title>
 </svelte:head>
 

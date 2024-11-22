@@ -3,7 +3,7 @@
 </script>
 
 <header>
-  <h1>Roundtalk</h1>
+  <h1>Eris</h1>
   {#if !loggedin}
     <div class="loginregister">
       <a class="button" href="/app/login">Login</a>
