@@ -1,5 +1,6 @@
 <script lang="ts">
   import Guildlist from "$lib/widgets/guildlist.svelte";
+    import Logo from "$lib/widgets/logo.svelte";
   import type { PageData } from "./$types";
 
   const { data }: { data: PageData } = $props();
@@ -9,6 +10,9 @@
 <div class="outerpage">
   <Guildlist guilds={guilds} selectedid={-2} />
   <main>
+    <div class="logo">
+      <Logo width={100} height={100}/>
+    </div>
     <div class="infobox">
       <h2>
         Welcome to roundtalk!
@@ -54,5 +58,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+  }
+  .logo {
+    fill: var(--bg4);
   }
 </style>
