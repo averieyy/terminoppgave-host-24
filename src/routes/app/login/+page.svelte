@@ -46,6 +46,7 @@
     <input placeholder="Password" type="password" bind:value={password} />
     <input type="submit" value="Log in">
   </form>
+  <a class="switchmode" href="/app/register?redirect={redirectLocation || '/app'}">Need a user? Register</a>
 </main>
 
 <style>
@@ -62,6 +63,8 @@
     justify-content: center;
 
     flex-direction: column;
+
+    gap: .5rem;
   }
   .loginform {
     display: flex;
@@ -80,5 +83,14 @@
     color: var(--red);
     font-size: 90%;
     font-style: italic;
+  }
+  .switchmode {
+    color: var(--fg3);
+    font-style: italic;
+    text-decoration: none;
+
+    &:hover, &:active {
+      text-decoration: underline;
+    }
   }
 </style>

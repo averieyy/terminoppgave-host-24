@@ -36,15 +36,16 @@
 </svelte:head>
 
 <main>
-<form class="loginform" onsubmit={register}>
-  <h2>Register</h2>
-  {#if errorMessage !== ''}
-    <span class="errormessage">{errorMessage}</span>
-  {/if}
-  <input class={`${detailError && 'error'} inputform`} placeholder="Username" type="text" bind:value={username} />
-  <input placeholder="Password" type="password" bind:value={password} />
-  <input type="submit" value="Register">
-</form>
+  <form class="loginform" onsubmit={register}>
+    <h2>Register</h2>
+    {#if errorMessage !== ''}
+      <span class="errormessage">{errorMessage}</span>
+    {/if}
+    <input class={`${detailError && 'error'} inputform`} placeholder="Username" type="text" bind:value={username} />
+    <input placeholder="Password" type="password" bind:value={password} />
+    <input type="submit" value="Register">
+  </form>
+  <a class="switchmode" href="/app/login?redirect={redirectLocation || '/app'}">Already have a user? Log in</a>
 </main>
 
 <style>
@@ -61,6 +62,8 @@ main {
   justify-content: center;
 
   flex-direction: column;
+
+  gap: .5rem;
 }
 .loginform {
   display: flex;
@@ -79,5 +82,14 @@ input {
   color: var(--red);
   font-size: 90%;
   font-style: italic;
+}
+.switchmode {
+  color: var(--fg3);
+  font-style: italic;
+  text-decoration: none;
+
+  &:hover, &:active {
+    text-decoration: underline;
+  }
 }
 </style>
