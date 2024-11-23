@@ -5,9 +5,9 @@ import { DatabaseConnection } from "$lib/server/database/connection";
 import { Guild } from "$lib/server/guild";
 import type { IGuildSettings, IGuildMember } from "$lib/server/database/types";
 
-export const load: PageServerLoad = async ({ cookies, params }) => {
+export const load: PageServerLoad = async ({ cookies, params, url }) => {
   const user = await Token.getUserFromToken(cookies);
-  if (!user) redirect(302, `/app/guild/${params.guildid}`);
+  if (!user) redirect(302, `/app/login?redirect=${url.pathname}`);
 
   // Get the guild
   const guild = await DatabaseConnection.queryOne<Guild>(
