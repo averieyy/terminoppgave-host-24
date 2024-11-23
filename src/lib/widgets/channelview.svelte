@@ -7,6 +7,7 @@
   import Filecontent from "./filecontent.svelte";
   import Messagew from "./messagew.svelte";
     import Textfile from "./textfile.svelte";
+    import Messagecontent from "./messagecontent.svelte";
 
   const { streamsource, title, userid, admin=false }: { streamsource: string, title: string, userid: number, admin: boolean } = $props();
 
@@ -192,22 +193,7 @@
       </div>
     {/if}
     {#if messageFileContent.length != 0}
-      <div class="files">
-        {#each messageFileContent as fileContent}
-          {#if fileContent.mime == 'text/plain'}
-            <Textfile textfile={fileContent} remove={() => removeFile(fileContent.path)}/>
-          {:else if fileContent.mime.startsWith('image/')}
-            <div class="imageattachment">
-              <img class="messageimage" src="/api/upload/{fileContent.path}" alt="User-submitted">
-              <button>
-                <Icon icon="close"/>
-              </button>
-            </div>
-          {:else}
-            <Filecontent filecontent={fileContent} remove={removeFile}/>
-          {/if}
-        {/each}
-      </div>
+      <Messagecontent content={messageFileContent} removeFile={removeFile}/>
     {/if}
     <form class="sendmessage" onsubmit={sendMessage}>
       <input type="text" bind:value={messageTextContent.content} placeholder={`Message`} />
@@ -341,36 +327,6 @@
     gap: .5rem;
     background-color: var(--bg2);
     padding: 1rem;
-  }
-  .files {
-    display: flex;
-    flex-direction: column;
-    gap: .5rem;
-  }
-
-  .messageimage {
-    max-width: 20rem;
-    width: 100%;
-  }
-  .imageattachment {
-    display: flex;
-    flex-direction: row;
-    width: fit-content;
-    gap: .5rem;
-
-    & button {
-      width: 2rem;
-      height: 2rem;
-      font-size: 1.5rem;
-      border: none;
-      background-color: var(--bg1);
-      color: var(--fg1);
-
-      &:hover, &:active {
-        background-color: var(--lightblue);
-        color: var(--bg1);
-      }
-    }
   }
 
   .reply {

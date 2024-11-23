@@ -2,7 +2,7 @@
     import type { FileContent } from "$lib/frontend/types";
   import Icon from "./icon.svelte";
 
-  const { textfile, remove }: { textfile: FileContent, remove?: (id: FileContent) => void } = $props();
+  const { textfile, remove }: { textfile: FileContent, remove?: (path: string) => void } = $props();
 
   let expanded: boolean = $state(false);
 </script>
@@ -22,7 +22,7 @@
         </span>
       </button>
       {#if remove}
-        <button onclick={() => remove(textfile)} class="remove">
+        <button onclick={() => remove(textfile.path)} class="remove">
           <span class="icon">
             <Icon icon="close"/>
           </span>

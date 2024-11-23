@@ -305,7 +305,7 @@ Register user (sign up)
 
 > POST /api/upload
 
-Upload an image
+Upload files
 
 Body is form data.
 file: File
