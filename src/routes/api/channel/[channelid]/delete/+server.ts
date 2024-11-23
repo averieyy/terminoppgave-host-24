@@ -23,8 +23,6 @@ export const DELETE: RequestHandler = async ({ cookies, request, params }) => {
 
   await DatabaseConnection.execute('DELETE FROM textcontent WHERE messageid = $1::integer', messageid);
   await DatabaseConnection.execute('DELETE FROM filecontent WHERE messageid = $1::integer', messageid);
-  await DatabaseConnection.execute('DELETE FROM imagecontent WHERE messageid = $1::integer', messageid);
-  await DatabaseConnection.execute('DELETE FROM textfilecontent WHERE messageid = $1::integer', messageid);
   await DatabaseConnection.execute('UPDATE messages SET deleted = true, replyto = null WHERE id = $1::integer', messageid);
 
   channel.broadcast({ id: messageid }, 'messagedelete');

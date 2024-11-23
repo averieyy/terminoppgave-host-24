@@ -1,10 +1,9 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
-  import { FileContent, ImageContent, TextContent, TextFileContent, type Message } from "../frontend/types";
+  import { FileContent, TextContent, type Message } from "../frontend/types";
   import Icon from "./icon.svelte";
   import { DateReviver } from "../frontend/datereviver";
   import Popup from "./popup.svelte";
-  import Textfile from "./textfile.svelte";
   import Filecontent from "./filecontent.svelte";
   import Messagew from "./messagew.svelte";
 
@@ -59,29 +58,23 @@
 
   let messageTextContent: TextContent = $state(new TextContent(''));
   let messageFileContent: FileContent[] = $state([]);
-  let messageImageContent: ImageContent[] = $state([]);
-  let messageTextFileContent: TextFileContent[] = $state([]);
   let messageReply: Message | undefined = $state();
 
   function sendMessage(ev: SubmitEvent) {
     ev.preventDefault();
-    if (messageFileContent.length + messageTextFileContent.length + messageImageContent.length + messageTextContent.content.length == 0) return;
+    if (messageFileContent.length + messageTextContent.content.length == 0) return;
     fetch(`${streamsource}/send`, {
       method: 'POST',
       body: JSON.stringify({
         content: [
           messageTextContent.content ? messageTextContent : undefined,
-          ...messageTextFileContent,
-          ...messageFileContent,
-          ...messageImageContent,
+          ...messageFileContent
         ].filter(c => !!c),
         datetime: Date.now(),
         replyto: messageReply?.id
       })
     });
     messageFileContent = [];
-    messageImageContent = [];
-    messageTextFileContent = [];
     messageTextContent = new TextContent('');
     messageReply = undefined
   }
@@ -124,9 +117,6 @@
     
     if (!(file instanceof File) || file.size >= 25165824) return;
 
-    const isImage = file.type.startsWith('image/');
-    const isTextFile = file.type == 'text/plain';
-
     formData.set('file', file);
 
     const fileresp = await fetch('/api/upload', {
@@ -136,23 +126,12 @@
     if (fileresp.ok) {
       const path: string = (await fileresp.json()).path;
 
-      if (isImage) messageImageContent.push(new ImageContent(path))
-      else if (isTextFile)
-        messageTextFileContent.push(
-          new TextFileContent(
-            path,
-            file.name,
-            (await file.text()).slice(0, 50)
-          )
-        );
-      else messageFileContent.push(new FileContent(path, file.name));
+      messageFileContent.push(new FileContent(path, file.name));
 
       uploadPopupOpen = false;
       files = undefined;
     
-      if (isImage) messageImageContent = messageImageContent;
-      else if (isTextFile) messageTextFileContent = messageTextFileContent;
-      else messageFileContent = messageFileContent;
+      messageFileContent = messageFileContent;
     }
   }
 
@@ -160,18 +139,6 @@
     const index = messageFileContent.findIndex(f => f.path == path);
     if (index == -1) return;
     messageFileContent.splice(index, 1);
-  }
-
-  function removeTextFile (file: TextFileContent) {
-    const index = messageTextFileContent.findIndex(f => f.path == file.path);
-    if (index == -1) return;
-    messageTextFileContent.splice(index, 1);
-  }
-
-  function removeImage (path: string) {
-    const index = messageImageContent.findIndex(f => f.path == path);
-    if (index == -1) return;
-    messageImageContent.splice(index, 1);
   }
 </script>
 
@@ -223,21 +190,10 @@
         <button class="unreply" onclick={() => messageReply = undefined}><Icon icon="close"/></button>
       </div>
     {/if}
-    {#if messageFileContent.length + messageImageContent.length + messageTextFileContent.length != 0}
+    {#if messageFileContent.length != 0}
       <div class="files">
-        {#each messageTextFileContent as textFileContent}
-          <Textfile textfile={textFileContent} remove={removeTextFile} />
-        {/each}
         {#each messageFileContent as fileContent}
           <Filecontent filecontent={fileContent} remove={removeFile}/>
-        {/each}
-        {#each messageImageContent as imageContent}
-          <div class="imageattachment">
-            <img class="messageimage" src={`/api/upload/${imageContent.path}`} alt="User-contributed">
-            <button class="remove" onclick={() => removeImage(imageContent.path)}>
-              <Icon icon='close'/>
-            </button>
-          </div>
         {/each}
       </div>
     {/if}

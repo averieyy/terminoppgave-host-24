@@ -20,49 +20,18 @@ export class FileContent implements MessageContent {
   type = "file";
   path: string;
   displayname: string;
+  mime: string
 
-  constructor (path: string, displayname: string) {
+  constructor (path: string, displayname: string, mime: string) {
     this.path = path;
     this.displayname = displayname;
+    this.mime = mime;
   }
 
   static isFileContent(object: MessageContent): object is FileContent {
     return object.type == "file" &&
       'path' in object &&
-      'displayname' in object;
-  }
-}
-
-export class TextFileContent implements MessageContent {
-  type = "textfile";
-  path: string;
-  displayname: string;
-  preview: string;
-
-  constructor (path: string, displayname: string, preview: string) {
-    this.path = path;
-    this.displayname = displayname;
-    this.preview = preview;
-  }
-
-  static isTextFileContent(object: MessageContent): object is TextFileContent {
-    return object.type == "textfile" &&
-      'path' in object &&
-      'preview' in object &&
-      'displayname' in object;
-  }
-}
-
-export class ImageContent implements MessageContent {
-  type = "image";
-  path: string;
-
-  constructor (path: string) {
-    this.path = path;
-  }
-
-  static isImageContent(object: MessageContent): object is ImageContent {
-    return object.type == "image" &&
-      'path' in object;
+      'displayname' in object &&
+      'mime' in object;
   }
 }

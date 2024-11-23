@@ -70,16 +70,6 @@ Filecontent|||
 id|fileid|messageid
 serial|int|int
 
-Imagecontent|||
--|-|-
-id|fileid|messageid
-serial|int|int
-
-Textfilecontent|||
--|-|-
-id|fileid|messageid
-serial|int|int
-
 ### Route explanation
 
 - Everything under `/app` is reserved for the app itself.

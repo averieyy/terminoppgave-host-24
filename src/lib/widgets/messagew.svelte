@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { TextContent, type FileContent, type ImageContent, type Message, type TextFileContent } from "$lib/frontend/types";
+  import { TextContent, type FileContent, type Message } from "$lib/frontend/types";
   import Filecontent from "./filecontent.svelte";
   import Icon from "./icon.svelte";
   import Textfile from "./textfile.svelte";
@@ -38,9 +38,9 @@
           {:else if messageContent.type == "file"}
             <Filecontent filecontent={messageContent as FileContent}/>
           {:else if messageContent.type == "image"}
-            <img class="messageimage" src={`/api/upload/${(messageContent as ImageContent).path}`} alt="User-contributed">              
+            <img class="messageimage" src={`/api/upload/${(messageContent as FileContent).path}`} alt="User-contributed">              
           {:else if messageContent.type == "textfile"}
-            <Textfile textfile={messageContent as TextFileContent}/>
+            <Textfile textfile={messageContent as FileContent}/>
           {/if}
         {/each}
       </div>
