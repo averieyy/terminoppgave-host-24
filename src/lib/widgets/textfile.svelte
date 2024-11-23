@@ -31,9 +31,7 @@
     </div>
   </div>
   <div class={`preview ${expanded ? 'open' : 'closed'}`} aria-hidden={!expanded}>
-    <code class="previewtext">
-      {preview.slice(0,100)}
-    </code>
+    <pre><code class="previewtext">{preview.slice(0,1000)}</code></pre>
   </div>
 </div>
 
@@ -90,6 +88,11 @@
     &.closed {
       display: none;
     }
+  }
+  pre {
+    overflow-x: auto;
+    overflow-y: auto;
+    margin: 0;
   }
   .expandbtns {
     display: flex;

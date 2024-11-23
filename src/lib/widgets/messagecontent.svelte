@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { FileContent, messagecontent, TextContent } from "$lib/frontend/types";
+  import { FileContent, type messagecontent, type TextContent } from "$lib/frontend/types";
   import Filecontent from "./filecontent.svelte";
   import Icon from "./icon.svelte";
   import Textfile from "./textfile.svelte";
@@ -10,7 +10,7 @@
     const returnable: {[key:string]: string} = {};
 
     for (let c of content) {
-      if (c.type !== 'file' || (c as FileContent).mime !== 'text/plain') continue;
+      if (c.type !== 'file' || !FileContent.isTextContent(c)) continue;
       
       const path = (c as FileContent).path;
 
@@ -37,7 +37,7 @@
             </button>
           {/if}
         </div>
-      {:else if (messageContent as FileContent).mime == "text/plain"}
+      {:else if FileContent.isTextContent(messageContent)}
         {#await textfilepreviews}
           <Textfile textfile={messageContent as FileContent} preview={'Loading...'} remove={removeFile}/>
         {:then textfileprevs}

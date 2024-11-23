@@ -26,6 +26,14 @@ export class FileContent implements messagecontent {
     this.displayname = displayname;
     this.mime = mime;
   }
+
+  static isTextContent(file : messagecontent) {
+    return 'mime' in file && [
+      'text/plain',
+      'script/javascript',
+      'text/html',
+    ].includes(file.mime as string);
+  }
 }
 
 export class Message {
