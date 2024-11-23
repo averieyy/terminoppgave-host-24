@@ -32,7 +32,7 @@
   </div>
   <div class={`preview ${expanded ? 'open' : 'closed'}`} aria-hidden={!expanded}>
     <code class="previewtext">
-      {preview}
+      {preview.slice(0,100)}
     </code>
   </div>
 </div>
