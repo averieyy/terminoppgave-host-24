@@ -12,7 +12,7 @@
   <article>
     <section id="introduction">
       <h1>About</h1>
-      <p>Eris is a messaging platform for messaging friends and enemies. After creating your account, create or join a guild to start chatting!</p>
+      <p>Eris is a messaging platform for messaging friends and enemies. Just create a guild and start chatting!</p>
     </section>
     <section id="faq">
       <h2>FAQs</h2>
@@ -24,20 +24,31 @@
               <div class="fakeinput">
                 <span>Message</span>
               </div>
-              <div class="fakesend">
+              <div class="fakesend buttonpreview">
                 <Icon icon="send"/>
               </div>
             </div>
           </Faq>
         </li>
         <li>
-          <Faq question="How do I create a channel?">
+          <Faq question="How do I create a guild?">
             <span>Click on the "+" on the left-hand side of the page. This will open a popup.</span>
             <div class="outerfake">
-              <div class="fakeaddchannel">
+              <div class="fakeaddchannel buttonpreview">
                 <Icon icon="add"/>
               </div>
             </div>
+          </Faq>
+        </li>
+        <li>
+          <Faq question="How do I invite people?" >
+            <p>
+              Inviting members is only possible if you are an administrator.
+            </p>
+            <div class="inviteexample buttonpreview">Create invitation link</div>
+            <p>
+              You should see a button that says "Create invitation link" on the guilds main page. Copy the link you get, and spread it around.
+            </p>
           </Faq>
         </li>
       </ul>
@@ -53,6 +64,16 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+  }
+  .buttonpreview {
+    background-color: var(--bg2);
+    color: var(--fg1);
+    user-select: none;
+
+    &:hover, &:active {
+      background-color: var(--lightblue);
+      color: var(--bg1);
+    }
   }
   article {
     padding: 1rem;
@@ -109,35 +130,29 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--bg2);
     border-radius: .5rem;
 
     font-size: 1.5rem;
-
-    &:hover, &:active {
-      background-color: var(--lightblue);
-      color: var(--bg1);
-    }
   }
   .fakeaddchannel {
     width: 4.5rem;
     height: 4.5rem;
-    background-color: var(--bg2);
     border-radius: 1rem;
     display: flex;
     justify-content: center;
     align-items: center;
 
     font-size: 2.25rem;
-
-    &:hover, &:active {
-      background-color: var(--lightblue);
-      color: var(--bg1);
-    }
   }
   .outerfake {
     display: flex;
     flex-direction: row;
     justify-content: center;
+  }
+  .inviteexample {
+    padding: 1rem;
+    width: fit-content;
+
+    user-select: none;
   }
 </style>

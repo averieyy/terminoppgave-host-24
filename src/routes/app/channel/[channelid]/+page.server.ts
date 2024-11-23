@@ -21,8 +21,6 @@ export const load: PageServerLoad = async ({ cookies, params, url }) => {
 
   const allmembers = await DatabaseConnection.query<IGuildMember & User>('SELECT * FROM guildmembers INNER JOIN users ON guildmembers.userid = users.id WHERE guildmembers.guildid = $1::integer', guild.id);
 
-  console.log(OnlineMemberIds);
-
   const members: {username: string, online: boolean}[] = allmembers.map(m => { return {username: m.username, online: OnlineMemberIds.includes(m.userid) || user.id == m.userid}});
   const member = allmembers.find(m => m.userid == user.id);
   if (!member) redirect(302, '/app');

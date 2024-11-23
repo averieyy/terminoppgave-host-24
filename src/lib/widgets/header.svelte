@@ -1,38 +1,64 @@
 <script lang="ts">
+  import Logo from "./logo.svelte";
+
   const { loggedin }: { loggedin: boolean } = $props();
 </script>
 
 <header>
-  <h1>Eris</h1>
+  <a class="eris" href="/">
+    <Logo width={32} height={32}/>
+    Eris
+  </a>
   {#if !loggedin}
     <div class="loginregister">
       <a class="button" href="/app/login">Login</a>
       <a class="button" href="/app/register">Register</a>
     </div>
   {:else}
-    <a class="button" href="/app">Enter</a>
+    <div class="outerbuttons">
+      <a class="button" href="/app">Enter</a>
+    </div>
   {/if}
 </header>
 
 <style>
-  h1 {
+  a.eris {
+    border: none;
+    background-color: var(--bg2);
+    color: var(--fg1);
+
+    text-decoration: none;
     font-size: medium;
     font-style: normal;
+    font-weight: bold;
+
     margin: 0;
+    display: flex;
+    flex-direction: row;
+    gap: .5rem;
+    align-items: center;
+    fill: var(--fg1);
+    padding: 1rem;
+
+    cursor: default;
+
+    &:active, &:hover {
+      background-color: var(--lightblue);
+      fill: var(--bg1);
+      color: var(--bg1);
+    }
   }
   header {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    padding: 1rem;
   }
   .loginregister {
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: .5rem;
-
   }
   .button {
     color: var(--fg1);
@@ -45,5 +71,8 @@
       background-color: var(--lightblue);
       color: var(--bg1);
     }
+  }
+  .outerbuttons {
+    padding-right: 1rem;
   }
 </style>
