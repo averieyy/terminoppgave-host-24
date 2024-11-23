@@ -36,11 +36,13 @@
           {#if messageContent.type == "text"}
             <span class="content">{(messageContent as TextContent).content}</span>
           {:else if messageContent.type == "file"}
-            <Filecontent filecontent={messageContent as FileContent}/>
-          {:else if messageContent.type == "image"}
-            <img class="messageimage" src={`/api/upload/${(messageContent as FileContent).path}`} alt="User-contributed">              
-          {:else if messageContent.type == "textfile"}
-            <Textfile textfile={messageContent as FileContent}/>
+            {#if (messageContent as FileContent).mime.startsWith("image/")}
+              <img class="messageimage" src={`/api/upload/${(messageContent as FileContent).path}`} alt="User-contributed">              
+            {:else if (messageContent as FileContent).mime == "text/plain"}
+              <Textfile textfile={messageContent as FileContent}/>
+            {:else}
+              <Filecontent filecontent={messageContent as FileContent}/>
+            {/if}
           {/if}
         {/each}
       </div>

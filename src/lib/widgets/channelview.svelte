@@ -6,6 +6,7 @@
   import Popup from "./popup.svelte";
   import Filecontent from "./filecontent.svelte";
   import Messagew from "./messagew.svelte";
+    import Textfile from "./textfile.svelte";
 
   const { streamsource, title, userid, admin=false }: { streamsource: string, title: string, userid: number, admin: boolean } = $props();
 
@@ -126,7 +127,7 @@
     if (fileresp.ok) {
       const path: string = (await fileresp.json()).path;
 
-      messageFileContent.push(new FileContent(path, file.name));
+      messageFileContent.push(new FileContent(path, file.name, file.type));
 
       uploadPopupOpen = false;
       files = undefined;
@@ -193,7 +194,18 @@
     {#if messageFileContent.length != 0}
       <div class="files">
         {#each messageFileContent as fileContent}
-          <Filecontent filecontent={fileContent} remove={removeFile}/>
+          {#if fileContent.mime == 'text/plain'}
+            <Textfile textfile={fileContent} remove={() => removeFile(fileContent.path)}/>
+          {:else if fileContent.mime.startsWith('image/')}
+            <div class="imageattachment">
+              <img class="messageimage" src="/api/upload/{fileContent.path}" alt="User-submitted">
+              <button>
+                <Icon icon="close"/>
+              </button>
+            </div>
+          {:else}
+            <Filecontent filecontent={fileContent} remove={removeFile}/>
+          {/if}
         {/each}
       </div>
     {/if}

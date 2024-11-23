@@ -19,10 +19,12 @@ export class FileContent implements messagecontent {
   type = 'file';
   path: string;
   displayname: string;
+  mime: string;
 
-  constructor (path: string, displayname: string) {
+  constructor (path: string, displayname: string, mime: string) {
     this.path = path;
     this.displayname = displayname;
+    this.mime = mime;
   }
 }
 
