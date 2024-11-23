@@ -4,10 +4,8 @@
   import Icon from "./icon.svelte";
   import { DateReviver } from "../frontend/datereviver";
   import Popup from "./popup.svelte";
-  import Filecontent from "./filecontent.svelte";
   import Messagew from "./messagew.svelte";
-    import Textfile from "./textfile.svelte";
-    import Messagecontent from "./messagecontent.svelte";
+  import Messagecontent from "./messagecontent.svelte";
 
   const { streamsource, title, userid, admin=false }: { streamsource: string, title: string, userid: number, admin: boolean } = $props();
 

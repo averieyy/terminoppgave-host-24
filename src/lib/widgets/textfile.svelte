@@ -1,8 +1,8 @@
 <script lang="ts">
-    import type { FileContent } from "$lib/frontend/types";
+  import type { FileContent } from "$lib/frontend/types";
   import Icon from "./icon.svelte";
 
-  const { textfile, remove }: { textfile: FileContent, remove?: (path: string) => void } = $props();
+  const { textfile, remove, preview }: { textfile: FileContent, remove?: (path: string) => void, preview: string } = $props();
 
   let expanded: boolean = $state(false);
 </script>
@@ -32,7 +32,7 @@
   </div>
   <div class={`preview ${expanded ? 'open' : 'closed'}`} aria-hidden={!expanded}>
     <code class="previewtext">
-      {textfile.displayname}
+      {preview}
     </code>
   </div>
 </div>
@@ -80,6 +80,8 @@
     height: fit-content;
     display: flex;
     flex-direction: column;
+
+    font-size: 80%;
 
     padding: .5rem;
     background-color: var(--bg2);

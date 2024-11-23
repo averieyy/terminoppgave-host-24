@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { TextContent, type FileContent, type Message } from "$lib/frontend/types";
+  import { TextContent, type Message } from "$lib/frontend/types";
   import Icon from "./icon.svelte";
-    import Messagecontent from "./messagecontent.svelte";
+  import Messagecontent from "./messagecontent.svelte";
 
   const { message, userid, admin, del, replyto }: { message: Message, userid: number, admin: boolean, del: (id: number) => void, replyto: (messageid: number) => void } = $props();
 </script>
