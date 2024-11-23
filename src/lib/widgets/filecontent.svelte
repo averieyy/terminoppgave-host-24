@@ -12,7 +12,7 @@
     </div>
     <span class="filename">{filecontent.displayname}</span>
     {#if remove}
-      <button class="remove">
+      <button class="remove" onclick={() => remove(filecontent.path)}>
         <Icon icon='close'/>
       </button>
     {:else}

@@ -15,5 +15,9 @@ export const GET: RequestHandler = async ({ cookies, params }) => {
   if (!existsSync(filepath) || !statSync(filepath).isFile()) return json({ message: 'File not found' }, { status: 404 });
   const filecontent = readFileSync(filepath);
 
-  return new Response(filecontent, { headers: { 'Content-Type': file.mime } });
+  const mimetype = 
+    ['application/xhtml+xml', 'text/html'].includes(file.mime) ? 'text/plain' // Test if the file is html or xhtml (should be shown as plaintext)
+    : file.mime;
+
+  return new Response(filecontent, { headers: { 'Content-Type': mimetype } });
 }

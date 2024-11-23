@@ -70,16 +70,6 @@ Filecontent|||
 id|fileid|messageid
 serial|int|int
 
-Imagecontent|||
--|-|-
-id|fileid|messageid
-serial|int|int
-
-Textfilecontent|||
--|-|-
-id|fileid|messageid
-serial|int|int
-
 ### Route explanation
 
 - Everything under `/app` is reserved for the app itself.
@@ -315,7 +305,7 @@ Register user (sign up)
 
 > POST /api/upload
 
-Upload an image
+Upload files
 
 Body is form data.
 file: File

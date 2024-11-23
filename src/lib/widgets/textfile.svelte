@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { TextFileContent } from "$lib/frontend/types";
+  import type { FileContent } from "$lib/frontend/types";
   import Icon from "./icon.svelte";
 
-  const { textfile, remove }: { textfile: TextFileContent, remove?: (id: TextFileContent) => void } = $props();
+  const { textfile, remove, preview }: { textfile: FileContent, remove?: (path: string) => void, preview: string } = $props();
 
   let expanded: boolean = $state(false);
 </script>
@@ -22,7 +22,7 @@
         </span>
       </button>
       {#if remove}
-        <button onclick={() => remove(textfile)} class="remove">
+        <button onclick={() => remove(textfile.path)} class="remove">
           <span class="icon">
             <Icon icon="close"/>
           </span>
@@ -32,7 +32,7 @@
   </div>
   <div class={`preview ${expanded ? 'open' : 'closed'}`} aria-hidden={!expanded}>
     <code class="previewtext">
-      {textfile.preview}
+      {preview.slice(0,100)}
     </code>
   </div>
 </div>
@@ -80,6 +80,8 @@
     height: fit-content;
     display: flex;
     flex-direction: column;
+
+    font-size: 80%;
 
     padding: .5rem;
     background-color: var(--bg2);

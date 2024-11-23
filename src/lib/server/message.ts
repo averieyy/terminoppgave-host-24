@@ -1,6 +1,6 @@
 import { DatabaseConnection } from "./database/connection";
 import type { IMessage } from "./database/types";
-import { FileContent, ImageContent, type MessageContent, TextContent, TextFileContent } from "./messagecontent";
+import { FileContent, type MessageContent, TextContent } from "./messagecontent";
 import { readFileSync } from 'fs';
 import type { User } from "./user";
 
@@ -30,24 +30,10 @@ export class Message {
         'SELECT content FROM textcontent WHERE messageid = $1::integer',
         m.id))
         .map(c => new TextContent(c.content)),
-      ...(await DatabaseConnection.query<{path: string,displayname: string}>(
-        'SELECT path, displayname FROM filecontent INNER JOIN files ON files.id = filecontent.fileid WHERE messageid = $1::integer',
+      ...(await DatabaseConnection.query<{path: string,displayname: string, mime: string}>(
+        'SELECT path, displayname, mime FROM filecontent INNER JOIN files ON files.id = filecontent.fileid WHERE messageid = $1::integer',
         m.id))
-        .map(c => new FileContent(c.path, c.displayname)),
-      ...(await DatabaseConnection.query<{path: string,displayname: string}>(
-        'SELECT path FROM imagecontent INNER JOIN files ON files.id = imagecontent.fileid WHERE messageid = $1::integer',
-        m.id))
-        .map(c => new ImageContent(c.path)),
-      ...(await DatabaseConnection.query<{path: string, displayname: string}>(
-        'SELECT files.path, files.displayname FROM textfilecontent INNER JOIN files ON files.id = textfilecontent.fileid WHERE messageid = $1::integer',
-        m.id))
-        .map(c => {
-          // Get preview content
-          const preview = readFileSync(`./uploads/${c.path}`).toString().slice(0,128); // Get the first 128 characters of the file
-
-          return new TextFileContent(c.path, c.displayname, preview);
-        }),
-      // Other content types
+        .map(c => new FileContent(c.path, c.displayname, c.mime)),
     ];
 
     const fetchReply: () => Promise<Message | undefined> = async () => {
