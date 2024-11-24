@@ -131,14 +131,16 @@
   .closesidebar {
     height: 2rem;
     width: 2rem;
+    
     display: flex;
     align-items: center;
     justify-content: center;
-    border: none;
-    background-color: var(--bg1);
+    
+    background-color: var(--bg3);
     color: var(--fg1);
-    border-radius: .5rem;
+    
     font-size: 1.25rem;
+    border: none;
 
     & * {
       display: flex;

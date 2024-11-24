@@ -45,9 +45,11 @@
             <p>
               Inviting members is only possible if you are an administrator.
             </p>
-            <div class="inviteexample buttonpreview">Create invitation link</div>
+            <div class="outerfake">
+              <div class="inviteexample buttonpreview">Invite</div>
+            </div>
             <p>
-              You should see a button that says "Create invitation link" on the guilds main page. Copy the link you get, and spread it around.
+              You should see a button that says "Invite" on the guilds main page. Copy the link you get, and spread it around.
             </p>
           </Faq>
         </li>
