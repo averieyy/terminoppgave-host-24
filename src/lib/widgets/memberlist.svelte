@@ -1,17 +1,15 @@
 <script lang="ts">
   import Icon from "./icon.svelte";
 
-  const { members }: { members: { username: string, online: boolean }[] } = $props();
+  let { members, closed, toggle }: { members: { username: string, online: boolean }[], closed: boolean, toggle: () => void } = $props();
 
   const onlinemembers = $derived(members.filter(m => m.online));
   const offlinemembers = $derived(members.filter(m => !m.online));
-
-  let closed = $state(false);
 </script>
 
 <div class={`memberlistsidebar ${closed ? 'closed' : 'open'}`}>
   <div class="closebararea">
-    <button class="closesidebar" onclick={() => closed = !closed} title={closed ? 'Open' : 'Close'}>
+    <button class="closesidebar" onclick={toggle} title={closed ? 'Open' : 'Close'}>
       <span>
         <Icon icon="chevron_right"/>
       </span>
@@ -46,6 +44,19 @@
 </div>
 
 <style>
+  @media screen and (max-width: 560px) {
+    .closed>.closebararea {
+      width: 0;
+    }
+
+    .memberlistsidebar {
+      position: fixed;
+      background-color: var(--bg2);
+      height: 100%;
+      right: 0;
+    }
+  }
+
   .memberlist {
     display: flex;
     flex-direction: column;

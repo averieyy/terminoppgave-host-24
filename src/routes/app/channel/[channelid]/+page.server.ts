@@ -35,6 +35,7 @@ export const load: PageServerLoad = async ({ cookies, params, url }) => {
     }}),
     members,
     userid: user.id,
-    admin: member.administrator
+    admin: member.administrator,
+    guild
   }
 };

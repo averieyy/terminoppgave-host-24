@@ -1,5 +1,6 @@
 <script lang="ts">
   import { page } from "$app/stores";
+  import { shortHand, isLight } from "$lib/frontend/guild";
   import Channelview from "$lib/widgets/channelview.svelte";
   import Guildlist from "$lib/widgets/guildlist.svelte";
   import Icon from "$lib/widgets/icon.svelte";
@@ -9,7 +10,9 @@
   let channelid = $page.params.channelid;
 
   const { data }: { data: PageData } = $props();
-  const { channel, guilds, members, userid, admin } = data;
+  const { channel, guilds, members, userid, admin, guild } = data;
+
+  let memberlistclosed = $state(true);
 </script>
 
 <svelte:head>
@@ -24,8 +27,16 @@
   </div>
   <div class="outerchannel">
     <header>
-      <span>#{channel.name}</span>
-      <button class="showmembers">
+      <div class="guildchannelname">
+        <a href="/app/guild/{guild.id}" title="Go back to {guild.name}" class="gobackguild" style="background-color: {guild?.colour}; color: var(--{isLight(guild?.colour) ? 'bg1' : 'fg1'})">
+          {shortHand(guild?.name || 'Go back')}
+        </a>
+        <span class="inbetween">
+          <Icon icon="chevron_right"/>
+        </span>
+        <span>#{channel.name}</span>
+      </div>
+      <button class="showmembers" onclick={() => memberlistclosed = false}>
         <Icon icon="person"/>
       </button>
     </header>
@@ -34,14 +45,17 @@
     </div>
   </div>
   <div class="normalmemberlist">
-    <Memberlist members={members} />
+    <Memberlist members={members} closed={memberlistclosed} toggle={() => memberlistclosed = !memberlistclosed} />
   </div>
 </main>
 
 <style>
-  @media screen and (max-width: 500px) {
+  @media screen and (max-width: 560px) {
     .outerguildlist {
       display: none;
+    }
+    .showmembers {
+      display: flex !important;
     }
   }
 
@@ -74,7 +88,7 @@
     padding: 1rem;
     padding-left: .5rem;
     padding-right: .5rem;
-    height: 2rem;
+    min-height: 2rem;
     background-color: var(--bg2);
     font-style: italic;
     display: flex;
@@ -91,7 +105,7 @@
     font-size: 1.5rem;
     padding: 0;
 
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
 
@@ -99,5 +113,37 @@
       background-color: var(--lightblue);
       color: var(--bg1);
     }
+  }
+  .guildchannelname {
+    display: flex;
+    flex-direction: row;
+    gap: .5em;
+    align-items: center;
+
+    &>.inbetween {
+      font-style: normal;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+  .gobackguild {
+    width: 2rem;
+    height: 2rem;
+    font-size: .66rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: .66rem;
+    
+    text-decoration: none;
+    font-style: normal;
+
+    &:active, &:hover {
+      background-color: var(--bg1) !important;
+      color: var(--lightblue) !important;
+    }
+    user-select: none;
   }
 </style>
