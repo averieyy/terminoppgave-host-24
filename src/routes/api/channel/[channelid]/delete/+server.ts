@@ -19,7 +19,7 @@ export const DELETE: RequestHandler = async ({ cookies, request, params }) => {
   const { messageid }: { messageid: number } = await request.json();
   const message = await DatabaseConnection.queryOne<IMessage>('SELECT * FROM messages WHERE channelid = $1::integer AND id = $2::integer', params.channelid, messageid);
   if (!message || !(member.administrator || member.userid == message.senderid))
-    json({ message: 'Unauthorized' }, { status: 403 });
+    return json({ message: 'Unauthorized' }, { status: 403 });
 
   await DatabaseConnection.execute('DELETE FROM textcontent WHERE messageid = $1::integer', messageid);
   await DatabaseConnection.execute('DELETE FROM filecontent WHERE messageid = $1::integer', messageid);
