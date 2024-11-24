@@ -118,6 +118,10 @@
         replyto: messageReply?.id,
       })
     });
+    stopEditing();
+  }
+
+  function stopEditing () {
     editingMessage = undefined;
     messageFileContent = [];
     messageTextContent = new TextContent('');
@@ -125,6 +129,7 @@
   }
 
   function replyto (messageid: number) {
+    if (messageid == editingMessage?.id) return;
     messageReply = messages.find(m => m.id == messageid);
   }
 
@@ -207,7 +212,12 @@
   </div>
   <div class="messagebar">
     {#if editingMessage}
-      <span class="editingmessage">Editing message</span>
+      <div class="outereditingmessage">
+        <span class="editingmessage">Editing message</span>
+        <button class="cancelmessageedit" onclick={stopEditing}>
+          <Icon icon="close"/>
+        </button>
+      </div>
     {/if}
     {#if messageReply}
       <div class="reply">
@@ -376,7 +386,7 @@
     flex: 1;
   }
 
-  .unreply {
+  .unreply, .cancelmessageedit {
     border: none;
     background-color: var(--bg3);
     font-size: 1rem;
@@ -392,6 +402,11 @@
       background-color: var(--lightblue);
       color: var(--bg1);
     }
+  }
+  .outereditingmessage {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
   }
   .editingmessage {
     font-style: italic;
