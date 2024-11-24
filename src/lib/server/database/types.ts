@@ -6,7 +6,6 @@ export interface IChannel {
 
 export interface IMessage {
   id: number;
-  content: string;
   senderid: number;
   channelid: number;
   sentat: Date;

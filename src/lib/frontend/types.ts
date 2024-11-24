@@ -27,12 +27,18 @@ export class FileContent implements messagecontent {
     this.mime = mime;
   }
 
-  static isTextContent(file : messagecontent) {
+  static isTextFileContent(file : messagecontent): file is FileContent {
     return 'mime' in file && [
       'text/plain',
       'script/javascript',
       'text/html',
     ].includes(file.mime as string);
+  }
+
+  static isFileContent(file: messagecontent): file is FileContent {
+    return 'mime' in file &&
+      'path' in file &&
+      'displayname' in file;
   }
 }
 

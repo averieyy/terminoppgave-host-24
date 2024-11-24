@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
-  import { FileContent, TextContent, type Message } from "../frontend/types";
+  import { FileContent, Message, TextContent } from "../frontend/types";
   import Icon from "./icon.svelte";
   import { DateReviver } from "../frontend/datereviver";
   import Popup from "./popup.svelte";
@@ -21,6 +21,8 @@
 
   let stream: EventSource;
 
+  let editingMessage: Message | undefined = $state();
+
   onMount(() => {
     stream = new EventSource(streamsource);
     stream.addEventListener('history', ev => {
@@ -39,6 +41,16 @@
       
       const deleteindex = messages.findIndex(m => m.id == id);
       messages.splice(deleteindex, 1);
+
+      messages = messages;
+    });
+    stream.addEventListener('messageedit', ev => {
+      const { message } = JSON.parse(ev.data, DateReviver) as {message: Message};
+
+      console.log(message);     
+      
+      const deleteindex = messages.findIndex(m => m.id == message.id);
+      messages[deleteindex] = message;
 
       messages = messages;
     });
@@ -86,6 +98,29 @@
         messageid
       })
     });
+  }
+
+  function startEditing (message: Message) {
+    editingMessage = message;
+
+    messageFileContent = message.content.filter(c => FileContent.isFileContent(c));
+    messageTextContent = message.content.filter(c => TextContent.isTextContent(c))[0] || new TextContent('');
+    messageReply = messages.find(m => m.id == message.replyto?.id);
+  }
+
+  async function editMessage () {
+    if (!editingMessage) return;
+    await fetch(`${streamsource}/edit`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        messageid: editingMessage.id,
+        messagecontent: [messageTextContent, ...messageFileContent]
+      })
+    });
+    editingMessage = undefined;
+    messageFileContent = [];
+    messageTextContent = new TextContent('');
+    messageReply = undefined;
   }
 
   function replyto (messageid: number) {
@@ -166,10 +201,13 @@
           {message.datetime.toDateString()}
         </div>
       {/if}
-      <Messagew message={message} admin={admin} userid={userid} del={deleteMessage} replyto={replyto} />
+      <Messagew message={message} admin={admin} userid={userid} del={deleteMessage} replyto={replyto} edit={startEditing} />
     {/each}
   </div>
   <div class="messagebar">
+    {#if editingMessage}
+      <span class="editingmessage">Editing message</span>
+    {/if}
     {#if messageReply}
       <div class="reply">
         <Icon icon="reply"/>
@@ -190,7 +228,7 @@
     {#if messageFileContent.length != 0}
       <Messagecontent content={messageFileContent} removeFile={removeFile}/>
     {/if}
-    <form class="sendmessage" onsubmit={sendMessage}>
+    <form class="sendmessage" onsubmit={editingMessage ? editMessage : sendMessage}>
       <input type="text" bind:value={messageTextContent.content} placeholder={`Message`} />
       <button type="button" class="inputbtn uploadbtn" onclick={() => uploadPopupOpen = true}><Icon icon='upload'/></button>
       <button type="submit" class="inputbtn sendbtn"><Icon icon='send'/></button>
@@ -353,5 +391,9 @@
       background-color: var(--lightblue);
       color: var(--bg1);
     }
+  }
+  .editingmessage {
+    font-style: italic;
+    font-size: .8rem;
   }
 </style>

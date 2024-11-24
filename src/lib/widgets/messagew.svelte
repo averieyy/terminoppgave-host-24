@@ -3,7 +3,7 @@
   import Icon from "./icon.svelte";
   import Messagecontent from "./messagecontent.svelte";
 
-  const { message, userid, admin, del, replyto }: { message: Message, userid: number, admin: boolean, del: (id: number) => void, replyto: (messageid: number) => void } = $props();
+  const { message, userid, admin, del, replyto, edit }: { message: Message, userid: number, admin: boolean, del: (id: number) => void, replyto: (messageid: number) => void, edit?: (m: Message) => void } = $props();
 </script>
 
 <div class="outermessage">
@@ -39,6 +39,11 @@
         <Icon icon="reply"/>
       </button>
       {#if message.senderid == userid || admin}
+        {#if message.senderid == userid && edit}
+          <button onclick={() => edit(message)}>
+            <Icon icon='edit' />
+          </button>
+        {/if}
         <button class="delete" onclick={() => del(message.id)}>
           <Icon icon="delete"/>
         </button>

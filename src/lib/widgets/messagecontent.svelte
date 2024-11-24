@@ -10,7 +10,7 @@
     const returnable: {[key:string]: string} = {};
 
     for (let c of content) {
-      if (c.type !== 'file' || !FileContent.isTextContent(c)) continue;
+      if (c.type !== 'file' || !FileContent.isTextFileContent(c)) continue;
       
       const path = (c as FileContent).path;
 
@@ -37,7 +37,7 @@
             </button>
           {/if}
         </div>
-      {:else if FileContent.isTextContent(messageContent)}
+      {:else if FileContent.isTextFileContent(messageContent)}
         {#await textfilepreviews}
           <Textfile textfile={messageContent as FileContent} preview={'Loading...'} remove={removeFile}/>
         {:then textfileprevs}
