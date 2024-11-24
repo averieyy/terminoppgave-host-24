@@ -5,9 +5,12 @@
   import Icon from '$lib/widgets/icon.svelte';
   import Memberlist from '$lib/widgets/memberlist.svelte';
   import Popup from '$lib/widgets/popup.svelte';
+  import { onMount } from 'svelte';
 
   const { data } = $props();
   const { guild, guilds, admin, channels, members } = $derived(data); // To make it so that you can go from one guild page to another. <https://github.com/sveltejs/kit/issues/1497>
+
+  let memberlistclosed = $state(false);
 
   let createChannelPopupOpen: boolean = $state(false);
   let createInvitePopupOpen: boolean = $state(false);
@@ -64,6 +67,10 @@
     });
     if (resp.ok) goto('/app');
   }
+
+  onMount(() => {
+    memberlistclosed = window.innerWidth < 560;
+  });
 </script>
 
 <svelte:head>
@@ -91,20 +98,23 @@
       <h1>
         {guild.name}
       </h1>
-      {#if admin}
-        <div class="adminbar">
+      <div class="headerbar">
+        {#if admin}
           <button onclick={createInvitation}>
-            Create invitation link
+            Invite
           </button>
           <a href={`/app/guild/${guild.id}/settings`}>
             <Icon icon="settings"/>
           </a>
-        </div>
-      {:else}
-        <button onclick={leaveGuild}>
-          Leave guild
+        {:else}
+          <button onclick={leaveGuild}>
+            Leave guild
+          </button>
+        {/if}
+        <button class="showmemberlist" onclick={() => memberlistclosed = false}>
+          <Icon icon="person"/>
         </button>
-      {/if}
+      </div>
     </div>
     <div class="maincontent">
       <div class="channellist">
@@ -128,10 +138,15 @@
       </div>
     </div>
   </main>
-  <Memberlist members={members} />
+  <Memberlist members={members} closed={memberlistclosed} toggle={() => memberlistclosed = !memberlistclosed} />
 </div>
 
 <style>
+  @media screen and (min-width: 560px) {
+    .showmemberlist {
+      display: none !important;
+    }
+  }
   .outerpage {
     display: flex;
     flex-direction: row;
@@ -145,6 +160,8 @@
   }
   .header {
     padding: 1rem;
+    padding-left: .5rem;
+    padding-right: .5rem;
     height: 2rem;
 
     background-color: var(--bg2);
@@ -162,22 +179,23 @@
     }
   }
   .header button {
-      border: none;
-      background-color: var(--bg1);
-      color: var(--fg1);
-      padding: .5rem;
+    border: none;
+    background-color: var(--bg1);
+    color: var(--fg1);
+    padding: .5rem;
 
-      &:active, &:hover {
-        background-color: var(--lightblue);
-        color: var(--bg1);
-      }
+    &:active, &:hover {
+      background-color: var(--lightblue);
+      color: var(--bg1);
     }
-  .adminbar {
+  }
+  .headerbar {
     display: flex;
     flex-direction: row;
     gap: .5rem;
 
-    & a {
+    & a, & .showmemberlist {
+      padding: 0;
       color: var(--fg1);
       background-color: var(--bg1);
       

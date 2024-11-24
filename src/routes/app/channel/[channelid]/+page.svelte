@@ -59,6 +59,10 @@
     }
   }
 
+  .outerguildlist {
+    overflow: auto;
+  }
+
   main {
     display: flex;
     flex-direction: row;
@@ -76,6 +80,8 @@
     flex-direction: column;
   }
   .channel {
+    flex: 1;
+
     display: flex;
     flex-direction: column;
 

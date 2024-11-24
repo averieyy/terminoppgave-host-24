@@ -78,9 +78,16 @@
 </svelte:head>
 
 <main>
-  <Guildlist guilds={guilds} selectedid={guild.id} />
+  <div class="outerguildlist">
+    <Guildlist guilds={guilds} selectedid={guild.id} />
+  </div>
   <div class="maincontent">
-    <h1>Settings for <span>{name || guild.name}</span></h1>
+    <h1>
+      <a href="/app/guild/{guild.id}" title="Go back to {guild.name}" class="gobackguild" style="background-color: {guild?.colour}; color: var(--{isLight(guild?.colour) ? 'bg1' : 'fg1'})">
+        {shortHand(guild?.name || 'Go back')}
+      </a>
+      Settings for <span>{name || guild.name}</span>
+    </h1>
     <section>
       <h2>Guild profile</h2>
       <div class="profileeditor">
@@ -144,6 +151,16 @@
 </main>
 
 <style>
+  @media screen and (max-width: 560px) {
+    .outerguildlist {
+      display: none;
+    }
+  }
+
+  .outerguildlist {
+    overflow: auto;
+  }
+
   main {
     display: flex;
     flex-direction: row;
@@ -163,6 +180,11 @@
     position: relative;
   }
   h1, h2 {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    align-items: center;
+
     margin: 0;
     border-bottom: .2rem solid var(--lightblue);
 
@@ -320,6 +342,20 @@
     &:active, &:hover {
       background-color: var(--lightblue);
       color: var(--bg1);
+    }
+  }
+  .gobackguild {
+    width: 2rem;
+    height: 2rem;
+    text-decoration: none;
+    font-size: .66rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: .66rem;
+    &:active, &:hover {
+      background-color: var(--bg2) !important;
+      color: var(--lightblue) !important;
     }
   }
 </style>
