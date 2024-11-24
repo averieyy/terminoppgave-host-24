@@ -11,6 +11,7 @@ export interface IMessage {
   sentat: Date;
   deleted: boolean;
   replyto?: number;
+  edited: boolean;
 }
 
 export interface IToken {

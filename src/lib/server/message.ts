@@ -11,17 +11,25 @@ export class Message {
   id: number;
   deleted: boolean;
   replyto?: Message;
+  edited: boolean;
 
-  constructor (content: MessageContent[], sender: User, datetime: Date = new Date(), id: number, replyto?: Message, deleted = false) {
+  constructor (content: MessageContent[], sender: User, datetime: Date = new Date(), id: number, edited: boolean, replyto?: Message, deleted: boolean = false) {
     this.content = content;
     this.sender = sender;
     this.datetime = datetime;
     this.id = id;
     this.replyto = replyto;
     this.deleted = deleted;
+    this.edited = edited;
   }
 
-  static async fromIMessage(m: IMessage): Promise<Message | undefined> {
+  /**
+   * 
+   * @param m message
+   * @param recursive Whether to load replies
+   * @returns Message, duh
+   */
+  static async fromIMessage(m: IMessage, recursive: boolean = true): Promise<Message | undefined> {
     const user = await DatabaseConnection.queryOne<User>('SELECT * FROM users WHERE id = $1::integer', m.senderid);
     if (!user) return;
 
@@ -41,13 +49,13 @@ export class Message {
         const reply = await DatabaseConnection.queryOne<IMessage>('SELECT * FROM messages WHERE id = $1::integer AND channelid = $2::integer', m.replyto, m.channelid);
         if (!reply || reply.channelid !== m.channelid) return;
 
-        const message = await this.fromIMessage(reply);
+        const message = await this.fromIMessage(reply, false);
         return message;
       }
       else return;
     }
 
-    return new Message(messagecontent, user, m.sentat, m.id, await fetchReply(), m.deleted);
+    return new Message(messagecontent, user, m.sentat, m.id, m.edited, recursive ? await fetchReply() : undefined, m.deleted);
   }
 
   toSendable (): object {
@@ -57,6 +65,7 @@ export class Message {
       datetime: this.datetime,
       id: this.id,
       senderid: this.sender.id,
+      edited: this.edited,
       replyto: this.replyto ? {
         id: this.replyto.id,
         sender: !this.replyto.deleted && this.replyto.sender.username,

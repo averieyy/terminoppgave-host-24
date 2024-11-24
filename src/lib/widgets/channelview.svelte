@@ -114,7 +114,8 @@
       method: 'PUT',
       body: JSON.stringify({
         messageid: editingMessage.id,
-        messagecontent: [messageTextContent, ...messageFileContent]
+        messagecontent: [messageTextContent, ...messageFileContent],
+        replyto: messageReply?.id,
       })
     });
     editingMessage = undefined;

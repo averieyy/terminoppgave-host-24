@@ -18,10 +18,15 @@ export const PUT: RequestHandler = async ({ cookies, request, params }) => {
   const member = await DatabaseConnection.queryOne<IGuildMember>('SELECT guildmembers.* FROM channel INNER JOIN guildmembers ON channel.guildid = guildmembers.guildid WHERE channel.id = $1::integer AND guildmembers.userid = $2::integer', params.channelid, user.id);
   if (!member) return json({ message: 'Unauthorized' }, { status: 403 });
   
-  const { messageid, messagecontent }: { messageid: number, messagecontent: MessageContent[] } = await request.json();
+  const { messageid, messagecontent, replyto }: { messageid: number, messagecontent: MessageContent[], replyto?: number } = await request.json();
+  
   const message = await DatabaseConnection.queryOne<IMessage>('SELECT * FROM messages WHERE channelid = $1::integer AND id = $2::integer', params.channelid, messageid);
   if (!message || member.userid != message.senderid)
     return json({ message: 'Unauthorized' }, { status: 403 });
+
+  if (message.replyto !== replyto) {
+    await DatabaseConnection.execute('UPDATE messages SET replyto = $1::integer WHERE id = $2::integer', replyto, messageid);
+  }
 
   const oldFiles = await DatabaseConnection.query<IFile>('SELECT files.* FROM filecontent INNER JOIN files ON files.id = filecontent.fileid WHERE filecontent.messageid = $1::integer', messageid);
 
@@ -45,7 +50,9 @@ export const PUT: RequestHandler = async ({ cookies, request, params }) => {
     await DatabaseConnection.execute('INSERT INTO filecontent (fileid, messageid) VALUES ($1::integer, $2::integer)', fileobj.id, messageid);    
   }
 
-  const messageobj = new Message(messagecontent, user, message.sentat, message.id);
+  const reply: Message | undefined = replyto ? await DatabaseConnection.queryOne<IMessage>('SELECT * FROM messages WHERE id = $1::integer', replyto).then(m => m && Message.fromIMessage(m, false)) : undefined;
+
+  const messageobj = new Message(messagecontent, user, message.sentat, message.id, true, reply);
 
   channel.broadcast({message: messageobj.toSendable()}, 'messageedit');
   

@@ -48,6 +48,7 @@ export class Message {
   datetime: Date;
   id: number;
   senderid: number;
+  edited: boolean;
   replyto: {
     id: number,
     sender: string,
@@ -55,13 +56,14 @@ export class Message {
     deleted: boolean;
   } | null;
 
-  constructor (content: messagecontent[], user: string, date: Date, id: number, senderid: number, replyto: {id: number, sender: string, content: messagecontent[], deleted: boolean} | null) {
+  constructor (content: messagecontent[], user: string, date: Date, id: number, senderid: number, replyto: {id: number, sender: string, content: messagecontent[], deleted: boolean} | null, edited: boolean) {
     this.content = content;
     this.user = user;
     this.datetime = date;
     this.id = id;
     this.senderid = senderid;
     this.replyto = replyto;
+    this.edited = edited;
   }
 }
 
