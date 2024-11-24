@@ -7,7 +7,7 @@
   import Messagew from "./messagew.svelte";
   import Messagecontent from "./messagecontent.svelte";
 
-  const { streamsource, title, userid, admin=false }: { streamsource: string, title: string, userid: number, admin: boolean } = $props();
+  const { streamsource, userid, admin=false }: { streamsource: string, userid: number, admin: boolean } = $props();
 
   let messages: Message[] = $state([]);
   let messagelist: HTMLDivElement | undefined = $state();
@@ -159,9 +159,6 @@
   </form>
 </Popup>
 <div class="channelview">
-  <div class="header">
-    <span>#{title}</span>
-  </div>
   <div class="messages" bind:this={messagelist}>
     {#each messagewithdates as message}
       {#if message.firsttoday}
@@ -210,13 +207,14 @@
     flex-direction: column;
 
     background-color: var(--bg1);
-  }
 
+    overflow: hidden;
+  }
   .messages {
     display: flex;
     flex-direction: column;
     flex: 1;
-    overflow: scroll;
+    overflow-y: scroll;
   }
 
   .sendmessage {
@@ -255,17 +253,6 @@
         color: var(--bg1);
       }
     }
-  }
-  .header {
-    padding: 1rem;
-    padding-left: .5rem;
-    padding-right: .5rem;
-    height: 2rem;
-    background-color: var(--bg2);
-    font-style: italic;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
   }
   .datedivide {
     display: flex;
