@@ -40,6 +40,9 @@ export class Token {
 
     const now = Date.now();
 
+    // Remove old tokens
+    await DatabaseConnection.execute('DELETE FROM tokens WHERE expires < NOW()');
+
     const user_token = await DatabaseConnection.queryOne<User & IToken>('SELECT * FROM tokens INNER JOIN users ON users.id = tokens.userid WHERE tokens.content = $1::text;', token);
 
     if (!user_token || user_token.expires.getTime() < now) return;
