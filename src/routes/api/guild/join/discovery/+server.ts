@@ -13,6 +13,9 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
   const guild = await DatabaseConnection.queryOne<Guild>('SELECT guilds.* FROM guildsettings INNER JOIN guilds ON guilds.id = guildsettings.guildid WHERE guildsettings.discoverable = TRUE AND guildsettings.guildid = $1::integer', guildid);
   if (!guild) return json({ message: 'Guild not found' }, { status: 403 });
 
+  const bannedUser = await DatabaseConnection.queryOne<{userid: number}>('SELECT * FROM bannedmembers WHERE userid = $1::integer AND guildid = $2::integer', user.id, guild.id);
+  if (bannedUser) return json({ message: 'You are banned from joining this guild' }, { status: 403 })
+
   const member = await DatabaseConnection.queryOne<IGuildMember>('SELECT * FROM guildmembers WHERE userid = $1::integer AND guildid = $2::integer', user.id, guildid);
   if (member) return json({ message: 'Already a member' }, { status: 200 });
 
