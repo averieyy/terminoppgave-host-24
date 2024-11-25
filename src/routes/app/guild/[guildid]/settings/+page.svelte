@@ -71,6 +71,22 @@
       members = oldmembers;
     }
   }
+
+  async function kickUser (userid: number) {
+    const oldmembers = $state.snapshot(members);
+    const memberindex = members.findIndex(m => m.id == userid);
+    members = members.toSpliced(memberindex,1);
+    const resp = await fetch('/api/guild/kick', {
+      method: 'POST',
+      body: JSON.stringify({
+        guildid: guild.id,
+        userid
+      })
+    });
+    if (!resp.ok) {
+      members = oldmembers;
+    }
+  }
 </script>
 
 <svelte:head>
@@ -115,15 +131,20 @@
         {#each members as member}
           <div class="memberentry">
             {member.username}
-            {#if !member.administrator}
-              <button class="promotemember" onclick={() => toggleAdmin(member.id, false)} title="Promote member">
-                <Icon icon="add_moderator"/>
-              </button>
-            {:else if member.id !== userid}
-              <button class="promotemember" onclick={() => toggleAdmin(member.id, true)} title="Demote member">
-                <Icon icon="remove_moderator"/>
-              </button>  
-            {/if}
+            <div class="membereditbuttons">
+              {#if !member.administrator}
+                <button class="membereditbutton" onclick={() => kickUser(member.id)} title="Kick member">
+                  <Icon icon="person_remove"/>
+                </button>
+                <button class="membereditbutton" onclick={() => toggleAdmin(member.id, false)} title="Promote member">
+                  <Icon icon="add_moderator"/>
+                </button>
+              {:else if member.id !== userid}
+                <button class="membereditbutton" onclick={() => toggleAdmin(member.id, true)} title="Demote member">
+                  <Icon icon="remove_moderator"/>
+                </button>  
+              {/if}
+            </div>
           </div>
         {/each}
       </div>
@@ -323,7 +344,12 @@
       background-color: var(--bg3);
     }
   }
-  .promotemember {
+  .membereditbuttons {
+    display: flex;
+    flex-direction: row;
+    gap: .5rem;
+  }
+  .membereditbutton {
     width: 2rem;
     height: 2rem;
     display: flex;
