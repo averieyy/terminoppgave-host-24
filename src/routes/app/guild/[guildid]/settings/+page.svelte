@@ -8,7 +8,7 @@
   import type { PageData } from "./$types";
 
   const { data }: { data: PageData } = $props();
-  let { guild, guildsettings, guilds, members, userid } = $state(data);
+  let { guild, guildsettings, guilds, members, userid, bannedmembers } = $state(data);
   
   let { name, colour, description } = $state(guild);
   let { discoverable } = $state(guildsettings);
@@ -90,9 +90,31 @@
 
   async function banUser (userid: number) {
     const oldmembers = $state.snapshot(members);
+    const oldbannedmembers = $state.snapshot(bannedmembers);
     const memberindex = members.findIndex(m => m.id == userid);
+    const user = members.find(m => m.id == userid);
+    if (!user || memberindex == -1) return;
     members = members.toSpliced(memberindex,1);
+    bannedmembers.push(user);
     const resp = await fetch('/api/guild/ban', {
+      method: 'POST',
+      body: JSON.stringify({
+        guildid: guild.id,
+        userid
+      })
+    });
+    if (!resp.ok) {
+      members = oldmembers;
+      bannedmembers = oldbannedmembers;
+    }
+  }
+
+  async function unbanUser (userid: number) {
+    const oldmembers = $state.snapshot(members);
+    const userindex = bannedmembers.findIndex(b => b.id == userid);
+    if (userindex === -1) return;
+    bannedmembers = bannedmembers.toSpliced(userindex, 1);
+    const resp = await fetch('/api/guild/unban', {
       method: 'POST',
       body: JSON.stringify({
         guildid: guild.id,
@@ -167,6 +189,19 @@
           </div>
         {/each}
       </div>
+      <h3>Banned members</h3>
+      <div class="memberslist">
+        {#each bannedmembers as member}
+          <div class="memberentry">
+            {member.username}
+            <div class="membereditbuttons">
+              <button class="membereditbutton" onclick={() => unbanUser(member.id)} title="Unban member">
+                <Icon icon="person_add"/>
+              </button>
+            </div>
+          </div>
+        {/each}
+      </div>
     </section>
     <section>
       <h2>Danger</h2>
@@ -219,7 +254,7 @@
 
     position: relative;
   }
-  h1, h2 {
+  h1, h2, h3 {
     display: flex;
     flex-direction: row;
     gap: 1rem;
@@ -286,6 +321,10 @@
   h2 {
     border-width: .125rem;
     margin: .5rem;
+  }
+  h3 {
+    border-width: .1rem;
+    margin: .375rem;
   }
   .unsavedpopup {
     position: fixed;
