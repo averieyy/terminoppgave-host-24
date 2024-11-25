@@ -72,3 +72,9 @@ CREATE TABLE filecontent (
   fileid INT NOT NULL REFERENCES files(id),
   messageid INT NOT NULL REFERENCES messages(id)
 );
+
+CREATE TABLE bannedmembers (
+  userid INT NOT NULL REFERENCES users(id),
+  guildid INT NOT NULL REFERENCES guilds(id),
+  PRIMARY KEY (userid, guildid)
+);

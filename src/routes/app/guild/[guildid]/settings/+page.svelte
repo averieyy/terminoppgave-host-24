@@ -87,6 +87,22 @@
       members = oldmembers;
     }
   }
+
+  async function banUser (userid: number) {
+    const oldmembers = $state.snapshot(members);
+    const memberindex = members.findIndex(m => m.id == userid);
+    members = members.toSpliced(memberindex,1);
+    const resp = await fetch('/api/guild/ban', {
+      method: 'POST',
+      body: JSON.stringify({
+        guildid: guild.id,
+        userid
+      })
+    });
+    if (!resp.ok) {
+      members = oldmembers;
+    }
+  }
 </script>
 
 <svelte:head>
@@ -135,6 +151,9 @@
               {#if !member.administrator}
                 <button class="membereditbutton" onclick={() => kickUser(member.id)} title="Kick member">
                   <Icon icon="person_remove"/>
+                </button>
+                <button class="membereditbutton" onclick={() => banUser(member.id)} title="Ban member">
+                  <Icon icon="block"/>
                 </button>
                 <button class="membereditbutton" onclick={() => toggleAdmin(member.id, false)} title="Promote member">
                   <Icon icon="add_moderator"/>
