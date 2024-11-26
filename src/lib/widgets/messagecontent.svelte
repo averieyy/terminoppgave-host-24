@@ -52,7 +52,6 @@
 
 <style>
   .messageimage {
-    max-width: 20rem;
     width: 100%;
   }
   .imageattachment {
@@ -80,15 +79,9 @@
     display: flex;
     flex-direction: column;
     gap: .5rem;
-    flex: 1;
 
-    max-width: 20rem;
     width: 100%;
-
-    &>* {
-      max-width: 100%;
-      max-height: 20rem;
-    }
+    max-width: min(20rem, 100%);
   }
 
   .content {

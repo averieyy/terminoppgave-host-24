@@ -175,8 +175,6 @@
     flex-direction: column;
     gap: .5rem;
     flex: 1;
-    max-width: 20rem;
-    width: 100%;
   }
   .messagedited {
     color: var(--bg4);

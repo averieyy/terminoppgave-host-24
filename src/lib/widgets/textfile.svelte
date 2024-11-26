@@ -31,7 +31,7 @@
     </div>
   </div>
   <div class={`preview ${expanded ? 'open' : 'closed'}`} aria-hidden={!expanded}>
-    <pre><code class="previewtext">{preview.slice(0,1000)}</code></pre>
+    <code><pre class="previewtext">{preview.slice(0,1000)}</pre></code>
   </div>
 </div>
 
@@ -41,6 +41,13 @@
     padding: .5rem;
     display: flex;
     flex-direction: column;
+
+    &, & * {
+      max-width: inherit;
+      max-height: 20rem;
+  
+      box-sizing: border-box;
+    }
   }
   .fileinfo {
     display: flex;
@@ -80,19 +87,29 @@
     flex-direction: column;
 
     font-size: 80%;
+    width: 100%;
 
     padding: .5rem;
     background-color: var(--bg2);
     margin-top: .5rem;
+    overflow: hidden;
 
     &.closed {
       display: none;
+    }
+    & * {
+      max-width: inherit;
+      min-width: 0;
     }
   }
   pre {
     overflow-x: auto;
     overflow-y: auto;
     margin: 0;
+    min-width: 5rem;
+    max-width: 100%;
+
+    flex: 1 1 100%;
   }
   .expandbtns {
     display: flex;
