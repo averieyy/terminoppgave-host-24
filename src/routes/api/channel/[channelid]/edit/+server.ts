@@ -56,6 +56,8 @@ export const PUT: RequestHandler = async ({ cookies, request, params }) => {
 
   const messageobj = new Message(messagecontent, user, message.sentat, message.id, true, reply);
 
+  await DatabaseConnection.execute('UPDATE messages SET edited = TRUE WHERE id = $1::integer', messageid);
+
   channel.broadcast({message: messageobj.toSendable()}, 'messageedit');
   
   return json({ message: 'Edited message' }, { status: 200 });

@@ -30,7 +30,12 @@
     <div class="message">
       <span class="time">{message.datetime.getHours().toString().padStart(2,'0')}:{message.datetime.getMinutes().toString().padStart(2, '0')}</span>
       <span class="sender">{message.user}</span>
-      <Messagecontent content={message.content} />
+      <div class="contentedit">
+        <Messagecontent content={message.content} />
+        {#if message.edited}
+          <span class="messagedited">(edited)</span>
+        {/if}
+      </div>
     </div>
   </div>
   <div class="outerhovermenu">
@@ -164,5 +169,16 @@
   .outermessage {
     display: flex;
     flex-direction: row;
+  }
+  .contentedit {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    flex: 1;
+    max-width: 20rem;
+    width: 100%;
+  }
+  .messagedited {
+    color: var(--bg4);
   }
 </style>
