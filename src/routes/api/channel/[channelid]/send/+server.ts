@@ -1,6 +1,6 @@
 import { Channel } from "$lib/server/channel";
 import { DatabaseConnection } from "$lib/server/database/connection";
-import type { IMessage } from "$lib/server/database/types";
+import type { IGuild, IGuildMember, IMessage } from "$lib/server/database/types";
 import { Message } from "$lib/server/message";
 import { FileContent, type MessageContent, TextContent } from "$lib/server/messagecontent";
 import { Token } from "$lib/server/token";
@@ -15,6 +15,12 @@ export const POST : RequestHandler = async ({ cookies, params, request }) => {
 
   const user = await Token.getUserFromToken(cookies);
   if (!user) return json({ message: 'Not authenticated user' }, { status: 403 });
+
+  const guild = await DatabaseConnection.queryOne<IGuild>('SELECT g.* FROM channel c INNER JOIN guilds g ON c.guildid = g.id WHERE c.id = $1::integer', channelid);
+  if (!guild) return json({ message: 'Guild not found' }, { status: 404 });
+
+  const member = await DatabaseConnection.queryOne<IGuildMember>('SELECT * FROM guildmembers WHERE userid = $1::integer AND guildid = $2::integer', user.id, guild.id);
+  if (!member) return json({ message: 'Unauthorized' }, { status: 403 });
 
   let { content, datetime, replyto } : { content: MessageContent[], datetime: number, replyto?: number } = await request.json();
   
@@ -44,7 +50,7 @@ export const POST : RequestHandler = async ({ cookies, params, request }) => {
 
   const reply: IMessage | undefined = await DatabaseConnection.queryOne<IMessage>('SELECT * FROM messages WHERE id = $1::integer', replyto);
 
-  const messageobject = new Message(typedcontent, user, new Date(datetime), msgid, reply && await Message.fromIMessage(reply));
+  const messageobject = new Message(typedcontent, user, new Date(datetime), msgid, false, reply && await Message.fromIMessage(reply));
   
   // Log messagecontent to database
   for (const messagecontent of content) {

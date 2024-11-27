@@ -88,7 +88,7 @@
     });
     messageFileContent = [];
     messageTextContent = new TextContent('');
-    messageReply = undefined
+    messageReply = undefined;
   }
 
   async function deleteMessage (messageid: number) {
