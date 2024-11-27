@@ -16,7 +16,7 @@ export const POST : RequestHandler = async ({ cookies, request }) => {
   if (!guild) return json({ message: 'Could not find guild' }, { status: 404 });
 
   const guildmember = await DatabaseConnection.queryOne<IGuildMember>('SELECT * FROM guildmembers WHERE guildid = $1::integer AND userid = $2::integer', guildid, user.id);
-  if (!guildmember || !guildmember.administrator) return json({ message: 'Unauthorized' }, { status: 403 });
+  if (!guildmember?.administrator) return json({ message: 'Unauthorized' }, { status: 403 });
 
   const uuid = randomUUID();
 
