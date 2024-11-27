@@ -3,7 +3,7 @@ import { redirect } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 import { DatabaseConnection } from "$lib/server/database/connection";
 import { Guild } from "$lib/server/guild";
-import type { IGuildSettings, IGuildMember } from "$lib/server/database/types";
+import type { IGuildSettings, IGuildMember, IChannel } from "$lib/server/database/types";
 
 export const load: PageServerLoad = async ({ cookies, params, url }) => {
   const user = await Token.getUserFromToken(cookies);
@@ -31,6 +31,8 @@ export const load: PageServerLoad = async ({ cookies, params, url }) => {
     }
   }
 
+  const channels = (await DatabaseConnection.query<IChannel>('SELECT * FROM channel WHERE guildid = $1::integer', guild.id));
+
   const members = await DatabaseConnection.query<{username: string, id: number, administrator: boolean}>('SELECT users.username, users.id, guildmembers.administrator FROM guildmembers INNER JOIN users ON users.id = userid WHERE guildid = $1::integer', guild.id);
   const bannedmembers = await DatabaseConnection.query<{username: string, id: number}>('SELECT users.username, users.id FROM bannedmembers INNER JOIN users ON bannedmembers.userid = users.id WHERE bannedmembers.guildid = $1::integer', guild.id);
 
@@ -44,6 +46,7 @@ export const load: PageServerLoad = async ({ cookies, params, url }) => {
     guildsettings,
     members,
     bannedmembers,
-    userid: user.id
+    userid: user.id,
+    channels
   }
 };

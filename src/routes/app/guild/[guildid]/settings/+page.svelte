@@ -4,11 +4,12 @@
   import Colourpicker from "$lib/widgets/colourpicker.svelte";
   import Guildlist from "$lib/widgets/guildlist.svelte";
   import Icon from "$lib/widgets/icon.svelte";
+  import Popup from "$lib/widgets/popup.svelte";
   import Toggle from "$lib/widgets/toggle.svelte";
   import type { PageData } from "./$types";
 
   const { data }: { data: PageData } = $props();
-  let { guild, guildsettings, guilds, members, userid, bannedmembers } = $state(data);
+  let { guild, guildsettings, guilds, members, userid, bannedmembers, channels } = $state(data);
   
   let { name, colour, description } = $state(guild);
   let { discoverable } = $state(guildsettings);
@@ -125,12 +126,30 @@
       members = oldmembers;
     }
   }
+  
+  // Channel logic
+  let createChannelPopupOpen: boolean = $state(false);
+  let newchannelname: string = $state('');
+
+  function createChannel () {
+
+  }
+
+  function deleteChannel (channelid: number) {
+
+  }
 </script>
 
 <svelte:head>
   <title>Settings for {guild.name} - Eris</title>
 </svelte:head>
 
+<Popup title="Create channel" open={createChannelPopupOpen} close={() => createChannelPopupOpen = false}>
+  <form class="createchannelform" onsubmit={createChannel}>
+    <input type="text" bind:value={newchannelname}>
+    <input type="submit" value="Create channel">
+  </form>
+</Popup>
 <main>
   <div class="outerguildlist">
     <Guildlist guilds={guilds} selectedid={guild.id} />
@@ -189,18 +208,40 @@
           </div>
         {/each}
       </div>
-      <h3>Banned members</h3>
-      <div class="memberslist">
-        {#each bannedmembers as member}
-          <div class="memberentry">
-            {member.username}
-            <div class="membereditbuttons">
-              <button class="membereditbutton" onclick={() => unbanUser(member.id)} title="Unban member">
-                <Icon icon="person_add"/>
+      {#if bannedmembers.length !== 0}
+        <h3>Banned members</h3>
+        <div class="memberslist">
+          {#each bannedmembers as member}
+            <div class="memberentry">
+              {member.username}
+              <div class="membereditbuttons">
+                <button class="membereditbutton" onclick={() => unbanUser(member.id)} title="Unban member">
+                  <Icon icon="person_add"/>
+                </button>
+              </div>
+            </div>
+          {/each}
+        </div>
+      {/if}
+    </section>
+    <section>
+      <h2>Channels</h2>
+      <div class="channels">
+        {#each channels as channel}
+          <div class="channellistentry">
+            <span class="channelname">
+              #{channel.name}
+            </span>
+            <div class="channeloptions">
+              <button class="deletechannel" onclick={() => deleteChannel(channel.id)} title="Delete channel">
+                <Icon icon="delete" />
               </button>
             </div>
           </div>
         {/each}
+        <button class="channellistentry createchannel" onclick={() => createChannelPopupOpen = true} title="Create channel">
+          <Icon icon="add" />
+        </button>
       </div>
     </section>
     <section>
@@ -251,8 +292,6 @@
     gap: 1rem;
 
     overflow-y: auto;
-
-    position: relative;
   }
   h1, h2, h3 {
     display: flex;
@@ -440,6 +479,54 @@
     &:active, &:hover {
       background-color: var(--bg2) !important;
       color: var(--lightblue) !important;
+    }
+  }
+  .channels {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+  }
+  .channellistentry {
+    padding: .5rem;
+    background-color: var(--bg2);
+    height: 2rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .channeloptions {
+    display: flex;
+    flex-direction: row;
+    gap: .5rem;
+
+    &>* {
+      background-color: var(--bg1);
+      border: none;
+      height: 2rem;
+      width: 2rem;
+      color: var(--fg1);
+      font-size: 1.5rem;
+    }
+  }
+  .deletechannel {
+    &:active, &:hover {
+      background-color: var(--red);
+      color: var(--bg1);
+    }
+  }
+  .createchannel {
+    box-sizing: content-box;
+    border: none;
+    padding: .5rem;
+    color: var(--fg1);
+    justify-content: center;
+
+    font-size: 1.5rem;
+
+    &:active, &:hover {
+      background-color: var(--lightblue);
+      color: var(--bg1);
     }
   }
 </style>
