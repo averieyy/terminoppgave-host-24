@@ -131,12 +131,39 @@
   let createChannelPopupOpen: boolean = $state(false);
   let newchannelname: string = $state('');
 
-  function createChannel () {
-
+  async function createChannel () {
+    const resp = await fetch('/api/channel/create', {
+      method: 'POST',
+      body: JSON.stringify({
+        guildid: guild.id,
+        name: newchannelname
+      })
+    });
+    if (resp.ok) {
+      const { id } = await resp.json();
+      channels.push({guildid: guild.id, name: newchannelname, id});
+      newchannelname = '';
+      createChannelPopupOpen = false;
+    }
   }
 
-  function deleteChannel (channelid: number) {
+  async function deleteChannel (channelid: number) {
+    const oldchannels = $state.snapshot(channels);
+    const index = channels.findIndex(c => c.id == channelid);
+    if (index == -1) return;
 
+    channels.splice(index, 1);
+
+    const resp = await fetch('/api/channel/delete', {
+      method: 'POST',
+      body: JSON.stringify({
+        channelid,
+        guildid: guild.id
+      })
+    });
+    if (!resp.ok) {
+      channels = oldchannels;
+    }
   }
 </script>
 
@@ -527,6 +554,26 @@
     &:active, &:hover {
       background-color: var(--lightblue);
       color: var(--bg1);
+    }
+  }
+  .createchannelform {
+    display: flex;
+    flex-direction: column;
+
+    gap: .5rem;
+
+    &>input {
+      padding: .5rem;
+      background-color: var(--bg2);
+      color: var(--fg1);
+      border: none;
+    
+      &[type="submit"] {
+        &:hover, &:active {
+          background-color: var(--lightblue);
+          color: var(--bg1);
+        }
+      }
     }
   }
 </style>

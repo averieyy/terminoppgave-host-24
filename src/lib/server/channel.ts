@@ -49,7 +49,9 @@ export class Channel {
   }
 
   broadcast(message: string | object, event: string = 'channelmessage') {
-    for (const member of ChannelMembers[this.id]) {
+    const members = ChannelMembers[this.id];
+    if (!members || members.length == 0) return;
+    for (const member of members) {
       member.controller.sendMessage(event, message);
     }
   }
