@@ -128,8 +128,9 @@
   }
   
   // Channel logic
-  let createChannelPopupOpen: boolean = $state(false);
+  let createChannelMode: 'create' | 'closed' | 'edit' = $state('closed');
   let newchannelname: string = $state('');
+  let editingChannel: number | undefined = $state();
 
   async function createChannel () {
     const resp = await fetch('/api/channel/create', {
@@ -143,7 +144,7 @@
       const { id } = await resp.json();
       channels.push({guildid: guild.id, name: newchannelname, id});
       newchannelname = '';
-      createChannelPopupOpen = false;
+      createChannelMode = 'closed';
     }
   }
 
@@ -165,16 +166,40 @@
       channels = oldchannels;
     }
   }
+
+  async function editChannel () {
+    const oldchannels = $state.snapshot(channels);
+    const index = channels.findIndex(c => c.id == editingChannel);
+    if (index == -1) return;
+    
+    channels[index].name = newchannelname;
+
+    const resp = await fetch('/api/channel/edit', {
+      method: 'POST',
+      body: JSON.stringify({
+        channelid: editingChannel,
+        name: newchannelname,
+        guildid: guild.id
+      })
+    });
+    if (!resp.ok) {
+      channels = oldchannels;
+    }
+    else {
+      createChannelMode = 'closed';
+      editingChannel = undefined;
+    }
+  }
 </script>
 
 <svelte:head>
   <title>Settings for {guild.name} - Eris</title>
 </svelte:head>
 
-<Popup title="Create channel" open={createChannelPopupOpen} close={() => createChannelPopupOpen = false}>
-  <form class="createchannelform" onsubmit={createChannel}>
+<Popup title="{createChannelMode == 'create' ? 'Create' : 'Edit'} channel" open={createChannelMode !== 'closed'} close={() => createChannelMode = 'closed'}>
+  <form class="createchannelform" onsubmit={editingChannel && createChannelMode == 'edit' ? editChannel : createChannel}>
     <input type="text" bind:value={newchannelname}>
-    <input type="submit" value="Create channel">
+    <input type="submit" value="{createChannelMode == 'create' ? 'Create' : 'Edit'} channel">
   </form>
 </Popup>
 <main>
@@ -260,13 +285,20 @@
               #{channel.name}
             </span>
             <div class="channeloptions">
+              <button class="editchannel" onclick={() => {
+                editingChannel = channel.id;
+                newchannelname = channel.name;
+                createChannelMode = 'edit';
+              }} title="Change name">
+                <Icon icon="edit" />
+              </button>
               <button class="deletechannel" onclick={() => deleteChannel(channel.id)} title="Delete channel">
                 <Icon icon="delete" />
               </button>
             </div>
           </div>
         {/each}
-        <button class="channellistentry createchannel" onclick={() => createChannelPopupOpen = true} title="Create channel">
+        <button class="channellistentry createchannel" onclick={() => createChannelMode = 'create'} title="Create channel">
           <Icon icon="add" />
         </button>
       </div>
@@ -539,6 +571,12 @@
   .deletechannel {
     &:active, &:hover {
       background-color: var(--red);
+      color: var(--bg1);
+    }
+  }
+  .editchannel {
+    &:active, &:hover {
+      background-color: var(--lightblue);
       color: var(--bg1);
     }
   }
