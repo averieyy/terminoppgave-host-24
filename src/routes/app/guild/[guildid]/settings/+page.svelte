@@ -2,6 +2,8 @@
   import { goto } from "$app/navigation";
   import { isLight, shortHand } from "$lib/frontend/guild";
   import Guildlist from "$lib/widgets/guildlist.svelte";
+    import Icon from "$lib/widgets/icon.svelte";
+    import Notice from "$lib/widgets/notice.svelte";
   import Channels from "$lib/widgets/settings/channels.svelte";
   import Guildprofile from "$lib/widgets/settings/guildprofile.svelte";
   import Invitations from "$lib/widgets/settings/invitations.svelte";
@@ -75,6 +77,9 @@
         </a>
         Settings for <span>{name || guild.name}</span>
       </h1>
+      <Notice
+        content="These settings will change how your guild is seen by, and how safe it will be for users."
+      />
       <section>
         <h2>Guild profile</h2>
         <Guildprofile colour={colour} description={description} guild={guild} name={name}
@@ -141,17 +146,19 @@
     flex: 1;
     background-color: var(--bg1);
     padding: 1rem;
-
+    
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-
     align-items: center;
-
+    
     overflow-y: auto;
   }
   .innermaincontent {
     max-width: 32rem;
+
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
   }
   h1, h2 {
     display: flex;
