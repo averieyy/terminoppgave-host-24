@@ -106,12 +106,6 @@
 </div>
 
 <style>
-  @media screen and (max-width: 560px) {
-    .uuid {
-      display: none;
-    }
-  }
-
   .invitations {
     display: flex;
     flex-direction: column;
