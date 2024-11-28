@@ -68,45 +68,47 @@
     <Guildlist guilds={guilds} selectedid={guild.id} />
   </div>
   <div class="maincontent">
-    <h1>
-      <a href="/app/guild/{guild.id}" title="Go back to {guild.name}" class="gobackguild" style="background-color: {guild?.colour}; color: var(--{isLight(guild?.colour) ? 'bg1' : 'fg1'})">
-        {shortHand(guild?.name || 'Go back')}
-      </a>
-      Settings for <span>{name || guild.name}</span>
-    </h1>
-    <section>
-      <h2>Guild profile</h2>
-      <Guildprofile colour={colour} description={description} guild={guild} name={name}
-        updatecolour={(c: string) => colour = c}
-        updatename={(n: string) => name = n}
-        updatedescription={(d: string) => description = d}
-      />
-    </section>
-    <section>
-      <h2>Settings</h2>
-      <Toggle onchange={(value) => discoverable = value} start={guildsettings.discoverable} title="Discoverable"/>
-    </section>
-    <section>
-      <h2>Members</h2>
-      <Members guild={guild} banned={bannedmembers} memberlist={members} userid={userid}/>
-    </section>
-    <section>
-      <h2>Channels</h2>
-      <Channels channels={channels} guild={guild} />
-    </section>
-    <section>
-      <h2>Invitations</h2>
-      <Invitations guild={guild} />
-    </section>
-    <section>
-      <h2>Danger</h2>
-      <button class="danger" onclick={leaveGuild}>
-        Leave
-      </button>
-      <button class="danger" onclick={deleteGuild}>
-        Delete guild
-      </button>
-    </section>
+    <article class="innermaincontent">
+      <h1>
+        <a href="/app/guild/{guild.id}" title="Go back to {name}" class="gobackguild" style="background-color: {colour}; color: var(--{isLight(colour) ? 'bg1' : 'fg1'})">
+          {shortHand(name || 'Go back')}
+        </a>
+        Settings for <span>{name || guild.name}</span>
+      </h1>
+      <section>
+        <h2>Guild profile</h2>
+        <Guildprofile colour={colour} description={description} guild={guild} name={name}
+          updatecolour={(c: string) => colour = c}
+          updatename={(n: string) => name = n}
+          updatedescription={(d: string) => description = d}
+        />
+      </section>
+      <section>
+        <h2>Settings</h2>
+        <Toggle onchange={(value) => discoverable = value} start={guildsettings.discoverable} title="Discoverable"/>
+      </section>
+      <section>
+        <h2>Members</h2>
+        <Members guild={guild} banned={bannedmembers} memberlist={members} userid={userid}/>
+      </section>
+      <section>
+        <h2>Channels</h2>
+        <Channels channels={channels} guild={guild} />
+      </section>
+      <section>
+        <h2>Invitations</h2>
+        <Invitations guild={guild} />
+      </section>
+      <section>
+        <h2>Danger</h2>
+        <button class="danger" onclick={leaveGuild}>
+          Leave
+        </button>
+        <button class="danger" onclick={deleteGuild}>
+          Delete guild
+        </button>
+      </section>
+    </article>
     <div class={`unsavedpopup ${unsavedChanges ? 'open' : 'closed'}`}>
       <div class="unsaved">
         <button onclick={save}>
@@ -130,7 +132,6 @@
   .outerguildlist {
     overflow: auto;
   }
-
   main {
     display: flex;
     flex-direction: row;
@@ -145,7 +146,12 @@
     flex-direction: column;
     gap: 1rem;
 
+    align-items: center;
+
     overflow-y: auto;
+  }
+  .innermaincontent {
+    max-width: 32rem;
   }
   h1, h2 {
     display: flex;
@@ -226,6 +232,7 @@
     }
   }
   .gobackguild {
+    margin-bottom: .25rem;
     width: 2rem;
     height: 2rem;
     text-decoration: none;
