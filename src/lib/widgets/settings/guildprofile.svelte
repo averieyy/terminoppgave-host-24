@@ -1,0 +1,85 @@
+<script lang="ts">
+  import { isLight, shortHand } from "$lib/frontend/guild";
+  import Colourpicker from "$lib/widgets/colourpicker.svelte";
+
+  let { colour, description, name, guild, updatename, updatecolour, updatedescription }: {
+    colour: string,
+    description: string,
+    name: string,
+    guild: {name: string},
+    updatename: (name: string) => void,
+    updatedescription: (name: string) => void,
+    updatecolour: (name: string) => void,
+  } = $props();
+
+  $effect(() => {
+    updatename(name);
+    updatedescription(description);
+    updatecolour(colour);
+  });
+</script>
+
+<div class="profileeditor">
+  <div class="guildprofile">
+    <input type="text" bind:value={name} placeholder="Name">
+    <textarea bind:value={description}></textarea>
+    <Colourpicker colour={colour} changeColourCallback={c => colour = c} />
+  </div>
+  <div class="outerpreview">
+    <div class="preview" style={`background-color: ${colour}; color: ${isLight(colour) ? 'var(--bg1)' : 'var(--fg1)'};`}>
+      <span>
+        {shortHand(name || guild.name)}
+      </span>
+    </div>
+  </div>
+</div>
+
+<style>
+
+.guildprofile {
+    flex: 1;
+  }
+  .profileeditor {
+    background-color: var(--bg2);
+    padding: 1rem;
+
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+  }
+  .outerpreview {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .preview {
+    width: 7.5rem;
+    height: 7.5rem;
+
+    overflow: hidden;
+
+    border-radius: 2.5rem;
+    background-color: var(--bg1);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+
+    user-select: none;
+  }
+  .guildprofile {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+
+    &>input, &>textarea {
+      background-color: var(--bg1);
+      border: none;
+      color: var(--fg1);
+      padding: .5rem;
+      resize: vertical;
+      margin: 0;
+    }
+  }
+</style>
