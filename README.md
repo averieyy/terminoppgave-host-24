@@ -58,17 +58,22 @@ int|boolean
 Textcontent|||
 -|-|-
 id|content|messageid
-serial|text|int
+serial (int)|text|int
 
 Files|||||
 -|-|-|-|-
 id|path|displayname|mime|uploaded
-serial|text|text|text|timestamp
+serial (int)|text|text|text|timestamp
 
 Filecontent|||
 -|-|-
 id|fileid|messageid
-serial|int|int
+serial (int)|int|int
+
+Bannedmembers|||
+-|-|-
+userid|guildid
+int|int
 
 ### Route explanation
 
@@ -103,7 +108,7 @@ Create new channel
 
 ```json
 {
-  "guildid": string,
+  "guildid": number,
   "name": string
 }
 ```
@@ -114,9 +119,78 @@ Create new channel
 }
 ```
 
+> DELETE /api/channel/delete
+
+Delete channel
+
+```json
+{
+  "guildid": number,
+  "channelid": number
+}
+```
+
+```json
+{
+  "message": "Channel deleted"
+}
+```
+
+> PUT /api/channel/edit
+
+Edit channel
+
+```json
+{
+  "guildid": number,
+  "channelid": number,
+  "name": string
+}
+```
+
+```json
+{
+  "message": "Channel edited"
+}
+```
+
 > GET /api/channel/\[channelid\]
 
 Get an event stream to a channel
+
+> DELETE /api/channel/\[channelid\]/delete
+
+Delete a message from channel
+
+```json
+{
+  "messageid": number
+}
+```
+
+```json
+{
+  "message": "Deleted message"
+}
+```
+
+> PUT /api/channel/\[channelid\]/edit
+
+Edit a channel message
+
+```json
+{
+  "messageid": number,
+  "messagecontent": content[],
+  "replyto": number | undefined
+}
+```
+
+```json
+{
+  "message": "Edited message"
+}
+```
 
 > POST /api/channel/\[channelid\]/send
 
@@ -125,13 +199,31 @@ Send a message in a channel
 ```json
 {
   "content": string,
-  "datetime": number // UTC milliseconds
+  "datetime": number, // UTC milliseconds
+  "replyto": number | undefined
 }
 ```
 
 ```json
 {
   "message": "Message sent in channel"
+}
+```
+
+> POST /api/guild/ban
+
+Ban member
+
+```json
+{
+  "guildid": number,
+  "userid": number
+}
+```
+
+```json
+{
+  "message": "Banned member"
 }
 ```
 
@@ -150,6 +242,22 @@ Create new guild
 ```json
 {
   "id": number
+}
+```
+
+> DELETE /api/guild/delete
+
+Delete guild
+
+```json
+{
+  "guildid": number
+}
+```
+
+```json
+{
+  "message": "Deleted guild"
 }
 ```
 
@@ -186,6 +294,23 @@ Create invitation
 }
 ```
 
+> POST /api/guild/invite/custom
+
+Create invitation with custom link
+
+```json
+{
+  "guildid": number,
+  "custom": string
+}
+```
+
+```json
+{
+  "custom": string
+}
+```
+
 > POST /api/guild/join
 
 Join a guild (from invite link)
@@ -202,7 +327,7 @@ Join a guild (from invite link)
 }
 ```
 
-> POST /api/guild/join/discover
+> POST /api/guild/join/discovery
 
 Join a guild (from the discovery page)
 
@@ -215,6 +340,23 @@ Join a guild (from the discovery page)
 ```json
 {
   "message": "Joined guild"
+}
+```
+
+> POST /api/guild/kick
+
+Kick member
+
+```json
+{
+  "guildid": number,
+  "userid": number,
+}
+```
+
+```json
+{
+  "message": "Kicked member"
 }
 ```
 
@@ -269,6 +411,23 @@ Update settings for a guild
 }
 ```
 
+> POST /api/guild/unban
+
+Unban member
+
+```json
+{
+  "guildid": number,
+  "userid": string
+}
+```
+
+```json
+{
+  "message": "Unbanned member"
+}
+```
+
 > POST /api/login
 
 Log in
@@ -285,6 +444,10 @@ Log in
   "message": "Logged in as <username>"
 }
 ```
+
+> GET /api/online
+
+Register yourselves as online (Event stream endpoint)
 
 > POST /api/register
 

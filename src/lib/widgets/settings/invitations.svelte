@@ -109,6 +109,7 @@
   .invitations {
     display: flex;
     flex-direction: column;
+    gap: .5rem;
     &>* {
       box-sizing: border-box;
       height: 3rem;
@@ -197,10 +198,6 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-
-    &:nth-child(even) {
-      background-color: var(--bg3);
-    }
   }
   .inviteactions {
     display: flex;

@@ -34,7 +34,7 @@
     channels.splice(index, 1);
 
     const resp = await fetch('/api/channel/delete', {
-      method: 'POST',
+      method: 'DELETE',
       body: JSON.stringify({
         channelid,
         guildid: guild.id
@@ -53,7 +53,7 @@
     channels[index].name = newchannelname;
 
     const resp = await fetch('/api/channel/edit', {
-      method: 'POST',
+      method: 'PUT',
       body: JSON.stringify({
         channelid: editingChannel,
         name: newchannelname,

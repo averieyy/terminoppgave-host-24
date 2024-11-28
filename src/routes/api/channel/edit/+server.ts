@@ -4,7 +4,7 @@ import { Guild } from "$lib/server/guild";
 import { Token } from "$lib/server/token";
 import { json, type RequestHandler } from "@sveltejs/kit";
 
-export const POST: RequestHandler = async ({ cookies, request }) => {
+export const PUT: RequestHandler = async ({ cookies, request }) => {
   const user = await Token.getUserFromToken(cookies);
   if (!user) return json({ message: 'Unauthorized' }, { status: 403 });
 

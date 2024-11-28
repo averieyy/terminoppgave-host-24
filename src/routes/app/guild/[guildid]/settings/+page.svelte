@@ -51,7 +51,7 @@
 
   async function deleteGuild() {
     const resp = await fetch('/api/guild/delete', {
-      method: 'POST',
+      method: 'DELETE',
       body: JSON.stringify({
         guildid: guild.id
       })

@@ -6,7 +6,7 @@ import { Token } from "$lib/server/token";
 import { ChannelMembers } from "$lib/server/user";
 import { json, type RequestHandler } from "@sveltejs/kit";
 
-export const POST: RequestHandler = async ({ cookies, request }) => {
+export const DELETE: RequestHandler = async ({ cookies, request }) => {
   const user = await Token.getUserFromToken(cookies);
   if (!user) return json({ message: 'Unauthorized' }, { status: 403 });
 
