@@ -11,12 +11,12 @@ export const load: PageServerLoad = async ({ cookies, params, url }) => {
 
   // Get guild from invite
   const uuid = params.uuid;
-  const guild = await DatabaseConnection.queryOne<Guild>('SELECT guilds.* FROM invitation INNER JOIN guilds ON invitation.guildid = guilds.id WHERE invitation.uuid = $1::text', uuid);
+  const guild = await DatabaseConnection.queryOne<Guild>('SELECT guilds.* FROM invitation INNER JOIN guilds ON invitation.guildid = guilds.id WHERE invitation.uuid = $1::text OR invitation.customlink = $1::text', uuid);
   if (!guild) redirect(302, '/app');
   
   // Get unavailable guilds (the guilds they are already a part of or are banned from)
   const bannedGuilds = await DatabaseConnection.query<{guildid: number}>('SELECT guildid FROM bannedmembers WHERE userid = $1::integer', user.id);
-  const guilds = await DatabaseConnection.query<IGuild>('SELECT guilds.* FROM guildmembers INNER JOIN guilds ON guilds.id guildmembers.guildid =  WHERE guildmembers.userid = $1::integer', user.id);
+  const guilds = await DatabaseConnection.query<IGuild>('SELECT guilds.* FROM guildmembers INNER JOIN guilds ON guildmembers.guildid = guilds.id WHERE guildmembers.userid = $1::integer', user.id);
   
   if (bannedGuilds.find(b => b.guildid == guild.id) || guilds.find(g => g.id == guild.id))
     redirect(302, '/app');
