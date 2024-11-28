@@ -3,7 +3,9 @@
   import Icon from "../icon.svelte";
   import Popup from "../popup.svelte";
 
-  const { guild }: { guild: {id: number} } = $props();
+  const { guild, invitations }: { guild: {id: number}, invitations: {uuid: string, customlink: string}[] } = $props();
+
+  let invites = $derived(invitations.map(i => {return {...i, link: `${$page.url.origin}/app/invite/${i.customlink || i.uuid}`}}));
 
   let invitemode: 'closed' | 'choose' | 'custom' | 'random' | 'displaylink' = $state('closed');
   let invitelinkresponse: Promise<string | undefined> | undefined = $state();
@@ -84,12 +86,32 @@
   </div>
 </Popup>
 <div class="invitations">
+  {#each invites as invite}
+    <div class="inviteentry">
+      <div class="inviteinfo">
+        <a href={invite.link} class="invitelink link">
+          /invite/{(invite.customlink || invite.uuid).slice(0,19)}
+        </a>
+      </div>
+      <div class="inviteactions">
+        <button class="deleteinvite">
+          <Icon icon="delete"/>
+        </button>
+      </div>
+    </div>
+  {/each}
   <button class="addinvitation" onclick={() => invitemode = 'choose'}>
     <Icon icon="add"/>
   </button>
 </div>
 
 <style>
+  @media screen and (max-width: 560px) {
+    .uuid {
+      display: none;
+    }
+  }
+
   .invitations {
     display: flex;
     flex-direction: column;
@@ -171,5 +193,40 @@
   }
   .innerinvitepopup {
     min-width: 16rem;
+  }
+  .invitelink {
+    font-family: var(--monospaced);
+    font-size: .9rem;
+    background-color: inherit;
+  }
+  .inviteentry {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    &:nth-child(even) {
+      background-color: var(--bg3);
+    }
+  }
+  .inviteactions {
+    display: flex;
+    flex-direction: row;
+  }
+  .deleteinvite {
+    display: flex;
+    background-color: var(--bg4);
+    border: none;
+    font-size: 1.5rem;
+    padding: 0;
+    width: 2rem;
+    height: 2rem;
+    align-items: center;
+    justify-content: center;
+    color: var(--fg1);
+    
+    &:hover, &:active {
+      background-color: var(--red);
+      color: var(--bg1);
+    }
   }
 </style>

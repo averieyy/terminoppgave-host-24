@@ -2,8 +2,7 @@
   import { goto } from "$app/navigation";
   import { isLight, shortHand } from "$lib/frontend/guild";
   import Guildlist from "$lib/widgets/guildlist.svelte";
-    import Icon from "$lib/widgets/icon.svelte";
-    import Notice from "$lib/widgets/notice.svelte";
+  import Notice from "$lib/widgets/notice.svelte";
   import Channels from "$lib/widgets/settings/channels.svelte";
   import Guildprofile from "$lib/widgets/settings/guildprofile.svelte";
   import Invitations from "$lib/widgets/settings/invitations.svelte";
@@ -12,7 +11,7 @@
   import type { PageData } from "./$types";
 
   const { data }: { data: PageData } = $props();
-  let { guild, guildsettings, guilds, members, userid, bannedmembers, channels } = $state(data);
+  let { guild, guildsettings, guilds, members, userid, bannedmembers, channels, invitations } = $state(data);
   
   let { name, colour, description } = $state(guild);
   let { discoverable } = $state(guildsettings);
@@ -102,7 +101,7 @@
       </section>
       <section>
         <h2>Invitations</h2>
-        <Invitations guild={guild} />
+        <Invitations guild={guild} invitations={invitations} />
       </section>
       <section>
         <h2>Danger</h2>

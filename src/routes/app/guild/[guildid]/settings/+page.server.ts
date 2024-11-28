@@ -36,8 +36,10 @@ export const load: PageServerLoad = async ({ cookies, params, url }) => {
   const members = await DatabaseConnection.query<{username: string, id: number, administrator: boolean}>('SELECT users.username, users.id, guildmembers.administrator FROM guildmembers INNER JOIN users ON users.id = userid WHERE guildid = $1::integer', guild.id);
   const bannedmembers = await DatabaseConnection.query<{username: string, id: number}>('SELECT users.username, users.id FROM bannedmembers INNER JOIN users ON bannedmembers.userid = users.id WHERE bannedmembers.guildid = $1::integer', guild.id);
 
+  const invitations = await DatabaseConnection.query<{uuid: string, customlink: string}>('SELECT uuid, customlink FROM invitation WHERE guildid = $1::integer', guild.id);
+
   const guilds = await DatabaseConnection.query<Guild>('SELECT guilds.* FROM guildmembers INNER JOIN guilds ON guilds.id = guildmembers.guildid WHERE guildmembers.userid = $1::integer', user.id);
-  
+
   if (!member) redirect(302, `/app/guild/${params.guildid}`);
 
   return {
@@ -47,6 +49,7 @@ export const load: PageServerLoad = async ({ cookies, params, url }) => {
     members,
     bannedmembers,
     userid: user.id,
-    channels
+    channels,
+    invitations
   }
 };
