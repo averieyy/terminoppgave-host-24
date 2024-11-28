@@ -45,7 +45,8 @@ CREATE TABLE guildmembers (
 
 CREATE TABLE invitation (
   guildid INT NOT NULL REFERENCES guilds(id),
-  uuid TEXT NOT NULL CONSTRAINT invitation_unique UNIQUE
+  uuid TEXT NOT NULL CONSTRAINT invitation_unique UNIQUE,
+  customlink TEXT UNIQUE
 );
 
 CREATE TABLE guildsettings (
