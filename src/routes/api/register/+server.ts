@@ -9,12 +9,16 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
   if (!username) return json({ message: 'Username missing' }, { status: 400 });
   if (!password) return json({ message: 'Password missing' }, { status: 400 });
 
+  // Check if the username is good
+  if (username.length <3 && username.length > 16) return json({ message: 'Your username must be between 3 and 16 characters long.'}, { status: 400 });
+  if (username.match(/[^a-z0-9-_]/)) return json({ message: 'Your username can only include lowercase english letters (a-z), numbers, dashes and underscores.' }, { status: 400 });
+
   // Check if the password is good
   if (password.length < 8) return json({ message: 'Password must be 8 characters or longer' }, { status: 400 });
 
   // Check if username if unique
-  const users = await DatabaseConnection.query<User>('SELECT * FROM users WHERE username = $1::text', username);
-  if (users.length > 0) return json({ message: 'Username already in use' }, { status: 409 });
+  const existing = await DatabaseConnection.queryOne<User>('SELECT * FROM users WHERE username = $1::text', username);
+  if (existing) return json({ message: 'Username already in use' }, { status: 409 });
 
   const salt = User.genSalt();
   const hash = User.hashPassword(password, salt);

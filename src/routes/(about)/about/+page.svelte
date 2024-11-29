@@ -12,7 +12,20 @@
   <article>
     <section id="introduction">
       <h1>About</h1>
-      <p>Eris is a messaging platform for messaging friends and enemies. Just create a guild and start chatting!</p>
+      <p>
+        Eris is a messaging platform for messaging friends and enemies.
+        Just create a guild and start chatting!
+      </p>
+    </section>
+    <section id="startup">
+      <h2>How do I get started?</h2>
+      <p>
+        Eris is free to use, so you just need an account to get started.
+        Just click <a class="link" href="/app/register">here</a>,
+          or on the button in the top right corner to register.
+        Your username can only include lowercase english letters (a-z),
+          numbers, dashes and underscores, and your password must be 8 characters or longer.
+      </p>
     </section>
     <section id="faq">
       <h2>FAQs</h2>
