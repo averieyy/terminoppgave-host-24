@@ -29,13 +29,16 @@
     {/if}
     <div class="message">
       <span class="time">{message.datetime.getHours().toString().padStart(2,'0')}:{message.datetime.getMinutes().toString().padStart(2, '0')}</span>
-      <span class="sender">{message.user}</span>
-      <div class="contentedit">
-        <Messagecontent content={message.content} />
-        {#if message.edited}
-          <span class="messagedited">(edited)</span>
-        {/if}
+      <div class="sendercontent">
+        <div class="sendertext">
+          <span class="sender">{message.user}</span>
+          <span class="messagecontent">{message.content.find(c => TextContent.isTextContent(c))?.content || ''}</span>
+        </div>
+        <Messagecontent content={message.content.filter(c => !TextContent.isTextContent(c))} />
       </div>
+      {#if message.edited}
+        <span class="messagedited">(edited)</span>
+      {/if}
     </div>
   </div>
   <div class="outerhovermenu">
@@ -58,9 +61,9 @@
 </div>
 
 <style>
-  @media (max-width: 600px) {
-    .time {
-      display: none;
+  @media (max-width: 560px) {
+    .sendercontent {
+      flex-direction: column !important;
     }
   }
 
@@ -72,6 +75,13 @@
     padding: .5rem;
 
     font-size: 16px;
+  }
+
+  .sendercontent {
+    display: flex;
+    gap: .5rem;
+    flex-direction: column;
+    flex: 1;
   }
 
   .replymessage {
@@ -169,12 +179,6 @@
   .outermessage {
     display: flex;
     flex-direction: row;
-  }
-  .contentedit {
-    display: flex;
-    flex-direction: column;
-    gap: .5rem;
-    flex: 1;
   }
   .messagedited {
     color: var(--bg4);

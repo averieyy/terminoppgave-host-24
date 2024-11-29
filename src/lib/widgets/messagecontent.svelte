@@ -23,32 +23,34 @@
   });
 </script>
 
-<div class="messagecontent">
-  {#each content as messageContent}
-    {#if messageContent.type == "text"}
-      <span class="content">{(messageContent as TextContent).content}</span>
-    {:else if messageContent.type == "file"}
-      {#if (messageContent as FileContent).mime.startsWith("image/")}
-        <div class="imageattachment">
-          <img class="messageimage" src={`/api/upload/${(messageContent as FileContent).path}`} alt="User-contributed">              
-          {#if removeFile}
-            <button onclick={() => removeFile((messageContent as FileContent).path)}>
-              <Icon icon="close"/>
-            </button>
-          {/if}
-        </div>
-      {:else if FileContent.isTextFileContent(messageContent)}
-        {#await textfilepreviews}
-          <Textfile textfile={messageContent as FileContent} preview={'Loading...'} remove={removeFile}/>
-        {:then textfileprevs}
-          <Textfile textfile={messageContent as FileContent} preview={textfileprevs[(messageContent as FileContent).path]} remove={removeFile}/>
-        {/await}
-      {:else}
-        <Filecontent filecontent={messageContent as FileContent} remove={removeFile}/>
+{#if content.length > 0}
+  <div class="messagecontent">
+    {#each content as messageContent}
+      {#if messageContent.type == "text"}
+        <span class="content">{(messageContent as TextContent).content}</span>
+      {:else if messageContent.type == "file"}
+        {#if (messageContent as FileContent).mime.startsWith("image/")}
+          <div class="imageattachment">
+            <img class="messageimage" src={`/api/upload/${(messageContent as FileContent).path}`} alt="User-contributed">              
+            {#if removeFile}
+              <button onclick={() => removeFile((messageContent as FileContent).path)}>
+                <Icon icon="close"/>
+              </button>
+            {/if}
+          </div>
+        {:else if FileContent.isTextFileContent(messageContent)}
+          {#await textfilepreviews}
+            <Textfile textfile={messageContent as FileContent} preview={'Loading...'} remove={removeFile}/>
+          {:then textfileprevs}
+            <Textfile textfile={messageContent as FileContent} preview={textfileprevs[(messageContent as FileContent).path]} remove={removeFile}/>
+          {/await}
+        {:else}
+          <Filecontent filecontent={messageContent as FileContent} remove={removeFile}/>
+        {/if}
       {/if}
-    {/if}
-  {/each}
-</div>
+    {/each}
+  </div>
+{/if}
 
 <style>
   .messageimage {

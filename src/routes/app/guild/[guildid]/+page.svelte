@@ -69,7 +69,7 @@
   }
 
   onMount(() => {
-    memberlistclosed = window.innerWidth < 560;
+    memberlistclosed = window.innerWidth <= 560;
   });
 </script>
 
@@ -142,9 +142,9 @@
 </div>
 
 <style>
-  @media screen and (min-width: 560px) {
+  @media screen and (max-width: 560px) {
     .showmemberlist {
-      display: none !important;
+      display: flex !important;
     }
   }
   .outerpage {
@@ -205,7 +205,7 @@
       width: 2rem;
       height: 2rem;
       
-      display: flex;
+      display: none;
       align-items: center;
       justify-content: center;
 
