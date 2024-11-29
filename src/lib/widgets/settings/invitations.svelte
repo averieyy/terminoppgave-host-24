@@ -5,7 +5,7 @@
 
   const { guild, invitations }: { guild: {id: number}, invitations: {uuid: string, customlink: string}[] } = $props();
 
-  let invites = $derived(invitations.map(i => {return {...i, link: `${$page.url.origin}/app/invite/${i.customlink || i.uuid}`}}));
+  let invites = $state(invitations.map(i => {return {...i, link: `${$page.url.origin}/app/invite/${i.customlink || i.uuid}`}}));
 
   let invitemode: 'closed' | 'choose' | 'custom' | 'random' | 'displaylink' = $state('closed');
   let invitelinkresponse: Promise<string | undefined> | undefined = $state();
@@ -49,6 +49,24 @@
       return (await r.json())['custom'] as string;
     });
     invitemode = 'displaylink';
+  }
+
+  async function deleteInvitation (uuid: string) {
+    const oldInvites = $state.snapshot(invites);
+    const index = invites.findIndex(i => i.uuid == uuid);
+    if (index == -1) return;
+    invites.splice(index, 1);
+    const resp = await fetch('/api/guild/invite/delete', {
+      method: 'DELETE',
+      body: JSON.stringify({
+        guildid: guild.id,
+        uuid
+      })
+    });
+    if (!resp.ok) {
+      invites = oldInvites;
+      return;
+    }
   }
 </script>
 
@@ -94,7 +112,7 @@
         </a>
       </div>
       <div class="inviteactions">
-        <button class="deleteinvite">
+        <button class="deleteinvite" onclick={() => deleteInvitation(invite.uuid)}>
           <Icon icon="delete"/>
         </button>
       </div>
