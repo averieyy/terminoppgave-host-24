@@ -17,6 +17,7 @@
   --green: #a3be8c;
 
   --monospaced: "Jetbrains Mono", monospace;
+  --font: "Inter", sans-serif;
 }
 
 html, body {
@@ -41,4 +42,8 @@ html, body {
   &:hover {
     color: var(--lightblue);
   }
+}
+
+button {
+  font-family: var(--font);
 }

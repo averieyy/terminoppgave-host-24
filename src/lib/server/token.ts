@@ -51,6 +51,9 @@ export class Token {
     await DatabaseConnection.execute('UPDATE tokens SET expires = $1::timestamp WHERE content = $2::text', new Date(now + TOKEN_TIMEOUT * 1000), token);
     cookies.set('token', token, { path: '/', secure: false, maxAge: TOKEN_TIMEOUT });
 
+    console.log(user_token.username);
+    
+
     return new User(
       user_token.username,
       user_token.userid,

@@ -51,6 +51,11 @@
       <Icon icon='add'/>
     </div>
   </button>
+  <div class="usersettings">
+    <a href="/app/settings">
+      <Icon icon="settings"/>
+    </a>
+  </div>
 </div>
 
 <style>
@@ -97,7 +102,7 @@
       color: var(--bg1);
     }
     
-    &>a,button {
+    &>a,button,.usersettings>a {
       width: 3rem;
       aspect-ratio: 1 / 1;
       border: none;
@@ -129,5 +134,19 @@
     background-color: var(--lightblue);
     color: var(--bg1);
     font-size: 1.5rem;
+  }
+  .usersettings {
+    flex: 1;
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+
+    font-size: 1.5rem;
+
+    &>* {
+      background-color: var(--lightblue);
+      color: var(--bg1);
+    }
   }
 </style>

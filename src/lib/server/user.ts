@@ -16,6 +16,10 @@ export class User {
     this.salt = salt;
   }
 
+  static usernameValid (username: string) {
+    return username.length >= 3 && username.length <= 16 && !username.match(/[^a-z0-9-_]/);
+  }
+
   static genSalt(): string {
     return randomBytes(16).toString('base64');
   }

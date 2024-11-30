@@ -10,8 +10,7 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
   if (!password) return json({ message: 'Password missing' }, { status: 400 });
 
   // Check if the username is good
-  if (username.length <3 && username.length > 16) return json({ message: 'Your username must be between 3 and 16 characters long.'}, { status: 400 });
-  if (username.match(/[^a-z0-9-_]/)) return json({ message: 'Your username can only include lowercase english letters (a-z), numbers, dashes and underscores.' }, { status: 400 });
+  if (User.usernameValid(username)) return json({ message: 'Your username must be between 3 and 16 characters long and can only include lowercase english letters, numbers, dashes, and underscores.'}, { status: 400 });
 
   // Check if the password is good
   if (password.length < 8) return json({ message: 'Password must be 8 characters or longer' }, { status: 400 });
