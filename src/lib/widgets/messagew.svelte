@@ -33,12 +33,12 @@
         <div class="sendertext">
           <span class="sender">{message.user}</span>
           <span class="messagecontent">{message.content.find(c => TextContent.isTextContent(c))?.content || ''}</span>
+          {#if message.edited}
+            <span class="messagedited">(edited)</span>
+          {/if}
         </div>
         <Messagecontent content={message.content.filter(c => !TextContent.isTextContent(c))} />
       </div>
-      {#if message.edited}
-        <span class="messagedited">(edited)</span>
-      {/if}
     </div>
   </div>
   <div class="outerhovermenu">
@@ -82,12 +82,15 @@
     gap: .5rem;
     flex-direction: column;
     flex: 1;
+    
+    overflow: hidden;
   }
 
   .replymessage {
     display: flex;
     flex-direction: column;
     flex: 1;
+    max-width: 100%;
   }
 
   .replyauthor {

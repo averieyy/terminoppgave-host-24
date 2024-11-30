@@ -83,7 +83,7 @@
     gap: .5rem;
 
     width: 100%;
-    max-width: min(20rem, 100%);
+    max-width: 20rem;
   }
 
   .content {

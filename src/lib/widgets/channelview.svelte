@@ -258,6 +258,7 @@
     background-color: var(--bg1);
 
     overflow: hidden;
+    max-width: 100vw;
   }
   .messages {
     display: flex;

@@ -60,7 +60,10 @@
   }
 
   .outerguildlist {
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    min-width: 4rem;
   }
 
   main {
@@ -88,7 +91,8 @@
     overflow: auto;
   }
   .normalmemberlist {
-    max-width: 10rem;
+    max-width: 16rem;
+    min-width: fit-content;
   }
   header {
     padding: 1rem;

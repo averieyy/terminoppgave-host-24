@@ -83,11 +83,8 @@
   .preview {
     overflow: hidden;
     height: fit-content;
-    display: flex;
-    flex-direction: column;
 
     font-size: 80%;
-    width: 100%;
 
     padding: .5rem;
     background-color: var(--bg2);
@@ -108,8 +105,6 @@
     margin: 0;
     min-width: 5rem;
     max-width: 100%;
-
-    flex: 1 1 100%;
   }
   .expandbtns {
     display: flex;
