@@ -39,7 +39,6 @@ export const load: PageServerLoad = async ({ cookies, params, url }) => {
 
   return {
     guild,
-    guilds,
     channels,
     admin,
     members: onlinemembers

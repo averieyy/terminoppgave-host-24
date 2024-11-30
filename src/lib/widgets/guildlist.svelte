@@ -4,7 +4,7 @@
   import { isLight, shortHand } from "$lib/frontend/guild";
   import Logo from "./logo.svelte";
 
-  const { guilds, selectedid }: { guilds: { name: string, colour: string, id: number }[], selectedid?: number } = $props();
+  const { guilds, selectedid }: { guilds?: { name: string, colour: string, id: number }[], selectedid?: number } = $props();
 
   let addpopupopen: boolean = $state(false);
 </script>
@@ -30,7 +30,7 @@
     style="background-color: var(--lightblue); fill: var(--bg1);">
     <Logo width={32} height={32} />
   </a>
-  {#each guilds as guild}
+  {#each guilds || [] as guild}
     <a
       class={`guild ${selectedid == guild.id ? 'selected' : ''}`}
       style={`background-color: ${guild.colour}; color: ${isLight(guild.colour) ? 'var(--bg1)' : 'var(--fg1)'};`}

@@ -38,13 +38,10 @@ export const load: PageServerLoad = async ({ cookies, params, url }) => {
 
   const invitations = await DatabaseConnection.query<{uuid: string, customlink: string}>('SELECT uuid, customlink FROM invitation WHERE guildid = $1::integer', guild.id);
 
-  const guilds = await DatabaseConnection.query<Guild>('SELECT guilds.* FROM guildmembers INNER JOIN guilds ON guilds.id = guildmembers.guildid WHERE guildmembers.userid = $1::integer', user.id);
-
   if (!member) redirect(302, `/app/guild/${params.guildid}`);
 
   return {
     guild,
-    guilds,
     guildsettings,
     members,
     bannedmembers,

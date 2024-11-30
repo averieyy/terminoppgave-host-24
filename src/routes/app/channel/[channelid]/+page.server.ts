@@ -27,12 +27,6 @@ export const load: PageServerLoad = async ({ cookies, params, url }) => {
 
   return {
     channel,
-    guilds: guilds.map(g => { return{
-      name: g.name,
-      id: g.id,
-      description: g.description,
-      colour: g.colour
-    }}),
     members,
     userid: user.id,
     admin: member.administrator,
