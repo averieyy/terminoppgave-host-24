@@ -66,7 +66,7 @@
 
     transition: width .125s ease;
 
-    width: 16rem;
+    width: 18rem;
   }
   .member {
     padding: .5rem;

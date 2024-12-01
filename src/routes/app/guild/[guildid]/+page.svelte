@@ -204,8 +204,7 @@
       
       width: 2rem;
       height: 2rem;
-      
-      display: none;
+
       align-items: center;
       justify-content: center;
 
@@ -213,6 +212,13 @@
         background-color: var(--lightblue);
         color: var(--bg1);
       }
+    }
+
+    &>a {
+      display: flex;
+    }
+    &>.showmemberlist {
+      display: none;
     }
   }
   .maincontent {

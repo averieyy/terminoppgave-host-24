@@ -86,6 +86,10 @@
     overflow: hidden;
   }
 
+  .sendertext {
+    width: 20rem;
+  }
+
   .replymessage {
     display: flex;
     flex-direction: column;

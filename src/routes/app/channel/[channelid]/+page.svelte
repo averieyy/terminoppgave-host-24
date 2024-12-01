@@ -64,6 +64,9 @@
     overflow-x: hidden;
 
     min-width: 4rem;
+
+    display: flex;
+    flex-direction: row;
   }
 
   main {

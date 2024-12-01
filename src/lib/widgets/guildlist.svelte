@@ -95,6 +95,8 @@
     padding: .5rem;
     background-color: var(--bg2);
 
+    box-sizing: border-box;
+
     overflow-y: auto;
 
     &>button {
