@@ -10,9 +10,7 @@
   let oldusername = data.user.username;
   let usernameError: boolean = $state(false);
 
-  $effect(() => {
-    console.log('effect ran', editingUsername);
-    
+  $effect(() => {    
     if (!editingUsername) {
       if (oldusername == username) return;
       // POST new username

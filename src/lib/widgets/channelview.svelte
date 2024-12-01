@@ -47,8 +47,6 @@
     stream.addEventListener('messageedit', ev => {
       const { message } = JSON.parse(ev.data, DateReviver) as {message: Message};
 
-      console.log(message);     
-      
       const deleteindex = messages.findIndex(m => m.id == message.id);
       messages[deleteindex] = message;
 
