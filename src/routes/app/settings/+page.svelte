@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { goto } from "$app/navigation";
   import Guildlist from "$lib/widgets/guildlist.svelte";
   import Icon from "$lib/widgets/icon.svelte";
 
@@ -29,16 +30,23 @@
       });
     }
   });
+
+  async function logout() {
+    const resp = await fetch('/api/user/logout', {
+      method: 'POST'
+    });
+    if (resp.ok) {
+      goto('/app/login');
+    }
+  }
 </script>
 
 <div class="outercontent">
   <Guildlist guilds={data.guilds}/>
   <main>
     <div class="outersettings">
-      <section class="header">
+      <section id="apparance">
         <h1>Settings</h1>
-      </section>
-      <section class="apparance">
         <form class="valuefeild" onsubmit={() => editingUsername = !editingUsername}>
           {#if editingUsername}
             <input bind:this={usernamefeild} type="text" bind:value={username} maxlength={16}>
@@ -50,11 +58,22 @@
           </button>
         </form>
       </section>
+      <section id="danger">
+        <h2>Danger</h2>
+        <button type="button" onclick={logout}>
+          <span>
+            Log out
+            <span class="icon">
+              <Icon icon="logout"/>
+            </span>
+          </span>
+        </button>
+      </section>
     </div>
   </main>
 </div>
 
-<style>
+<style lang="scss">
   .outercontent {
     height: 100%;
     display: flex;
@@ -95,12 +114,17 @@
 
     display: flex;
     flex-direction: column;
-    gap: .5rem;
+    gap: 1rem;
   }
   h1 {
     margin: 0;
     padding-left: .25rem;
     border-bottom: solid .125rem var(--lightblue);
+  }
+  section {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
   }
   .valuefeild {
     display: flex;
@@ -136,5 +160,37 @@
   }
   .errorvalue {
     border-bottom-color: var(--red) !important;
+  }
+  #danger {
+    display: flex;
+    flex-direction: column;
+    >button {
+      background-color: var(--red);
+      height: 2.5rem;
+
+      >span {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: .5rem;
+        font-size: 1rem;
+        font-weight: bold;
+
+        >.icon {
+          font-size: 1.25rem;
+          display: flex;
+        }
+      }
+      &:active, &:hover {
+        background-color: var(--bg2);
+        color: var(--red);
+      }
+    }
+  }
+  h2 {
+    font-size: 1.25rem;
+    border-bottom: .125rem solid var(--lightblue);
+    padding-left: .25rem;
+    margin: 0;
   }
 </style>
