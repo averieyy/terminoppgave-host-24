@@ -19,9 +19,10 @@ export const load: PageServerLoad = async ({ cookies, params, url }) => {
   const guild = guilds.find(g => g.id == channel.guildid);
   if (!guild) redirect(302, '/app');
 
-  const allmembers = await DatabaseConnection.query<IGuildMember & User>('SELECT * FROM guildmembers INNER JOIN users ON guildmembers.userid = users.id WHERE guildmembers.guildid = $1::integer', guild.id);
+  const allmembers = await DatabaseConnection.query<{username: string, userid: number, pfp?: string, administrator: boolean}>(
+    "SELECT u.username, g.userid, f.path as pfp FROM guildmembers g INNER JOIN users u ON g.userid = u.id LEFT OUTER JOIN pfp p ON p.userid = g.userid LEFT OUTER JOIN files f ON f.id = p.fileid WHERE g.guildid = $1::integer", guild.id);
 
-  const members: {username: string, online: boolean}[] = allmembers.map(m => { return {username: m.username, online: OnlineMemberIds.includes(m.userid) || user.id == m.userid}});
+  const members: {username: string, online: boolean}[] = allmembers.map(m => { return {username: m.username, online: OnlineMemberIds.includes(m.userid) || user.id == m.userid, pfp: m.pfp}});
   const member = allmembers.find(m => m.userid == user.id);
   if (!member) redirect(302, '/app');
 

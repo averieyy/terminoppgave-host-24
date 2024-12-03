@@ -1,6 +1,6 @@
 import type { Cookies } from "@sveltejs/kit";
 import { DatabaseConnection } from "./database/connection";
-import type { IToken } from "./database/types";
+import type { IFile, IToken } from "./database/types";
 import { User } from "./user";
 import { randomBytes } from 'crypto';
 
@@ -51,11 +51,15 @@ export class Token {
     await DatabaseConnection.execute('UPDATE tokens SET expires = $1::timestamp WHERE content = $2::text', new Date(now + TOKEN_TIMEOUT * 1000), token);
     cookies.set('token', token, { path: '/', secure: false, maxAge: TOKEN_TIMEOUT });
 
+    // Get pfp
+    const pfp = await DatabaseConnection.queryOne<IFile>('SELECT f.* FROM pfp p INNER JOIN files f ON f.id = p.fileid WHERE userid = $1::integer', user_token.userid);
+
     return new User(
       user_token.username,
       user_token.userid,
       user_token.hash,
-      user_token.salt
+      user_token.salt,
+      pfp?.path
     );
   }
 }

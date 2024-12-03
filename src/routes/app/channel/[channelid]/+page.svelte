@@ -52,7 +52,7 @@
 <style>
   @media screen and (max-width: 560px) {
     .outerguildlist {
-      display: none;
+      display: none !important;
     }
     .showmembers {
       display: flex !important;

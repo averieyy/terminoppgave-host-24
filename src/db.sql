@@ -79,3 +79,9 @@ CREATE TABLE bannedmembers (
   guildid INT NOT NULL REFERENCES guilds(id),
   PRIMARY KEY (userid, guildid)
 );
+
+CREaTE TABLE pfp (
+  fileid INT NOT NULL REFERENCES files(id),
+  userid INT NOT NULL REFERENCES users(id),
+  PRIMARY KEY (fileid, userid)
+);

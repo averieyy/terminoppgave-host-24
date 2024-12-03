@@ -1,7 +1,7 @@
 <script lang="ts">
   import Icon from "./icon.svelte";
 
-  let { members, closed, toggle }: { members: { username: string, online: boolean }[], closed: boolean, toggle: () => void } = $props();
+  let { members, closed, toggle }: { members: { username: string, online: boolean, pfp?: string }[], closed: boolean, toggle: () => void } = $props();
 
   const onlinemembers = $derived(members.filter(m => m.online));
   const offlinemembers = $derived(members.filter(m => !m.online));
@@ -21,7 +21,8 @@
     </div>
     {#each onlinemembers as member}
       <div class="member online">
-        <div class="onlineicon">
+        <div class="onlineicon"
+          style={member.pfp && `background-image: url('/api/upload/${member.pfp}');`}>
           <div></div>
         </div>
         {member.username}
@@ -33,7 +34,8 @@
       </div>
       {#each offlinemembers as member}
         <div class="member offline">
-          <div class="offlineicon">
+          <div class="offlineicon"
+            style={member.pfp && `background-image: url('/api/upload/${member.pfp}');`}>
             <div></div>
           </div>
           {member.username}
@@ -88,6 +90,11 @@
   }
   .onlineicon, .offlineicon {
     background-color: var(--bg1);
+
+    /* PFP */
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    background-size: cover;
     
     aspect-ratio: 1 / 1;
     width: 1.5rem;

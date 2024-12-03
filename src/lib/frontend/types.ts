@@ -70,6 +70,7 @@ export class Message {
 export interface user {
   name: string,
   id: number,
+  pfp?: string
 }
 
 export interface member extends user {

@@ -1,6 +1,6 @@
 import { DatabaseConnection } from "./database/connection";
 import type { StreamController } from "./stream";
-import { createHash, randomBytes } from 'crypto';
+import { createHash, randomBytes, randomInt } from 'crypto';
 
 export class User {
   
@@ -8,12 +8,14 @@ export class User {
   id: number;
   hash: string;
   salt: string;
+  pfp?: string;
 
-  constructor (name: string, id: number, hash: string, salt: string) {
+  constructor (name: string, id: number, hash: string, salt: string, pfp?: string) {
     this.username = name;
     this.id = id;
     this.hash = hash;
     this.salt = salt;
+    this.pfp = pfp;
   }
 
   static usernameValid (username: string) {
@@ -38,7 +40,7 @@ export class User {
     const id = rawid?.id;
 
     if (id) {
-      const user = new User(username, id, hash, salt);
+      const user = new User(username, id, hash, salt, undefined);
       return user;
     }
   }
@@ -49,7 +51,7 @@ export class Member extends User {
   controller: StreamController;
 
   constructor (user: User, controller: StreamController, displayName: string | undefined) {
-    super(User.name, user.id, user.hash, user.salt);
+    super(User.name, user.id, user.hash, user.salt, user.pfp);
 
     this.controller = controller;
     this.displayName = displayName || user.username;
