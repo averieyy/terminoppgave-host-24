@@ -2,10 +2,11 @@
   import { goto } from "$app/navigation";
   import Guildlist from "$lib/widgets/guildlist.svelte";
   import Icon from "$lib/widgets/icon.svelte";
+    import Popup from "$lib/widgets/popup.svelte";
 
   const { data } = $props();
 
-  let { username } = $state(data.user);
+  let { username, pfp } = $state(data.user);
   let editingUsername = $state(false);
   let usernamefeild: HTMLInputElement | undefined = $state();
   let oldusername = data.user.username;
@@ -39,6 +40,39 @@
       goto('/app/login');
     }
   }
+
+  let pfpupload: FileList | undefined = $state();
+
+  $effect(() => {
+    if (!pfpupload || pfpupload.length == 0) return;
+    console.log('uploaded');
+    const formdata = new FormData();
+    const file = pfpupload?.[0];
+    if (!file) return;
+    formdata.set('file', file);
+
+    fetch('/api/upload', {
+      method: 'POST',
+      body: formdata
+    }).then(async r => {
+      if (!r.ok) return;
+
+      const { path }: { path: string } = await r.json();
+      
+      const oldpfp = $state.snapshot(pfp);
+
+      if (!path) return;
+      else pfp = path;
+
+      const updateresp = await fetch('/api/user/pfp', {
+        method: 'PUT',
+        body: JSON.stringify({
+          path
+        })
+      });
+      if (!updateresp.ok) pfp = oldpfp;
+    });
+  });
 </script>
 
 <div class="outercontent">
@@ -47,6 +81,18 @@
     <div class="outersettings">
       <section id="apparance">
         <h1>Settings</h1>
+        <figure class="pfp" aria-label="Profile picture"
+          style={pfp && `background-image: url('/api/upload/${pfp}');`}
+        >
+          <form>
+            <label for="pfpupload">
+              <div class="changepfp button">
+                <Icon icon="edit"/>
+              </div>
+            </label>
+            <input type="file" accept="image/*" id="pfpupload" bind:files={pfpupload} hidden>
+          </form>
+        </figure>
         <form class="valuefeild" onsubmit={() => editingUsername = !editingUsername}>
           {#if editingUsername}
             <input bind:this={usernamefeild} type="text" bind:value={username} maxlength={16}>
@@ -192,5 +238,36 @@
     border-bottom: .125rem solid var(--lightblue);
     padding-left: .25rem;
     margin: 0;
+  }
+  .pfp {
+    width: 10rem;
+    height: 10rem;
+    margin: 0;
+    background-color: var(--bg2);
+    border-radius: 50%;
+    background-size: cover;
+    background-position: 50% 50%;
+    overflow: hidden;
+
+    display: flex;
+
+    &>form, &>*>label {
+      flex: 1;
+      display: flex;
+    }
+  }
+  .changepfp {
+    flex: 1;
+    font-size: 1.5rem;
+    background-color: #3b42523f;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      background-color: #81a1c1af;
+      color: var(--bg1);
+    }
   }
 </style>
