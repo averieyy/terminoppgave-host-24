@@ -5,6 +5,7 @@
   import Guildlist from "$lib/widgets/guildlist.svelte";
   import Icon from "$lib/widgets/icon.svelte";
   import Memberlist from "$lib/widgets/memberlist.svelte";
+    import Userpopup from "$lib/widgets/userpopup.svelte";
   import type { PageData } from "./$types";
 
   let channelid = $page.params.channelid;
@@ -13,6 +14,8 @@
   const { channel, guilds, members, userid, admin, guild } = data;
 
   let memberlistclosed = $state(true);
+
+  let selectedMember: {username: string, pfp: string} | null = $state(null);
 </script>
 
 <svelte:head>
@@ -45,9 +48,10 @@
     </div>
   </div>
   <div class="normalmemberlist">
-    <Memberlist members={members} closed={memberlistclosed} toggle={() => memberlistclosed = !memberlistclosed} />
+    <Memberlist members={members} closed={memberlistclosed} toggle={() => memberlistclosed = !memberlistclosed} selectedMember={m => selectedMember = m} />
   </div>
 </main>
+<Userpopup user={selectedMember} open={!!selectedMember} close={() => selectedMember = null} />
 
 <style>
   @media screen and (max-width: 560px) {

@@ -1,7 +1,7 @@
 <script lang="ts">
   import Icon from "./icon.svelte";
 
-  let { members, closed, toggle }: { members: { username: string, online: boolean, pfp?: string }[], closed: boolean, toggle: () => void } = $props();
+  let { members, closed, toggle, selectedMember }: { members: { username: string, online: boolean, pfp?: string }[], closed: boolean, toggle: () => void, selectedMember?: (m: {username: string, pfp: string }) => void } = $props();
 
   const onlinemembers = $derived(members.filter(m => m.online));
   const offlinemembers = $derived(members.filter(m => !m.online));
@@ -20,26 +20,26 @@
       Online
     </div>
     {#each onlinemembers as member}
-      <div class="member online">
+      <button class="member online" onclick={() => selectedMember && selectedMember({...member, pfp: member.pfp || ''})}>
         <div class="onlineicon"
           style={member.pfp && `background-image: url('/api/upload/${member.pfp}');`}>
           <div></div>
         </div>
         {member.username}
-      </div>
+      </button>
     {/each}
     {#if offlinemembers.length > 0}
       <div class="memberlistsubheader">
         Offline
       </div>
       {#each offlinemembers as member}
-        <div class="member offline">
+        <button class="member offline" onclick={() => selectedMember && selectedMember({...member, pfp: member.pfp || ''})}>
           <div class="offlineicon"
             style={member.pfp && `background-image: url('/api/upload/${member.pfp}');`}>
             <div></div>
           </div>
           {member.username}
-        </div>
+        </button>
       {/each}
     {/if}
   </div>
@@ -76,6 +76,10 @@
     flex-direction: row;
     align-items: center;
     gap: .5rem;
+    border: none;
+    background-color: inherit;
+    font: inherit;
+    color: var(--fg1);
 
     &.offline {
       font-style: italic;

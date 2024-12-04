@@ -5,6 +5,7 @@
   import Icon from '$lib/widgets/icon.svelte';
   import Memberlist from '$lib/widgets/memberlist.svelte';
   import Popup from '$lib/widgets/popup.svelte';
+  import Userpopup from '$lib/widgets/userpopup.svelte';
   import { onMount } from 'svelte';
 
   const { data } = $props();
@@ -71,6 +72,8 @@
   onMount(() => {
     memberlistclosed = window.innerWidth <= 560;
   });
+
+  let selectedUser: {username: string, pfp: string} | null = $state(null);
 </script>
 
 <svelte:head>
@@ -138,8 +141,9 @@
       </div>
     </div>
   </main>
-  <Memberlist members={members} closed={memberlistclosed} toggle={() => memberlistclosed = !memberlistclosed} />
+  <Memberlist members={members} closed={memberlistclosed} toggle={() => memberlistclosed = !memberlistclosed} selectedMember={m => selectedUser = m} />
 </div>
+<Userpopup open={!!selectedUser} user={selectedUser} close={() => selectedUser = null} />
 
 <style>
   @media screen and (max-width: 560px) {
