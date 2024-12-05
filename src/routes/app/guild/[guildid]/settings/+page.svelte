@@ -127,7 +127,7 @@
 </main>
 
 <style>
-  @media screen and (max-width: 560px) {
+  @media screen and (max-width: 650px) {
     .outerguildlist {
       display: none;
     }

@@ -70,7 +70,7 @@
   }
 
   onMount(() => {
-    memberlistclosed = window.innerWidth <= 560;
+    memberlistclosed = window.innerWidth <= 650;
   });
 
   let selectedUser: {username: string, pfp: string} | null = $state(null);
@@ -146,7 +146,7 @@
 <Userpopup open={!!selectedUser} user={selectedUser} close={() => selectedUser = null} />
 
 <style>
-  @media screen and (max-width: 560px) {
+  @media screen and (max-width: 650px) {
     .showmemberlist {
       display: flex !important;
     }

@@ -50,7 +50,7 @@
 </div>
 
 <style>
-  @media screen and (max-width: 560px) {
+  @media screen and (max-width: 650px) {
     .closed>.closebararea {
       width: 0;
     }

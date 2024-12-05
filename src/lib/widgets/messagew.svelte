@@ -61,7 +61,7 @@
 </div>
 
 <style>
-  @media (max-width: 560px) {
+  @media (max-width: 650px) {
     .sendercontent {
       flex-direction: column !important;
     }
