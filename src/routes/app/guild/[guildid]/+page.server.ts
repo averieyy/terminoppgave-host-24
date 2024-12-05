@@ -18,12 +18,13 @@ export const load: PageServerLoad = async ({ cookies, params, url }) => {
 
   const guilds = await DatabaseConnection.query<Guild & IGuildMember>('SELECT * FROM guildmembers INNER JOIN guilds ON guildmembers.guildid = guilds.id WHERE guildmembers.userid = $1::integer', user.id);
 
-  const members = await DatabaseConnection.query<{username: string, userid: number, pfp?: string}>('SELECT u.username, g.userid, f.path as pfp FROM guildmembers g INNER JOIN users u ON g.userid = u.id LEFT OUTER JOIN pfp p ON p.userid = u.id LEFT OUTER JOIN files f ON f.id = p.fileid WHERE g.guildid = $1::integer', guild.id);
+  const members = await DatabaseConnection.query<{username: string, userid: number, pfp?: string, bio: string}>('SELECT u.username, g.userid, f.path as pfp, u.bio FROM guildmembers g INNER JOIN users u ON g.userid = u.id LEFT OUTER JOIN pfp p ON p.userid = u.id LEFT OUTER JOIN files f ON f.id = p.fileid WHERE g.guildid = $1::integer', guild.id);
   
   const onlinemembers = members.map(m => {return {
     username: m.username,
     online: OnlineMemberIds.includes(m.userid) || user.id == m.userid,
-    pfp: m.pfp
+    pfp: m.pfp,
+    bio: m.bio
   }});
 
   let admin: boolean = false;

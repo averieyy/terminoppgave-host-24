@@ -5,7 +5,7 @@
   import Guildlist from "$lib/widgets/guildlist.svelte";
   import Icon from "$lib/widgets/icon.svelte";
   import Memberlist from "$lib/widgets/memberlist.svelte";
-    import Userpopup from "$lib/widgets/userpopup.svelte";
+  import Userpopup from "$lib/widgets/userpopup.svelte";
   import type { PageData } from "./$types";
 
   let channelid = $page.params.channelid;
@@ -15,7 +15,7 @@
 
   let memberlistclosed = $state(true);
 
-  let selectedMember: {username: string, pfp: string} | null = $state(null);
+  let selectedMember: {username: string, pfp: string, bio: string} | null = $state(null);
 </script>
 
 <svelte:head>

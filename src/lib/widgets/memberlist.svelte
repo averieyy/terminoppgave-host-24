@@ -1,7 +1,7 @@
 <script lang="ts">
   import Icon from "./icon.svelte";
 
-  let { members, closed, toggle, selectedMember }: { members: { username: string, online: boolean, pfp?: string }[], closed: boolean, toggle: () => void, selectedMember?: (m: {username: string, pfp: string }) => void } = $props();
+  let { members, closed, toggle, selectedMember }: { members: { username: string, online: boolean, pfp?: string, bio: string }[], closed: boolean, toggle: () => void, selectedMember?: (m: {username: string, pfp: string, bio: string }) => void } = $props();
 
   const onlinemembers = $derived(members.filter(m => m.online));
   const offlinemembers = $derived(members.filter(m => !m.online));

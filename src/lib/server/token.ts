@@ -59,6 +59,7 @@ export class Token {
       user_token.userid,
       user_token.hash,
       user_token.salt,
+      user_token.bio,
       pfp?.path
     );
   }

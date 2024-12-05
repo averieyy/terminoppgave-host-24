@@ -2,11 +2,10 @@
   import { goto } from "$app/navigation";
   import Guildlist from "$lib/widgets/guildlist.svelte";
   import Icon from "$lib/widgets/icon.svelte";
-    import Popup from "$lib/widgets/popup.svelte";
 
   const { data } = $props();
 
-  let { username, pfp } = $state(data.user);
+  let { username, pfp, biography } = $state(data.user);
   let editingUsername = $state(false);
   let usernamefeild: HTMLInputElement | undefined = $state();
   let oldusername = data.user.username;
@@ -73,6 +72,18 @@
       if (!updateresp.ok) pfp = oldpfp;
     });
   });
+
+  async function updateBio () {
+    const resp = await fetch('/api/user/bio', {
+      method: 'PUT',
+      body: JSON.stringify({
+        biography
+      })
+    });
+    if (!resp.ok) {
+      // NOTE: Show error perchance
+    }
+  }
 </script>
 
 <div class="outercontent">
@@ -102,6 +113,10 @@
           <button type="submit" class="iconbutton">
             <Icon icon={editingUsername ? 'done' : 'edit'} />
           </button>
+        </form>
+        <form class="valuefeild vertical" onsubmit={updateBio}>
+          <textarea bind:value={biography} placeholder="Your bio"></textarea>
+          <button type="submit" class="savebtn"><span class="text">Save</span><Icon icon="save" /></button>
         </form>
       </section>
       <section id="danger">
@@ -177,6 +192,11 @@
     flex-direction: row;
     align-items: center;
     gap: .5rem;
+
+    &.vertical {
+      flex-direction: column;
+      align-items: normal;
+    }
   }
   input[type="text"], .valuedisplay {
     display: flex;
@@ -269,5 +289,28 @@
       background-color: #81a1c1af;
       color: var(--bg1);
     }
+  }
+  textarea {
+    width: 100%;
+    border: none;
+    box-sizing: border-box;
+    padding: .5rem;
+    resize: vertical;
+    background-color: var(--bg2);
+    color: var(--fg1);
+    font-family: var(--font);
+    font-size: .9rem;
+  }
+  .savebtn {
+    font-size: 1.5rem;
+    &>.text {
+      font-size: 1rem;
+    }
+
+    display: flex;
+    flex-direction: row;
+    gap: .5rem;
+    
+    height: 2.5rem;
   }
 </style>

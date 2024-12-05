@@ -13,7 +13,8 @@ export const load: PageServerLoad = async ({ cookies, url }) => {
     user: {
       id: user.id,
       username: user.username,
-      pfp: pfp?.path
+      pfp: pfp?.path,
+      biography: user.bio
     }
   }
 };

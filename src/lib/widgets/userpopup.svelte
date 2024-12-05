@@ -1,7 +1,7 @@
 <script lang="ts">
     import Icon from "./icon.svelte";
 
-  const { open, user, close }: { open: boolean, user: { username: string, pfp: string } | null, close: () => void } = $props();
+  const { open, user, close }: { open: boolean, user: { username: string, pfp: string, bio: string } | null, close: () => void } = $props();
 
   let popupBack: HTMLDivElement | undefined = $state(); // For closing by clickng on the background
 </script>
@@ -33,6 +33,10 @@
           </h2>
         </div>
       </div>
+      <span class="line"></span>
+        <p>
+          {user.bio}
+        </p>
     </div>
   </div>
 {/if}
@@ -143,5 +147,18 @@
       text-overflow: ellipsis;
       overflow: hidden;
     }
+  }
+  span.line {
+    display: flex;
+    background: linear-gradient(.25turn, var(--lightblue), transparent);
+    height: 2px;
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }
+  p {
+    padding: 1rem;
+    margin: 0;
+    background-color: var(--bg3);
+    border-radius: .25rem;
   }
 </style>

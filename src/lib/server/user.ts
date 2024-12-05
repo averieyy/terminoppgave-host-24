@@ -9,13 +9,15 @@ export class User {
   hash: string;
   salt: string;
   pfp?: string;
+  bio: string;
 
-  constructor (name: string, id: number, hash: string, salt: string, pfp?: string) {
+  constructor (name: string, id: number, hash: string, salt: string, bio: string, pfp?: string) {
     this.username = name;
     this.id = id;
     this.hash = hash;
     this.salt = salt;
     this.pfp = pfp;
+    this.bio = bio;
   }
 
   static usernameValid (username: string) {
@@ -40,7 +42,7 @@ export class User {
     const id = rawid?.id;
 
     if (id) {
-      const user = new User(username, id, hash, salt, undefined);
+      const user = new User(username, id, hash, salt, '', undefined);
       return user;
     }
   }
@@ -51,7 +53,7 @@ export class Member extends User {
   controller: StreamController;
 
   constructor (user: User, controller: StreamController, displayName: string | undefined) {
-    super(User.name, user.id, user.hash, user.salt, user.pfp);
+    super(User.name, user.id, user.hash, user.salt, user.bio, user.pfp);
 
     this.controller = controller;
     this.displayName = displayName || user.username;
