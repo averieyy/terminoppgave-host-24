@@ -34,8 +34,8 @@
         </div>
       </div>
       <span class="line"></span>
-        <p>
-          {user.bio}
+        <p class="{user.bio ? 'bio' : 'missingbio'}">
+          {user.bio || 'No bio'}
         </p>
     </div>
   </div>
@@ -160,5 +160,10 @@
     margin: 0;
     background-color: var(--bg3);
     border-radius: .25rem;
+
+    &.missingbio {
+      font-style: italic;
+      color: var(-bg1);
+    }
   }
 </style>
