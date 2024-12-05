@@ -3,7 +3,7 @@
   import Icon from "./icon.svelte";
   import Messagecontent from "./messagecontent.svelte";
 
-  const { message, userid, admin, del, replyto, edit }: { message: Message, userid: number, admin: boolean, del: (id: number) => void, replyto: (messageid: number) => void, edit?: (m: Message) => void } = $props();
+  const { message, userid, admin, del, replyto, edit, showUser }: { message: Message, userid: number, admin: boolean, del: (id: number) => void, replyto: (messageid: number) => void, edit?: (m: Message) => void, showUser?: (userid: number) => void } = $props();
 </script>
 
 <div class="outermessage">
@@ -31,7 +31,7 @@
       <span class="time">{message.datetime.getHours().toString().padStart(2,'0')}:{message.datetime.getMinutes().toString().padStart(2, '0')}</span>
       <div class="sendercontent">
         <div class="sendertext">
-          <span class="sender">{message.user}</span>
+          <button class="sender" onclick={() => showUser && showUser(message.senderid)}>{message.user}</button>
           <span class="messagecontent">{message.content.find(c => TextContent.isTextContent(c))?.content || ''}</span>
           {#if message.edited}
             <span class="messagedited">(edited)</span>
@@ -126,6 +126,10 @@
 
   .sender {
     color: var(--lightblue);
+    border: none;
+    padding: 0;
+    background-color: inherit;
+    font: inherit;
   }
 
   .time {

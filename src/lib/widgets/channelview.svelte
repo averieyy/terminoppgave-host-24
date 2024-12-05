@@ -7,7 +7,7 @@
   import Messagew from "./messagew.svelte";
   import Messagecontent from "./messagecontent.svelte";
 
-  const { streamsource, userid, admin=false }: { streamsource: string, userid: number, admin: boolean } = $props();
+  const { streamsource, userid, admin=false, showUser }: { streamsource: string, userid: number, admin: boolean, showUser: (userid: number) => void } = $props();
 
   let messages: Message[] = $state([]);
   let messagelist: HTMLDivElement | undefined = $state();
@@ -205,7 +205,7 @@
           {message.datetime.toDateString()}
         </div>
       {/if}
-      <Messagew message={message} admin={admin} userid={userid} del={deleteMessage} replyto={replyto} edit={startEditing} />
+      <Messagew message={message} admin={admin} userid={userid} del={deleteMessage} replyto={replyto} edit={startEditing} showUser={showUser} />
     {/each}
   </div>
   <div class="messagebar">

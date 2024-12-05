@@ -44,7 +44,9 @@
       </button>
     </header>
     <div class="channel">
-      <Channelview streamsource={`/api/channel/${channelid}`} userid={userid} admin={admin} />
+      <Channelview streamsource={`/api/channel/${channelid}`} userid={userid} admin={admin} showUser={id => {
+        selectedMember = members.find(m => m.id == id) || null;
+      }} />
     </div>
   </div>
   <div class="normalmemberlist">
