@@ -25,7 +25,9 @@
           style={member.pfp && `background-image: url('/api/upload/${member.pfp}');`}>
           <div></div>
         </div>
-        {member.username}
+        <span>
+          {member.username}
+        </span>
       </button>
     {/each}
     {#if offlinemembers.length > 0}
@@ -38,7 +40,9 @@
             style={member.pfp && `background-image: url('/api/upload/${member.pfp}');`}>
             <div></div>
           </div>
-          {member.username}
+          <span>
+            {member.username}
+          </span>
         </button>
       {/each}
     {/if}
@@ -68,7 +72,8 @@
 
     transition: width .125s ease;
 
-    width: 18rem;
+    width: 12rem;
+    overflow: hidden;
   }
   .member {
     padding: .5rem;
@@ -80,6 +85,12 @@
     background-color: inherit;
     font: inherit;
     color: var(--fg1);
+
+    &>span {
+      text-overflow: ellipsis;
+      text-align: start;
+      overflow: hidden;
+    }
 
     &.offline {
       font-style: italic;
@@ -101,7 +112,7 @@
     background-size: cover;
     
     aspect-ratio: 1 / 1;
-    width: 1.5rem;
+    min-width: 1.5rem;
     border: 2px solid var(--bg2);
     border-radius: 100%;
 
