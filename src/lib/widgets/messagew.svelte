@@ -130,6 +130,10 @@
     padding: 0;
     background-color: inherit;
     font: inherit;
+
+    &:hover, &:active {
+      text-decoration: underline 2px var(--lightblue);
+    }
   }
 
   .time {
