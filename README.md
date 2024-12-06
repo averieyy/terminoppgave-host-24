@@ -5,7 +5,39 @@ WIP
 ## Running the program
 
 > [!NOTE]
-> Make sure you have npm and node installed.
+> Make sure you have npm and node installed. You will also need PostgreSQL.
+
+<details>
+
+<summary>Creating the database</summary>
+
+> [!NOTE]
+> Make sure you have the latest version on Postgresql installed.
+
+Create a postgres database. Usually, you can do this by running `createdb <database>`, but in some cases, this command is not available. If it isn't, simply open a psql shell an type in 
+```sql
+CREATE DATABASE <name>;  -- <name> should be your database name.
+```
+
+Copy the contents of `src/db.sql` into a psql shell.
+
+If you are using bash (or unix-like systems), you should be able to run
+
+```bash
+cat src/db.sql | psql -U <username> <database>
+```
+
+Otherwise, just open a psql shell and copy the contetns of `src/db.sql`. Make sure to copy everything.
+
+Create a file called `.env` with the contents
+```bash
+DBNAME="<database name>"
+DBUSER="<username>"
+DBHOST="<hostname (localhost)>"
+DBPASSWD="<user password in postgres>"
+```
+
+</details>
 
 - Run ```npm install``` to install required dependencies
 - Then, run ```npm run dev``` to start a dev server
