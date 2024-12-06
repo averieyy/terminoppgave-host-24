@@ -11,8 +11,7 @@ WIP
 
 <summary>Creating the database</summary>
 
-> [!NOTE]
-> Make sure you have the latest version on Postgresql installed.
+Make sure you have the latest version of PostgreSQL installed.
 
 Create a postgres database. Usually, you can do this by running `createdb <database>`, but in some cases, this command is not available. If it isn't, simply open a psql shell an type in 
 ```sql
@@ -102,13 +101,13 @@ Filecontent|||
 id|fileid|messageid
 serial (int)|int|int
 
-Bannedmembers|||
--|-|-
+Bannedmembers||
+-|-
 userid|guildid
 int|int
 
-Pfp|||
--|-|-
+Pfp||
+-|-
 fileid|userid
 int|int
 
