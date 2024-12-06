@@ -47,10 +47,10 @@ DBPASSWD="<user password in postgres>"
 
 ### Database Structure
 
-Users||||
--|-|-|-
-id|username|hash|salt
-serial (int)|text|text|text
+Users|||||
+-|-|-|-|-
+id|username|hash|salt|bio
+serial (int)|text|text|text|text
 
 Guilds|||||
 -|-|-|-|-
@@ -62,10 +62,10 @@ Channel|||
 id|name|guildid
 serial (int)|text|int
 
-Messages|||||
--|-|-|-|-
-id|content|senderid|channelid|sentat
-serial (int)|text|int|int|timestamp
+Messages||||||||
+-|-|-|-|-|-|-|-
+id|content|senderid|channelid|sentat|deleted|replyto|edited
+serial (int)|text|int|int|timestamp|boolean|int|boolean
 
 Tokens||||
 -|-|-|-
@@ -79,8 +79,8 @@ int|int|boolean
 
 Invitation||
 -|-
-guildid|uuid
-int|text
+guildid|uuid|customlink
+int|text|text or null
 
 Guildsettings||
 -|-
@@ -105,6 +105,11 @@ serial (int)|int|int
 Bannedmembers|||
 -|-|-
 userid|guildid
+int|int
+
+Pfp|||
+-|-|-
+fileid|userid
 int|int
 
 ### Route explanation
@@ -343,6 +348,23 @@ Create invitation with custom link
 }
 ```
 
+> DELETE /api/guild/invite/delete
+
+Create invitation with custom link
+
+```json
+{
+  "guildid": number,
+  "uuid": string
+}
+```
+
+```json
+{
+  "messsage": "Removed invitation"
+}
+```
+
 > POST /api/guild/join
 
 Join a guild (from invite link)
@@ -527,5 +549,65 @@ Get metadata of an uploaded file
   "mime": string,
   "uploaded": date (as string),
   "path": string
+}
+```
+
+> PUT /api/user/bio
+
+Update bio
+
+```json
+{
+  "biography": string
+}
+```
+
+```json
+{
+  "message": "Updated biography"
+}
+```
+
+> PUT /api/user/name
+
+Update name
+
+```json
+{
+  "name": string
+}
+```
+
+```json
+{
+  "message": "Updated name"
+}
+```
+
+> PUT /api/user/pfp
+
+Update profile picture
+
+```json
+{
+  "path": string
+}
+```
+
+```json
+{
+  "message": "Updated profile picture"
+}
+```
+
+> POST /api/user/logout
+
+Log out
+
+No request body
+
+```json
+{
+  "message": "Logged out"
 }
 ```
