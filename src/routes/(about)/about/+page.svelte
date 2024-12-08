@@ -66,6 +66,30 @@
             </p>
           </Faq>
         </li>
+        <li>
+          <Faq question="How do I change my username / profile picture / bio?" >
+            <p>
+              You can change your username, profile picture and bio on the settings page. You can find this button on the bottom of the guild list.
+            </p>
+            <div class="outerfake">
+              <div class="fakesettings buttonpreview">
+                <Icon icon="settings"/>
+              </div>
+            </div>
+            <p>
+              If you're logged in, you can use <a class="link" href="/app/settings">this link</a>.
+            </p>
+            <p>
+              To change your username, you just have to click the edit button and type in your new name. When you're done, you can click on the checkmark.
+            </p>
+            <p>
+              If you want to change your bio, you can write it in the large input box. Remember to click save afterwards.
+            </p>
+            <p>
+              To change profile picture, simply click on the image, and select an image to upload. The image cannot be larger than 25MB.
+            </p>
+          </Faq>
+        </li>
       </ul>
     </section>
   </article>
@@ -149,7 +173,7 @@
 
     font-size: 1.5rem;
   }
-  .fakeaddchannel {
+  .fakeaddchannel, .fakesettings {
     width: 4.5rem;
     height: 4.5rem;
     border-radius: 1rem;

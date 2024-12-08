@@ -93,6 +93,7 @@
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
+      gap: .5rem;
 
       &:hover, &:active {
         background-color: var(--lightblue);
@@ -102,5 +103,8 @@
   }
   .icon {
     font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 </style>
