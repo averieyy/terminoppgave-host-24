@@ -39,6 +39,8 @@
     max-height: 50vw;
     height: 30vh;
 
+    overflow: hidden;
+
     &>img {
       width: 100%;
       height: 100%;

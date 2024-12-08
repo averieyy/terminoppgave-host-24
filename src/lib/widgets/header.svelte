@@ -9,16 +9,14 @@
     <Logo width={32} height={32}/>
     Eris
   </a>
-  {#if !loggedin}
-    <div class="loginregister">
+  <div class="outerbuttons">
+    {#if !loggedin}
       <a class="button" href="/app/login">Login</a>
       <a class="button" href="/app/register">Register</a>
-    </div>
-  {:else}
-    <div class="outerbuttons">
-      <a class="button" href="/app">Enter</a>
-    </div>
-  {/if}
+    {:else}
+        <a class="button" href="/app">Enter</a>
+    {/if}
+  </div>
 </header>
 
 <style>
@@ -54,12 +52,6 @@
     align-items: center;
     justify-content: space-between;
   }
-  .loginregister {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: .5rem;
-  }
   .button {
     color: var(--fg1);
     text-decoration: none;
@@ -73,6 +65,9 @@
     }
   }
   .outerbuttons {
-    padding-right: 1rem;
+    padding: .5rem;
+    display: flex;
+    flex-direction: row;
+    gap: .5rem;
   }
 </style>
