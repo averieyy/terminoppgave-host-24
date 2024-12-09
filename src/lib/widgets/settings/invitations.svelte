@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { goto } from "$app/navigation";
   import { page } from "$app/stores";
   import Icon from "../icon.svelte";
   import Popup from "../popup.svelte";
@@ -10,6 +11,8 @@
   let invitemode: 'closed' | 'choose' | 'custom' | 'random' | 'displaylink' = $state('closed');
   let invitelinkresponse: Promise<string | undefined> | undefined = $state();
 
+  let pageError: string = $state('');
+
   $effect(() => {
     if (invitemode == 'random') {
       invitelinkresponse = fetch('/api/guild/invite', {
@@ -18,7 +21,11 @@
           guildid: guild.id
         })
       }).then(async r => {
-        if (!r.ok) return;
+        if (!r.ok) {
+          if (r.status == 403) goto(`/app/login?redirect=${$page.url.pathname}`);
+          else pageError = (await r.json()).message;
+          return;
+        }
         return (await r.json())['uuid'];
       });
       invitemode = 'displaylink';
@@ -45,7 +52,11 @@
         custom: customlinkcontent
       })
     }).then(async r => {
-      if (!r.ok) return;
+      if (!r.ok) {
+        if (r.status == 403) goto(`/app/login?redirect=${$page.url.pathname}`);
+        else pageError = (await r.json()).message;
+        return;
+      }
       return (await r.json())['custom'] as string;
     });
     invitemode = 'displaylink';
@@ -64,6 +75,8 @@
       })
     });
     if (!resp.ok) {
+      if (resp.status == 403) goto(`/app/login?redirect=${$page.url.pathname}`);
+      else pageError = (await resp.json()).message;
       invites = oldInvites;
       return;
     }
@@ -102,6 +115,9 @@
       </div>
     {/if}
   </div>
+</Popup>
+<Popup title="An error occured" open={!!pageError} close={() => pageError = ''}>
+  <p>{pageError}</p>
 </Popup>
 <div class="invitations">
   {#each invites as invite}

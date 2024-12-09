@@ -20,9 +20,11 @@
   let newchannelerror: string = $state('');
 
   let inviteUUID: string = $state('');
+  
+  let pageError: string = $state('');
 
   async function createChannel () {
-    const response = await fetch('/api/channel/create', {
+    const resp = await fetch('/api/channel/create', {
       method: 'POST',
       body: JSON.stringify({
         name: newchannelname,
@@ -30,11 +32,12 @@
       })
     });
 
-    if (!response.ok) {
-      newchannelerror = (await response.json()).message || 'An error occured while trying to create channel.';
+    if (!resp.ok) {
+      if (resp.status == 403) goto(`/app/login?redirect=${$page.url.pathname}`);
+      newchannelerror = (await resp.json()).message || 'An error occured while trying to create channel.';
     }
     else {
-      const { id } = await response.json();
+      const { id } = await resp.json();
 
       goto(`/app/channel/${id}`);
     }
@@ -43,18 +46,19 @@
   async function createInvitation() {
     if (!admin) return;
 
-    const response = await fetch('/api/guild/invite', {
+    const resp = await fetch('/api/guild/invite', {
       method: 'POST',
       body: JSON.stringify({
         guildid: guild.id
       })
     });
 
-    if (!response.ok) {
-
+    if (!resp.ok) {
+      if (resp.status == 403) goto(`/app/login?redirect=${$page.url.pathname}`);
+      else pageError = (await resp.json()).message;
     }
     else {
-      inviteUUID = (await response.json()).uuid;
+      inviteUUID = (await resp.json()).uuid;
       createInvitePopupOpen = true;
     }
   }
@@ -67,13 +71,17 @@
       })
     });
     if (resp.ok) goto('/app');
+    else {
+      if (resp.status == 403) goto(`/app/login?redirect=${$page.url.pathname}`);
+      else pageError = (await resp.json()).message;
+    }
   }
 
   onMount(() => {
     memberlistclosed = window.innerWidth <= 650;
   });
 
-  let selectedUser: {username: string, pfp: string} | null = $state(null);
+  let selectedUser: {username: string, pfp: string, bio: string} | null = $state(null);
 </script>
 
 <svelte:head>

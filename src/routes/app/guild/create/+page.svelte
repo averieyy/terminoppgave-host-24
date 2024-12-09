@@ -1,5 +1,6 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
+  import { page } from "$app/stores";
   import { shortHand } from "$lib/frontend/guild";
   import Colourpicker from "$lib/widgets/colourpicker.svelte";
 
@@ -9,7 +10,7 @@
   let errorMessage = $state('');
 
   async function submit () {
-    const response = await fetch('/api/guild/create', {
+    const resp = await fetch('/api/guild/create', {
       method: 'POST',
       body: JSON.stringify({
         name,
@@ -17,12 +18,13 @@
         colour
       })
     });
-    if (!response.ok) {
-      errorMessage = (await response.json()).message || 'An error occured while trying to create guild';
+    if (!resp.ok) {
+      if (resp.status == 403) goto(`/app/login?redirect=${$page.url.pathname}`);
+      errorMessage = (await resp.json()).message || 'An error occured while trying to create guild';
       return;
     }
     else {
-      const id = (await response.json()).id;
+      const id = (await resp.json()).id;
       goto(`/app/guild/${id}/`);
     }
   }

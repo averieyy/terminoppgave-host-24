@@ -1,6 +1,8 @@
 <script lang="ts">
+    import { goto } from "$app/navigation";
+  import { page } from "$app/stores";
   import Icon from "../icon.svelte";
-    import Popup from "../popup.svelte";
+  import Popup from "../popup.svelte";
 
   const { channels, guild }: { channels: {guildid: number, id: number, name: string}[], guild: {id: number} } = $props();
 
@@ -9,6 +11,8 @@
   let createChannelMode: 'create' | 'closed' | 'edit' = $state('closed');
   let newchannelname: string = $state('');
   let editingChannel: number | undefined = $state();
+
+  let pageError: string = $state('');
 
   async function createChannel () {
     const resp = await fetch('/api/channel/create', {
@@ -23,6 +27,10 @@
       channels.push({guildid: guild.id, name: newchannelname, id});
       newchannelname = '';
       createChannelMode = 'closed';
+    }
+    if (!resp.ok) {
+      if (resp.status == 403) goto(`/app/login?redirect=${$page.url.pathname}`);
+      else pageError = (await resp.json()).message;
     }
   }
 
@@ -42,6 +50,8 @@
     });
     if (!resp.ok) {
       chans = oldchannels;
+      if (resp.status == 403) goto(`/app/login?redirect=${$page.url.pathname}`);
+      pageError = (await resp.json()).message;
     }
   }
 
@@ -62,6 +72,8 @@
     });
     if (!resp.ok) {
       chans = oldchannels;
+      if (resp.status == 403) goto(`/app/login?redirect=${$page.url.pathname}`);
+      pageError = (await resp.json()).message;
     }
     else {
       createChannelMode = 'closed';
@@ -75,6 +87,9 @@
     <input type="text" bind:value={newchannelname}>
     <input type="submit" value="{createChannelMode == 'create' ? 'Create' : 'Edit'} channel">
   </form>
+</Popup>
+<Popup title="An error occured" open={!!pageError} close={() => pageError = ''}>
+  <p>{pageError}</p>
 </Popup>
 <div class="channels">
   {#each chans as channel}

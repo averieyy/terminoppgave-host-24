@@ -6,6 +6,8 @@
   import Popup from "./popup.svelte";
   import Messagew from "./messagew.svelte";
   import Messagecontent from "./messagecontent.svelte";
+  import { goto } from "$app/navigation";
+  import { page } from "$app/stores";
 
   const { streamsource, userid, admin=false, showUser }: { streamsource: string, userid: number, admin: boolean, showUser: (userid: number) => void } = $props();
 
@@ -22,6 +24,8 @@
   let stream: EventSource;
 
   let editingMessage: Message | undefined = $state();
+
+  let pageError: string = $state('');
 
   onMount(() => {
     stream = new EventSource(streamsource);
@@ -69,11 +73,12 @@
   let messageTextContent: TextContent = $state(new TextContent(''));
   let messageFileContent: FileContent[] = $state([]);
   let messageReply: Message | undefined = $state();
+  let messageError: string = $state('');
 
-  function sendMessage(ev: SubmitEvent) {
+  async function sendMessage(ev: SubmitEvent) {
     ev.preventDefault();
     if (messageFileContent.length + messageTextContent.content.length == 0) return;
-    fetch(`${streamsource}/send`, {
+    const resp = await fetch(`${streamsource}/send`, {
       method: 'POST',
       body: JSON.stringify({
         content: [
@@ -84,18 +89,26 @@
         replyto: messageReply?.id
       })
     });
+    if (!resp.ok) {
+      if (resp.status == 403) goto(`/app/login?redirect=${$page.url.pathname}`);
+      else messageError = (await resp.json()).message;
+    }
     messageFileContent = [];
     messageTextContent = new TextContent('');
     messageReply = undefined;
   }
 
   async function deleteMessage (messageid: number) {
-    await fetch(`${streamsource}/delete`, {
+    const resp = await fetch(`${streamsource}/delete`, {
       method: 'DELETE',
       body: JSON.stringify({
         messageid
       })
     });
+    if (!resp.ok) {
+      if (resp.status == 403) goto(`/app/login?redirect=${$page.url.pathname}`);
+      else pageError = (await resp.json()).message;
+    }
   }
 
   function startEditing (message: Message) {
@@ -108,7 +121,7 @@
 
   async function editMessage () {
     if (!editingMessage) return;
-    await fetch(`${streamsource}/edit`, {
+    const resp = await fetch(`${streamsource}/edit`, {
       method: 'PUT',
       body: JSON.stringify({
         messageid: editingMessage.id,
@@ -116,7 +129,11 @@
         replyto: messageReply?.id,
       })
     });
-    stopEditing();
+    if (!resp.ok) {
+      if (resp.status == 403) goto(`/app/login?redirect=${$page.url.pathname}`);
+      else pageError = (await resp.json()).message;
+    }
+    else stopEditing();
   }
 
   function stopEditing () {
@@ -154,7 +171,11 @@
   async function uploadFile() {
     const file = files?.[0];
     
-    if (!(file instanceof File) || file.size >= 25165824) return;
+    if (!(file instanceof File)) return; 
+    if (file.size >= 25165824) {
+      pageError = 'Uploaded files cannot be larger than 25MB';
+      return;
+    };
 
     formData.set('file', file);
 
@@ -172,6 +193,10 @@
     
       messageFileContent = messageFileContent;
     }
+    else {
+      if (fileresp.status == 403) goto(`/app/login?redirect=${$page.url.pathname}`);
+      else pageError = (await fileresp.json()).message;
+    }
   }
 
   function removeFile (path: string) {
@@ -187,15 +212,18 @@
     <label for="uploadfile">
       <Icon icon='upload_file'/>
       {#if !files || files.length == 0}
-        <span class="uploadsub">Choose file</span>
+      <span class="uploadsub">Choose file</span>
       {:else}
-        {#each files as file}
-          <span class="uploadsub">{file.name}</span>
-        {/each}
+      {#each files as file}
+      <span class="uploadsub">{file.name}</span>
+      {/each}
       {/if}
     </label>
     <input type="submit" value="Upload">
   </form>
+</Popup>
+<Popup title={'An error occured!'} open={!!pageError} close={() => pageError = ''}>
+  <p>{pageError}</p>
 </Popup>
 <div class="channelview">
   <div class="messages" bind:this={messagelist}>

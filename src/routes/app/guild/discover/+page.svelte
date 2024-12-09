@@ -1,10 +1,14 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
+  import { page } from "$app/stores";
   import { isLight, shortHand } from "$lib/frontend/guild.js";
   import Guildlist from "$lib/widgets/guildlist.svelte";
+  import Popup from "$lib/widgets/popup.svelte";
 
   const { data } = $props();
   const { guilds, discoverableguilds } = $state(data);
+
+  let pageError: string = $state('');
 
   async function join (guildid: number) {
     const resp = await fetch('/api/guild/join/discovery', {
@@ -14,6 +18,10 @@
       })
     });
     if (resp.ok) goto(`/app/guild/${guildid}`);
+    else {
+      if (resp.status == 403) goto(`/app/login?redirect=${$page.url.pathname}`);
+      else pageError = (await resp.json()).message;
+    }
   }
 </script>
 
@@ -21,6 +29,9 @@
   <title>Discover guilds - Eris</title>
 </svelte:head>
 
+<Popup title="An error occured" open={!!pageError} close={() => pageError = ''}>
+  <p>{pageError}</p>
+</Popup>
 <div class="outerpage">
   <Guildlist guilds={guilds} selectedid={-1}/>
   <main>

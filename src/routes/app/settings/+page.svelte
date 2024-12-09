@@ -1,7 +1,9 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
+    import { page } from "$app/stores";
   import Guildlist from "$lib/widgets/guildlist.svelte";
   import Icon from "$lib/widgets/icon.svelte";
+    import Popup from "$lib/widgets/popup.svelte";
 
   const { data } = $props();
 
@@ -10,6 +12,8 @@
   let usernamefeild: HTMLInputElement | undefined = $state();
   let oldusername = data.user.username;
   let usernameError: boolean = $state(false);
+
+  let pageError: string = $state('');
 
   $effect(() => {    
     if (!editingUsername) {
@@ -21,10 +25,13 @@
         body: JSON.stringify({
           username
         })
-      }).then(r => {
+      }).then(async r => {
         if (!r.ok) {
           username = oldusername
           usernameError = true;
+          
+          if (r.status == 403) goto(`/app/login?redirect=${$page.url.pathname}`);
+          else pageError = (await r.json()).message;
         }
         else oldusername = $state.snapshot(username);
       });
@@ -37,6 +44,10 @@
     });
     if (resp.ok) {
       goto('/app/login');
+    }
+    else {
+      if (resp.status == 403) goto(`/app/login?redirect=${$page.url.pathname}`);
+      else pageError = (await resp.json()).message;
     }
   }
 
@@ -54,7 +65,11 @@
       method: 'POST',
       body: formdata
     }).then(async r => {
-      if (!r.ok) return;
+      if (!r.ok) {
+        if (r.status == 403) goto(`/app/login?redirect=${$page.url.pathname}`);
+        else pageError = (await r.json()).message;
+        return;
+      }
 
       const { path }: { path: string } = await r.json();
       
@@ -69,7 +84,11 @@
           path
         })
       });
-      if (!updateresp.ok) pfp = oldpfp;
+      if (!updateresp.ok) {
+        if (r.status == 403) goto(`/app/login?redirect=${$page.url.pathname}`);
+        else pageError = (await r.json()).message;
+        pfp = oldpfp;
+      }
     });
   });
 
@@ -81,11 +100,15 @@
       })
     });
     if (!resp.ok) {
-      // NOTE: Show error perchance
+      if (resp.status == 403) goto(`/app/login?redirect=${$page.url.pathname}`);
+        else pageError = (await resp.json()).message;
     }
   }
 </script>
 
+<Popup title="An error occured" open={!!pageError} close={() => pageError = ''}>
+  <p>{pageError}</p>
+</Popup>
 <div class="outercontent">
   <Guildlist guilds={data.guilds}/>
   <main>

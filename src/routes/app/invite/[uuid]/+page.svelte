@@ -1,5 +1,6 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
+  import { page } from "$app/stores";
   import { shortHand } from "$lib/frontend/guild";
   import type { PageData } from "./$types";
 
@@ -9,15 +10,16 @@
   let errorMessage = $state('');
 
   async function accept() {
-    const response = await fetch('/api/guild/join', {
+    const resp = await fetch('/api/guild/join', {
       method: 'POST',
       body: JSON.stringify({
         uuid
       })
     });
 
-    if (!response.ok) {
-      errorMessage = (await response.json()).message || 'An error occured while trying to join.';
+    if (!resp.ok) {
+      if (resp.status == 403) goto(`/app/login?redirect=${$page.url.pathname}`);
+      errorMessage = (await resp.json()).message || 'An error occured while trying to join.';
     }
     else {
       goto(`/app/guild/${guild.id}`);

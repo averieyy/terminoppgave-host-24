@@ -1,5 +1,8 @@
 <script lang="ts">
-    import Icon from "../icon.svelte";
+  import { goto } from "$app/navigation";
+  import { page } from "$app/stores";
+  import Icon from "../icon.svelte";
+    import Popup from "../popup.svelte";
 
   interface member {
     username: string;
@@ -10,7 +13,7 @@
   const { memberlist, banned, userid, guild }: { memberlist: member[], banned: member[], userid: number, guild: { id: number } } = $props();
   let members = $state(memberlist);
   let bannedmembers = $state(banned);
-
+  let pageError: string = $state('');
 
   async function toggleAdmin (userid: number, admin: boolean) {
     const oldmembers = $state.snapshot(members);
@@ -23,6 +26,8 @@
       })
     });
     if (!resp.ok) {
+      if (resp.status == 403) goto(`/app/login?redirect=${$page.url.pathname}`);
+      else pageError = (await resp.json()).message;
       // Revert back
       members = oldmembers;
     }
@@ -40,6 +45,9 @@
       })
     });
     if (!resp.ok) {
+      if (resp.status == 403) goto(`/app/login?redirect=${$page.url.pathname}`);
+      else pageError = (await resp.json()).message;
+
       members = oldmembers;
     }
   }
@@ -60,13 +68,15 @@
       })
     });
     if (!resp.ok) {
+      if (resp.status == 403) goto(`/app/login?redirect=${$page.url.pathname}`);
+      else pageError = (await resp.json()).message;
       members = oldmembers;
       bannedmembers = oldbannedmembers;
     }
   }
 
   async function unbanUser (userid: number) {
-    const oldmembers = $state.snapshot(members);
+    const oldbannedmembers = $state.snapshot(bannedmembers);
     const userindex = bannedmembers.findIndex(b => b.id == userid);
     if (userindex === -1) return;
     bannedmembers = bannedmembers.toSpliced(userindex, 1);
@@ -78,11 +88,16 @@
       })
     });
     if (!resp.ok) {
-      members = oldmembers;
+      if (resp.status == 403) goto(`/app/login?redirect=${$page.url.pathname}`);
+      else pageError = (await resp.json()).message;
+      bannedmembers = oldbannedmembers;
     }
   }
 </script>
 
+<Popup title="An error occured" open={!!pageError} close={() => pageError = ''}>
+  <p>{pageError}</p>
+</Popup>
 <div class="memberslist">
   {#each members as member}
     <div class="memberentry">

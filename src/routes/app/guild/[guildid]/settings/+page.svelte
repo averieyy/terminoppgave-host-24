@@ -1,8 +1,10 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
+  import { page } from "$app/stores";
   import { isLight, shortHand } from "$lib/frontend/guild";
   import Guildlist from "$lib/widgets/guildlist.svelte";
   import Notice from "$lib/widgets/notice.svelte";
+  import Popup from "$lib/widgets/popup.svelte";
   import Channels from "$lib/widgets/settings/channels.svelte";
   import Guildprofile from "$lib/widgets/settings/guildprofile.svelte";
   import Invitations from "$lib/widgets/settings/invitations.svelte";
@@ -15,6 +17,8 @@
   
   let { name, colour, description } = $state(guild);
   let { discoverable } = $state(guildsettings);
+  
+  let pageError: string = $state('');
 
   let unsavedChanges = $derived(
     name != guild.name ||
@@ -29,7 +33,7 @@
     guild.name = name;
     guildsettings.discoverable = discoverable;
 
-    await fetch('/api/guild/settings', {
+    const resp = await fetch('/api/guild/settings', {
       method: 'PUT',
       body: JSON.stringify({
         guildid: guild.id,
@@ -37,6 +41,10 @@
         guildsettings
       })
     });
+    if (!resp.ok) {
+      if (resp.status == 403) goto(`/app/login?redirect=${$page.url.pathname}`);
+      else pageError = (await resp.json()).message;
+    }
   }
 
   async function leaveGuild() {
@@ -47,6 +55,10 @@
       })
     });
     if (resp.ok) goto('/app');
+    else {
+      if (resp.status == 403) goto(`/app/login?redirect=${$page.url.pathname}`);
+      else pageError = (await resp.json()).message;
+    }
   }
 
   async function deleteGuild() {
@@ -57,6 +69,10 @@
       })
     });
     if (resp.ok) goto('/app');
+    else {
+      if (resp.status == 403) goto(`/app/login?redirect=${$page.url.pathname}`);
+      else pageError = (await resp.json()).message;
+    }
   }
 </script>
 
@@ -64,6 +80,9 @@
   <title>Settings for {guild.name} - Eris</title>
 </svelte:head>
 
+<Popup title="An error occured" open={!!pageError} close={() => pageError = ''}>
+  <p>{pageError}</p>
+</Popup>
 <main>
   <div class="outerguildlist">
     <Guildlist guilds={guilds} selectedid={guild.id} />
