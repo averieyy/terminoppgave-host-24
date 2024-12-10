@@ -7,10 +7,22 @@
   let username: string = $state('');
   let password: string = $state('');
 
-  let detailError: boolean = $state(false);
+  let userNameError: boolean = $derived(username.length > 0 && (username.length > 16 || !!username.match(/[^a-z0-9\-\_]/)));
   let errorMessage = $state('');
 
   function register() {
+    if (username.length < 3 || username.length > 16) {
+      errorMessage = 'Your username has to be between 3 and 16 characters long';
+      return;
+    }
+    if (userNameError) {
+      errorMessage = 'Your username can only be lowercase english letters (a-z), numbers, dashes and underscores.';
+      return;
+    }
+    if (password.length < 8) {
+      errorMessage = 'Password shorter than 8 characters';
+      return;
+    }
     fetch('/api/register', {
       method: 'POST',
       body: JSON.stringify({
@@ -21,10 +33,9 @@
       if (resp.ok) {
         goto(redirectLocation || '/app');
       }
-      else {
+      else if (resp.status !== 500) {
         username = '';
         password = '';
-        detailError = true;
         errorMessage = (await resp.json()).message || 'An error occured when trying to register';
       }
     });
@@ -41,7 +52,7 @@
     {#if errorMessage !== ''}
       <span class="errormessage">{errorMessage}</span>
     {/if}
-    <input class={`${detailError && 'error'} inputform`} placeholder="Username" type="text" bind:value={username} />
+    <input class="{userNameError && 'error'} inputform" placeholder="Username" type="text" bind:value={username} />
     <input placeholder="Password" type="password" bind:value={password} />
     <input type="submit" value="Register">
   </form>
@@ -77,6 +88,10 @@ input {
   border: none;
   color: var(--fg1);
   padding: .5rem;
+}
+.error {
+  border-bottom: .25rem solid var(--red);
+  padding-bottom: .25rem;
 }
 .errormessage {
   color: var(--red);

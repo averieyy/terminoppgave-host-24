@@ -7,11 +7,18 @@
   let username: string = $state('');
   let password: string = $state('');
 
-  let detailError: boolean = $state(false);
+  let userNameError: boolean = $derived(username.length > 16 || username.length <3 || !!username.match(/[^a-z0-9\-\_]/));
   let errorMessage = $state('');
 
   function logIn() {
-    
+    if (userNameError) {
+      errorMessage = 'Username invalid';
+      return;
+    }
+    if (!password || password.length < 8) {
+      errorMessage = 'Password shorter than 8 characters';
+      return;
+    }
     fetch('/api/login', {
       method: 'POST',
       body: JSON.stringify({
@@ -22,10 +29,9 @@
       if (resp.ok) {
         goto(redirectLocation || '/app');
       }
-      else {
+      else if (resp.status !== 500) {
         username = '';
         password = '';
-        detailError = true;
         errorMessage = (await resp.json()).message || 'An error occured when trying to log in';
       }
     });
@@ -42,7 +48,7 @@
     {#if errorMessage !== ''}
       <span class="errormessage">{errorMessage}</span>
     {/if}
-    <input class={`${detailError && 'error'} inputform`} placeholder="Username" type="text" bind:value={username} />
+    <input class={`${userNameError && 'error'} inputform`} placeholder="Username" type="text" bind:value={username} />
     <input placeholder="Password" type="password" bind:value={password} />
     <input type="submit" value="Log in">
   </form>
