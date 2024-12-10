@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { goto } from "$app/navigation";
+  import { goto } from "$app/navigation";
   import { page } from "$app/stores";
   import Icon from "../icon.svelte";
   import Popup from "../popup.svelte";
@@ -141,8 +141,12 @@
       border: none;
       height: 2rem;
       width: 2rem;
+      padding: 0;
       color: var(--fg1);
       font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   }
   .deletechannel {

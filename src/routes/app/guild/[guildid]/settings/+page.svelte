@@ -93,7 +93,15 @@
         <a href="/app/guild/{guild.id}" title="Go back to {name}" class="gobackguild" style="background-color: {colour}; color: var(--{isLight(colour) ? 'bg1' : 'fg1'})">
           {shortHand(name || 'Go back')}
         </a>
-        Settings for <span>{name || guild.name}</span>
+        <div class="phoneunfriendly">
+          <span class="settingsfor">
+            Settings for
+          </span>
+          <span class="guildname">{name || guild.name}</span>
+        </div>
+        <div class="phonefriendly">
+          <span>Guild settings</span>
+        </div>
       </h1>
       <Notice
         content="These settings will change how your guild is seen by, and how safe it will be for users."
@@ -147,12 +155,16 @@
 
 <style>
   @media screen and (max-width: 650px) {
-    .outerguildlist {
-      display: none;
+    .outerguildlist, .phoneunfriendly {
+      display: none !important;
+    }
+    .phonefriendly {
+      display: flex !important;
     }
   }
-
   .outerguildlist {
+    display: flex;
+    flex-direction: row;
     overflow: auto;
   }
   main {
@@ -184,12 +196,18 @@
     gap: 1rem;
     align-items: center;
 
+    width: 100%;
+
     margin: 0;
     border-bottom: .2rem solid var(--lightblue);
 
-    & span {
+    & .guildname {
       color: var(--lightblue);
+      text-overflow: ellipsis;
     }
+  }
+  .phonefriendly {
+    display: none;
   }
   section {
     display: flex;

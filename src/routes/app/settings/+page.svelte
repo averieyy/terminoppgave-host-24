@@ -157,7 +157,7 @@
   </main>
 </div>
 
-<style lang="scss">
+<style>
   .outercontent {
     height: 100%;
     display: flex;

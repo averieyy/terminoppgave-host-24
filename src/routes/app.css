@@ -44,6 +44,6 @@ html, body {
   }
 }
 
-button {
+input, textarea, button {
   font-family: var(--font);
 }

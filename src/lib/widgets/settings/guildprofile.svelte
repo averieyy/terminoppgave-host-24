@@ -81,6 +81,7 @@
       padding: .5rem;
       resize: vertical;
       margin: 0;
+      font-size: .85rem;
     }
   }
 </style>
