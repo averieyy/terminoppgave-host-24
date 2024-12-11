@@ -1,3 +1,4 @@
+import { Channel } from "$lib/server/channel";
 import { DatabaseConnection } from "$lib/server/database/connection";
 import type { IChannel, IGuildMember } from "$lib/server/database/types";
 import { Guild } from "$lib/server/guild";
@@ -10,6 +11,7 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
 
   const { guildid, name }: { guildid: number, name: string } = await request.json();
   if (!guildid || !name) return json({ message: 'Guild id or channel name missing' }, { status: 400 });
+  if (!Channel.nameValid(name)) return json({ message: 'Channel name invalid' }, { status: 400 });
 
   // Check if the user is admin
   const guildmember = await DatabaseConnection.queryOne<IGuildMember>('SELECT * FROM guildmembers WHERE guildid = $1::integer AND userid = $2::integer', guildid, user.id);

@@ -12,9 +12,12 @@
   let newchannelname: string = $state('');
   let editingChannel: number | undefined = $state();
 
+  let channelnameok: boolean = $derived(!newchannelname.match(/[^a-z0-9-_]/) && newchannelname.length < 32);
+
   let pageError: string = $state('');
 
   async function createChannel () {
+    if (!channelnameok) return;
     const resp = await fetch('/api/channel/create', {
       method: 'POST',
       body: JSON.stringify({
@@ -56,6 +59,7 @@
   }
 
   async function editChannel () {
+    if (!channelnameok) return;
     const oldchannels = $state.snapshot(channels);
     const index = channels.findIndex(c => c.id == editingChannel);
     if (index == -1) return;
@@ -84,7 +88,7 @@
 
 <Popup title="{createChannelMode == 'create' ? 'Create' : 'Edit'} channel" open={createChannelMode !== 'closed'} close={() => createChannelMode = 'closed'}>
   <form class="createchannelform" onsubmit={editingChannel && createChannelMode == 'edit' ? editChannel : createChannel}>
-    <input type="text" bind:value={newchannelname}>
+    <input type="text" bind:value={newchannelname} class="{channelnameok ? 'good' : 'bad'}">
     <input type="submit" value="{createChannelMode == 'create' ? 'Create' : 'Edit'} channel">
   </form>
 </Popup>
@@ -186,6 +190,15 @@
       background-color: var(--bg2);
       color: var(--fg1);
       border: none;
+
+      &[type="text"] {
+        border-bottom: .25rem solid var(--bg2);
+        padding-bottom: .25rem;
+
+        &.bad {
+          border-color: var(--red);
+        }
+      }
     
       &[type="submit"] {
         &:hover, &:active {

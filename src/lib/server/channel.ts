@@ -38,6 +38,10 @@ export class Channel {
     return messageobjs;
   }
 
+  static nameValid(name: string): boolean {
+    return !name.match(/[^a-z0-9-_]/) && name.length < 32 && name.length !== 0;
+  }
+
   disconnect(member: Member) {
     const memberindex = this.members.findIndex(m => m.id == member.id);
     if (memberindex != -1)

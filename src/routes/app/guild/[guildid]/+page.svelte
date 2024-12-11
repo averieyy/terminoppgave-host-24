@@ -18,12 +18,23 @@
 
   let newchannelname: string = $state('');
   let newchannelerror: string = $state('');
+  let newchannelok: boolean = $derived(!newchannelname.match(/[^a-z0-9-_]/) && newchannelname.length < 32);
 
   let inviteUUID: string = $state('');
   
   let pageError: string = $state('');
 
+  $effect(() => {
+    createChannelPopupOpen;
+    newchannelerror = '';
+    newchannelname = '';
+  });
+
   async function createChannel () {
+    if (!newchannelok) {
+      newchannelerror = 'Channel name can only include lowercase english letters, numbers, dashes and underscores';
+      return;
+    }
     const resp = await fetch('/api/channel/create', {
       method: 'POST',
       body: JSON.stringify({
@@ -90,8 +101,13 @@
 
 {#if admin}
   <Popup title="Create channel" open={createChannelPopupOpen} close={() => createChannelPopupOpen = false}>
+    {#if newchannelerror}
+      <p class="error">
+        {newchannelerror}
+      </p>
+    {/if}
     <form class="createchannelform" onsubmit={createChannel}>
-      <input type="text" bind:value={newchannelname}>
+      <input type="text" bind:value={newchannelname} class="{newchannelok ? 'good' : 'bad'}">
       <input type="submit" value="Create channel">
     </form>
   </Popup>
@@ -280,6 +296,14 @@
       background-color: var(--bg2);
       color: var(--fg1);
     }
+    & input[type="text"] {
+      padding-bottom: .25rem;
+      border-bottom: .25rem solid var(--bg2);
+
+      &.bad {
+        border-color: var(--red);
+      }
+    }
   }
   .newinvite {
     display: flex;
@@ -296,5 +320,9 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+  }
+  .error {
+    color: var(--red);
+    font-style: italic;
   }
 </style>
